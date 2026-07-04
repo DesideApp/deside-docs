@@ -132,10 +132,25 @@ acquisition path.
 But it must resolve against a concrete source entry rather than inventing a
 wallet-only agent identity.
 
-When the authenticating owner wallet controls multiple source entries, wallet-only
-auth is ambiguous.
+When the authenticating owner/control wallet controls two or more canonical
+agents backed by the same registry/source, wallet-only auth is ambiguous.
 
-That case belongs to upcoming MCP source-entry-bound login work.
+That is the MCP selection case:
+
+- zero known agents for the wallet can continue without agent context
+- exactly one known agent for the wallet is resolved without a selection screen
+- two or more agents in the same registry/source require explicit agent context
+
+The client can provide an `agent_ref` during OAuth, use the browser selection
+fallback, or select after authorization with MCP identity tools.
+
+This selects the operational agent context for the MCP session.
+
+It does not merge registry records.
+
+Owner-signed identity links are declarations that help future MCP selection and
+product analytics. They are not treated as onchain evidence that two registry
+records are the same canonical agent.
 
 ### `auth_login`
 
