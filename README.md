@@ -21,9 +21,8 @@ This repository is the canonical GitBook source for `docs.deside.io`.
 
 The MCP runtime documentation was consolidated from
 [`deside-mcp`](https://github.com/DesideApp/deside-mcp). That repository may
-remain available for MCP-specific distribution artifacts such as the Agent Skill
-and examples, but the public documentation site should be generated from this
-repo.
+remain available for compatibility, but the public documentation site and
+current Agent Skill bundle should be generated from this repo.
 
 ## License
 

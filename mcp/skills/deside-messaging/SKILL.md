@@ -33,9 +33,9 @@ integration aids for different runtimes.
 
 Reference surfaces:
 
-1. use the `deside-mcp` repository README for the public integration overview
-2. use `deside-mcp/docs/authentication.md` for OAuth and wallet proof details
-3. use `deside-mcp/docs/tools.md` for canonical tool request and response shapes
+1. use the `DesideApp/deside-docs` repository `mcp/README.md` for the public integration overview
+2. use `DesideApp/deside-docs` `mcp/docs/authentication.md` for OAuth and wallet proof details
+3. use `DesideApp/deside-docs` `mcp/docs/tools.md` for canonical tool request and response shapes
 4. use `@desideapp/mcp-sdk` for TypeScript client helpers, not as a separate protocol
 
 ## What Deside Is
@@ -430,6 +430,6 @@ Current limits for this skill:
 3. no `typing`
 4. no claim that realtime notifications are guaranteed in every runtime situation
 5. no alternate REST wrapper contract
-6. this Agent Skill is installed from the `deside-mcp` repository; TypeScript code integrations should use the separate `@desideapp/mcp-sdk` package when SDK helpers are desired
+6. this Agent Skill is installed from the `DesideApp/deside-docs` repository; TypeScript code integrations should use the separate `@desideapp/mcp-sdk` package when SDK helpers are desired
 
 Treat this skill as the public Deside MCP consumer guide for Agent Skills-compatible runtimes, not as a second protocol definition.

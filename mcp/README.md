@@ -229,11 +229,11 @@ See [`examples/mini-agent/`](examples/mini-agent/) for a complete working exampl
 The canonical portable install path for the Deside Messaging skill is:
 
 ```bash
-npx skills add https://github.com/DesideApp/deside-mcp --skill deside-messaging
+npx skills add https://github.com/DesideApp/deside-docs --skill deside-messaging
 ```
 
 This path has been smoke-tested with the Agent Skills CLI targeting Claude Code.
-It installs the Agent Skill bundle from the `deside-mcp` source repository; it
+It installs the Agent Skill bundle from this public docs repository; it
 does not install an SDK package. For TypeScript app or agent code, use the separate
 [`@desideapp/mcp-sdk`](https://www.npmjs.com/package/@desideapp/mcp-sdk)
 package.
@@ -248,9 +248,9 @@ ClawHub is the public OpenClaw registry for discovering and installing the skill
 
 License note:
 
-- the canonical `deside-mcp` repository and skill bundle are licensed under `MIT`
+- the canonical `deside-docs` repository and skill bundle are licensed under `MIT`
 - ClawHub currently displays a platform-level skill license (`MIT-0`) for the published listing
-- the `deside-mcp` source repository remains the canonical source of truth for the bundle and its license
+- the `deside-docs` repository remains the canonical source of truth for the bundle and its license
 
 Source bundle:
 
