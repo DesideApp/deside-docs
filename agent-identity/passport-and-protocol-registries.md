@@ -223,7 +223,7 @@ That means:
 - let identity resolution decide canonical attachment
 - project the resolved agent in product
 
-Cross-source identity rules, including one-to-one owner correspondence and owner collections, are defined in [Identity Resolution And Auth Boundaries](03-identity-resolution-and-auth-boundaries.md).
+Cross-source identity rules, including one-to-one owner correspondence and owner collections, are defined in [Identity Resolution And Auth Boundaries](identity-resolution-and-auth-boundaries.md).
 
 The product should not force the user to think in terms of five separate registries for one resolved agent.
 

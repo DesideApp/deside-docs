@@ -153,13 +153,13 @@ It is not the same thing as passport or protocol-registry identity.
 
 ## Reading Order
 
-1. [What Is Deside](01-what-is-deside.md)
-2. [Discovery For Agents](02-discovery-for-agents.md)
-3. [Identity Resolution And Auth Boundaries](03-identity-resolution-and-auth-boundaries.md)
-4. [Passport And Protocol Registries](04-passport-and-protocol-registries.md)
-5. [Agent Directory And Profile Surfaces](05-agent-directory-and-profile-surfaces.md)
-6. [Agent To User Messaging](06-agent-to-user-messaging.md)
-7. [Public API Contracts](07-public-api-contracts.md)
+1. [What Is Deside](what-is-deside.md)
+2. [Discovery For Agents](discovery-for-agents.md)
+3. [Identity Resolution And Auth Boundaries](identity-resolution-and-auth-boundaries.md)
+4. [Passport And Protocol Registries](passport-and-protocol-registries.md)
+5. [Agent Directory And Profile Surfaces](agent-directory-and-profile-surfaces.md)
+6. [Agent To User Messaging](agent-to-user-messaging.md)
+7. [Public API Contracts](public-api-contracts.md)
 
 ## Relationship To MCP
 

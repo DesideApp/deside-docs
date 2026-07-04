@@ -130,6 +130,6 @@ At the MCP layer, the important distinction is:
 
 If you need the deeper product semantics behind identity resolution, passport-first, or protocol support, see:
 
-- [Identity Resolution And Auth Boundaries](../../agent-identity/03-identity-resolution-and-auth-boundaries.md)
-- [Passport And Protocol Registries](../../agent-identity/04-passport-and-protocol-registries.md)
-- [Agent Directory And Profile Surfaces](../../agent-identity/05-agent-directory-and-profile-surfaces.md)
+- [Identity Resolution And Auth Boundaries](../../agent-identity/identity-resolution-and-auth-boundaries.md)
+- [Passport And Protocol Registries](../../agent-identity/passport-and-protocol-registries.md)
+- [Agent Directory And Profile Surfaces](../../agent-identity/agent-directory-and-profile-surfaces.md)

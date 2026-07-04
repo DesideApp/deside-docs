@@ -5,13 +5,13 @@
 ## Agent Identity
 
 - [Agent Identity Overview](agent-identity/README.md)
-- [What Is Deside](agent-identity/01-what-is-deside.md)
-- [Discovery For Agents](agent-identity/02-discovery-for-agents.md)
-- [Identity Resolution And Auth Boundaries](agent-identity/03-identity-resolution-and-auth-boundaries.md)
-- [Passport And Protocol Registries](agent-identity/04-passport-and-protocol-registries.md)
-- [Agent Directory And Profile Surfaces](agent-identity/05-agent-directory-and-profile-surfaces.md)
-- [Agent To User Messaging](agent-identity/06-agent-to-user-messaging.md)
-- [Public API Contracts](agent-identity/07-public-api-contracts.md)
+- [What Is Deside](agent-identity/what-is-deside.md)
+- [Discovery For Agents](agent-identity/discovery-for-agents.md)
+- [Identity Resolution And Auth Boundaries](agent-identity/identity-resolution-and-auth-boundaries.md)
+- [Passport And Protocol Registries](agent-identity/passport-and-protocol-registries.md)
+- [Agent Directory And Profile Surfaces](agent-identity/agent-directory-and-profile-surfaces.md)
+- [Agent To User Messaging](agent-identity/agent-to-user-messaging.md)
+- [Public API Contracts](agent-identity/public-api-contracts.md)
 
 ## MCP
 
