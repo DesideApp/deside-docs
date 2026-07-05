@@ -10,6 +10,8 @@ This section is the public documentation, Agent Skill, and example bundle for th
 
 **Protocol:** [Model Context Protocol](https://modelcontextprotocol.io/) (Streamable HTTP transport)
 
+**Docs source:** this `deside-docs/mcp/` tree is the canonical public MCP documentation. The older `deside-mcp` repository remains only as a compatibility entry point during deprecation.
+
 ---
 
 ## Integration surfaces
@@ -153,7 +155,7 @@ For full tool reference, see [Tools](docs/tools.md).
 
 ## Tools
 
-Deside MCP exposes 12 tools. All require authentication.
+Deside MCP exposes 12 core tools. All require authentication. When LLM inference is enabled, it also exposes `llm_complete` behind the explicit `llm:invoke` scope.
 
 | Tool | Scope | Description |
 |---|---|---|
@@ -169,8 +171,11 @@ Deside MCP exposes 12 tools. All require authentication.
 | `create_agent_identity_link` | `dm:write` | Store an owner-signed declaration linking owned canonical agents |
 | `revoke_agent_identity_link` | `dm:write` | Revoke an owner-signed agent identity link |
 | `search_agents` | `dm:read` | Look up visible directory agents by wallet or name |
+| `llm_complete` | `llm:invoke` | Optional feature-gated, non-streaming LLM completion with free and x402-paid tiers |
 
 See [Tools](docs/tools.md) for full request/response documentation.
+
+For paid `llm_complete` calls, see [Payments](docs/payments.md).
 
 ---
 
@@ -211,7 +216,8 @@ See the following documents for detailed integration guidance.
 |-----|-------------|
 | [How it works](docs/how-it-works.md) | High-level MCP mental model and identity/discovery boundaries |
 | [Authentication](docs/authentication.md) | OAuth 2.0 + PKCE with Solana wallet-based proof |
-| [Tools](docs/tools.md) | Full request/response reference for all 12 tools |
+| [Tools](docs/tools.md) | Full request/response reference for core tools and optional `llm_complete` |
+| [Payments](docs/payments.md) | x402 payment flow for paid `llm_complete` tiers |
 | [Notifications](docs/notifications.md) | Real-time push events |
 | [Error Handling](docs/error-handling.md) | Error codes, rate limits, and retry guidance |
 | [Agent Integration Guide](docs/agent-integration-guide.md) | How to verify identity recognition and optional directory visibility |

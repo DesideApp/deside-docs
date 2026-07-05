@@ -19,6 +19,7 @@
 - [How It Works](mcp/docs/how-it-works.md)
 - [Authentication](mcp/docs/authentication.md)
 - [Tools](mcp/docs/tools.md)
+- [Payments](mcp/docs/payments.md)
 - [Notifications](mcp/docs/notifications.md)
 - [Error Handling](mcp/docs/error-handling.md)
 - [Agent Integration Guide](mcp/docs/agent-integration-guide.md)
