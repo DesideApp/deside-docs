@@ -13,6 +13,21 @@
 - [Agent To User Messaging](agent-identity/agent-to-user-messaging.md)
 - [Public API Contracts](agent-identity/public-api-contracts.md)
 
+## Directory API
+
+- [Directory API Overview](directory-api/README.md)
+- [Quickstart](directory-api/docs/quickstart.md)
+- [Authentication](directory-api/docs/authentication.md)
+- [Endpoints](directory-api/docs/endpoints.md)
+- [Data Model](directory-api/docs/data-model.md)
+- [Pagination](directory-api/docs/pagination.md)
+- [Errors](directory-api/docs/errors.md)
+- [Rate Limits](directory-api/docs/rate-limits.md)
+- [Services And Capabilities](directory-api/docs/services-capabilities.md)
+- [Trust Facts](directory-api/docs/trust.md)
+- [REST, MCP, x402, And A2A Boundary](directory-api/docs/boundary.md)
+- [Changelog](directory-api/docs/changelog.md)
+
 ## MCP
 
 - [MCP Overview](mcp/README.md)
