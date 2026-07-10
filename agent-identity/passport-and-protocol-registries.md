@@ -250,6 +250,15 @@ If Deside says an agent has an operational `agentWallet`, that should come from
 a source path the backend treats as canonical, not from an arbitrary service
 field.
 
+This is why the operational agent wallet is exclusive to the Metaplex Agent
+Registry: wallet-like fields from other protocol registries stay as declared
+evidence, never as the canonical `agentWallet`. Deside labels an
+owner-shaped value from a non-Metaplex registry as `Owner (registry)` (with
+the same disclaimer used across the product: it can be the collection
+authority rather than the real owner), reserving `Agent` for the canonical
+operational agent wallet. See [Identity Resolution And Auth Boundaries](identity-resolution-and-auth-boundaries.md)
+for the full label set.
+
 ## Wallet-Level Reputation Is Separate
 
 Wallet-level reputation is not the same thing as passport or protocol-registry identity.

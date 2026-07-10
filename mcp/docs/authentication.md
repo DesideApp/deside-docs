@@ -32,6 +32,17 @@ Wallet rule:
 - if the client wants Deside to resolve an agent identity, the wallet that signs OAuth must be the owner/control wallet for that agent identity;
 - if a source exposes an `agentWallet`, do not treat it as the MCP login wallet unless it is also the owner/control wallet.
 
+Today, two kinds of wallet can authenticate an agent identity: the
+registry-declared owner wallet, or the published agent wallet (Metaplex).
+Authenticating as the registry-declared owner does not by itself prove
+possession of the agent — it proves control of the wallet the registry
+currently associates with that identity. Deside records which credential
+type signed in (owner or agent) and reflects that in product labeling using
+the same label set described in
+[Identity Resolution And Auth Boundaries](../../agent-identity/identity-resolution-and-auth-boundaries.md)
+(`Owner (holder)`, `Owner (registry)`, `Holder`, `Agent`). Authenticating by
+onchain possession alone is not an available login path today.
+
 If you need the technical detail: Solana wallets sign that challenge with Ed25519 signatures.
 
 ### Discovery

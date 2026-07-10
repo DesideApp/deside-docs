@@ -69,6 +69,24 @@ In the current supported model:
 
 It is not, by itself, a unique agent identity.
 
+Non-Metaplex registries add a source limit that product surfaces must respect.
+8004-Solana and SATI expose an owner-shaped field without distinguishing
+whether that field is the real owner or the update authority of a collection.
+Their API does not expose authority as a separate field, so Deside cannot tell
+those two apart from source data alone.
+
+The clearest case of this limit is launchpad-style collections. In a launchpad
+collection, every agent in the collection hangs off the same parent, and the
+owner reported by the registry for each agent is the **collection authority**
+— the wallet that controls the collection, not necessarily the wallet that
+possesses that specific agent. Those can be, and often are, completely
+unrelated wallets.
+
+This is why possession, not a registry owner field, is the identity signal
+Deside trusts. When onchain possession of a Metaplex Core asset (`ownership.owner`,
+read via DAS) diverges from the owner declared by an indexer, possession wins:
+the indexer's owner field is not treated as identity evidence.
+
 ### Sufficient Evidence Today
 
 Deside can attach records to the same canonical agent in two current cases:
@@ -284,6 +302,35 @@ Other registries may contain wallet-like fields or service declarations, but
 those should not automatically become the canonical `agentWallet`.
 
 This is a backend contract boundary, not only a UI naming choice.
+
+### Three Concepts, Not One
+
+Public product language separates three distinct concepts that are easy to
+conflate:
+
+- **Registry-declared owner** — what the source registry declares as owner.
+  For Metaplex, this is a snapshot of the holder at read time. For other
+  registries, it can be the collection authority instead of a real owner.
+- **Holder** — whoever possesses the Core asset onchain right now, i.e. live
+  possession. This is only verifiable for identities anchored in the Metaplex
+  Core standard.
+- **Agent wallet** — the agent's operational wallet, published and verifiable
+  only through the Metaplex Agent Registry.
+
+Because those three concepts are easy to conflate, Deside uses one shared
+public label set everywhere an owner-shaped value is shown (the same
+vocabulary across profile, directory, and MCP surfaces):
+
+- `Owner (holder)` — a registry-declared owner whose possession has been
+  verified
+- `Owner (registry)` — a registry-declared owner without verified possession;
+  this label always carries a disclaimer that it can be the collection
+  authority rather than the real owner
+- `Holder` — verified live possession with no registry relationship attached
+- `Agent` — the agent's operational agent wallet
+
+As a matter of policy, any future value-transfer flow points exclusively to
+the canonical agent wallet — never to a registry-declared owner.
 
 ## Resolution Is Not Directory Visibility
 
