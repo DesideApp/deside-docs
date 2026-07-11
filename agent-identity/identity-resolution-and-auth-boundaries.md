@@ -323,9 +323,11 @@ vocabulary across profile, directory, and MCP surfaces):
 
 - `Owner (holder)` — a registry-declared owner whose possession has been
   verified
-- `Owner (registry)` — a registry-declared owner without verified possession;
-  this label always carries a disclaimer that it can be the collection
-  authority rather than the real owner
+- `Owner` — a registry-declared owner without verified possession, shown
+  plain. "Owner" means different things across registries: it can be the
+  collection authority rather than the real owner (the launchpad-collection
+  case described above). The label makes no claim beyond "declared owner";
+  this section is where those cases are explained, not the label itself
 - `Holder` — verified live possession with no registry relationship attached
 - `Agent` — the agent's operational agent wallet
 

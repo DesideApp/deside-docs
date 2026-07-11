@@ -40,7 +40,7 @@ currently associates with that identity. Deside records which credential
 type signed in (owner or agent) and reflects that in product labeling using
 the same label set described in
 [Identity Resolution And Auth Boundaries](../../agent-identity/identity-resolution-and-auth-boundaries.md)
-(`Owner (holder)`, `Owner (registry)`, `Holder`, `Agent`). Authenticating by
+(`Owner (holder)`, `Owner`, `Holder`, `Agent`). Authenticating by
 onchain possession alone is not an available login path today.
 
 If you need the technical detail: Solana wallets sign that challenge with Ed25519 signatures.
