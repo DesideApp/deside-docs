@@ -48,9 +48,14 @@ Successful and error responses can include:
 - multiple keys do not multiply the requests-per-minute allowance
 - `X-RateLimit-Reset` is a Unix epoch value in seconds
 - `X-Deside-Quota-Remaining` reflects the monthly project budget
-- requests with a valid key can still consume quota if they fail later during
-  request validation
+- not-found responses (`404`) are refunded and do not consume monthly quota,
+  so exploring a missing agent is not billed
+- other handled errors with a valid key (such as a malformed request) still
+  consume quota
 - requests with a missing or invalid key do not consume quota
+- rejected over-quota requests are not counted as served requests; they
+  increment a separate quota-exceeded counter instead of inflating the used
+  count
 - rate-limited requests fail before the request handler runs
 - webhook management and bulk export have separate Pro limits from read quota
 
