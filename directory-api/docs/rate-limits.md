@@ -6,18 +6,18 @@ These are the public preview limits for Directory API keys.
 
 Free:
 
-- `10,000` requests/month
+- `15,000` requests/month
 - 30 requests/min
 
 Developer:
 
-- `500,000` requests/month
-- 120 requests/min
+- `250,000` requests/month
+- 90 requests/min
 
 Pro:
 
-- Directory API read limits are inherited from the configured Pro project
-  policy.
+- `1,000,000` requests/month
+- 180 requests/min
 - Webhook subscriptions: 3 active subscriptions per project.
 - Webhook delivery attempts: 5 attempts with exponential backoff.
 - Bulk export: 1 `jsonl.gz` export per day.
