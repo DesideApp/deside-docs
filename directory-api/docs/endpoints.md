@@ -41,6 +41,15 @@ Notes:
 - returns the richer profile shape
 - may redirect to the canonical slug
 
+### `GET /api/v1/directory/agents/:id/trust`
+
+Notes:
+
+- accepts the same identifier rules as the detail route
+- returns the trust shape plus a `generatedAt` timestamp
+- may redirect to the canonical slug with `301`
+- returns `agent_not_found` when no single visible match resolves
+
 ## Owner and dashboard boundary
 
 The following routes are part of the owner/session boundary and are not part of
