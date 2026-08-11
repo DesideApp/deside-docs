@@ -79,51 +79,58 @@ That disambiguation is a product truth:
 - Deside must not pick one silently
 - shared owner wallet is not enough to merge source entries
 
-## Public Directory Item Shape
+## Public Directory Item Shapes
 
-Directory items are visible records from the `AgentProfile` projection.
+Since 2026-08-10 the public surface serves two different item shapes on
+purpose:
 
-The important fields are:
+- the public LIST (`GET /api/v1/public/agents`) returns a minimal card per
+  agent
+- the public agent DETAIL (`GET /api/v1/public/agents/:ref` and
+  `/:ref/profile`) returns the full projection for that one agent
+
+Bulk access to full items is the API-key Directory API
+(`GET /api/v1/directory/agents`, cursor pagination), not the public list.
+
+### List item (card)
 
 ```json
 {
   "catalogId": "agent-catalog-id",
-  "agentId": "agent-catalog-id",
-  "primarySource": "mip14",
-  "primarySourceEntryId": "metaplex-core-asset",
-  "wallet": "owner-or-catalog-wallet",
-  "ownerWallet": "owner-wallet",
-  "agentWallet": "operational-agent-wallet-or-null",
-  "sourceEntries": [
-    {
-      "source": "mip14",
-      "sourceEntryId": "metaplex-core-asset"
-    }
-  ],
-  "name": "Agent name",
-  "description": "Agent description",
-  "avatar": "original-avatar-url-or-null",
-  "avatarThumbUrl": "cached-card-avatar-or-null",
-  "avatarProfileUrl": "cached-profile-avatar-or-null",
-  "avatarCacheStatus": "ready",
-  "category": "category-or-null",
-  "website": "https://example.com",
-  "serviceSignals": ["web", "mcp"],
-  "ownerScore": null,
-  "registryPresence": {
-    "registries": ["mip14", "8004solana", "sati"],
-    "primarySource": "mip14"
-  },
   "slug": "agent-slug",
   "canonicalPath": "/agents/agent-slug",
-  "mergeEvidence": {
-    "confidence": "one_to_one"
-  },
-  "isVisible": true,
-  "createdAt": "2026-06-01T00:00:00.000Z",
-  "updatedAt": "2026-06-01T00:00:00.000Z"
+  "name": "Agent name",
+  "avatarThumbUrl": "cached-card-avatar-or-null",
+  "avatarOriginalUrl": "original-avatar-url-or-null",
+  "avatar": "avatar-url-or-null",
+  "category": "category-or-null",
+  "isConnected": false,
+  "services": [{ "kind": "mcp", "checked": true }],
+  "curationPublic": {
+    "verified": false,
+    "humanUsable": null,
+    "descCategory": "category-or-null",
+    "state": "state-or-null"
+  }
 }
 ```
+
+Notes:
+
+- `wallet` is present only when `isConnected` is `true` (it powers the chat
+  deep link)
+- list `services` carry `kind` and `checked` only; resolved URLs are not
+  part of the list
+- `skip` beyond the pagination cap returns `400 invalid_request` instead of
+  clamping silently
+
+### Detail item (single agent)
+
+The detail endpoints return the full backend-owned projection for one
+agent, including `ownerWallet`, `agentWallet`, `sourceEntries`,
+`description`, `website`, `serviceSignals`, `ownerScore`,
+`registryPresence`, `mergeEvidence`, avatar cache fields, `capabilities`,
+`channels`, `receipts` and timestamps.
 
 Not every field is present for every agent.
 
