@@ -38,7 +38,8 @@ the standard Directory API error envelope.
     "fairscale": {
       "score": 82,
       "tier": "gold",
-      "scoreKind": "owner_wallet"
+      "scoreKind": "fairscore",
+      "walletClassification": null
     }
   },
   "receiptsAuditUrl": "/api/v1/public/agents/agent-catalog-1/receipts",
@@ -59,7 +60,7 @@ Fields:
 | `registries` | Registry ids present in the directory projection. |
 | `registryCount` | Number of projected registry ids. |
 | `declaredServices` | Service signals declared by the projection. Declared does not mean verified. |
-| `thirdPartyScores.fairscale` | Attributed FairScale owner score when the shared two-or-more-registry exposure rule allows it; otherwise `null`. |
+| `thirdPartyScores.fairscale` | Attributed FairScale owner score when the shared two-or-more-registry exposure rule allows it; otherwise `null`. Includes `score`, `tier`, `scoreKind` (for example `fairscore`), and `walletClassification`. |
 | `receiptsAuditUrl` | Relative URL for the public payer-receipt audit trail. |
 | `generatedAt` | Timestamp for this API response. |
 

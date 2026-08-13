@@ -30,14 +30,15 @@ Current capability vocabulary:
 - `trading`
 - `payments`
 - `analytics`
-- `support`
 - `defi`
 - `content`
 - `mcp_server`
 - `a2a_task_receiver`
 - `x402_acceptor`
 - `identity`
-- `automation`
+
+Filtering by a value outside this list returns `invalid_request`. New values
+may be added over time; treat the list above as the currently accepted set.
 
 Capability fields should carry source, confidence, and evidence when available.
 

@@ -14,7 +14,8 @@ Developer:
 - `250,000` requests/month
 - 90 requests/min
 
-Pro:
+Pro (webhooks and bulk export are pre-rollout: documented, not yet enabled in
+production):
 
 - `1,000,000` requests/month
 - 180 requests/min

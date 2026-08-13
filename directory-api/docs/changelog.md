@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- aligned the capability filter vocabulary with the accepted server set
+  (removed `support` and `automation` until the server accepts them)
+- marked Pro webhooks and Pro bulk export as pre-rollout (documented, not yet
+  enabled in production)
+- corrected the trust `fairscale` example (`scoreKind` values such as
+  `fairscore`, added `walletClassification`)
+- reworded the public catalog auth row: it is an open product surface, not a
+  legacy surface
+
 - published the initial Directory API doc set
 - documented the API-key read surface, pagination, errors, limits, data
   product fields, and boundary notes

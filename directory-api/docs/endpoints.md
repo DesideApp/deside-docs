@@ -97,6 +97,9 @@ These routes belong to the owner dashboard boundary. They do not appear in the A
 These routes are Pro owner/session configuration routes. They are not API-key
 read routes.
 
+Pro webhooks are documented ahead of rollout and are not yet enabled in
+production; until the Pro rollout enables them, these routes are not mounted.
+
 ### `GET /api/v1/directory/webhooks`
 
 - auth: owner/session via `protectRoute`
@@ -147,6 +150,9 @@ profile when they need the latest state.
 ## Pro bulk export
 
 These routes use `x-api-key: dapi_...` and require a Pro project.
+
+Pro bulk export is documented ahead of rollout and is not yet enabled in
+production; until the Pro rollout enables it, these routes are not mounted.
 
 ### `POST /api/v1/directory/exports`
 

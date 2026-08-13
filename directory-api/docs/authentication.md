@@ -5,7 +5,7 @@
 | Surface | Auth | Notes |
 |---|---|---|
 | `/api/v1/directory` | `x-api-key: dapi_...` | Canonical Directory API read surface for Free and Developer. |
-| `/api/v1/public/agents` | public legacy | Existing public catalog; not the vendible developer contract. |
+| `/api/v1/public/agents` | public product surface | Open product reads (minimal list card plus per-agent detail); not the vendible developer contract and not deprecated. |
 | `/api/v1/mcp` | session auth | MCP uses session-based auth and does not consume Directory API quota. |
 | SDK/widget legacy | out of scope | Not part of the Directory API auth model. |
 
