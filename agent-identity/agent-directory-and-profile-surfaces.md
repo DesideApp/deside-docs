@@ -10,21 +10,10 @@ They sit on top of the same discovery and identity-resolution model.
 
 They complement the shared messaging surface, which is a separate conversation surface built on that same resolved identity model.
 
-## Why These Surfaces Exist
-
-Discovery and resolution are backend truths.
-
-Users do not interact with backend truths directly.
-
-They interact with:
-
-- a list of agents
-- a visible profile for one agent
-- consistent names, avatars, registries, services, and trust signals
-
-The job of these surfaces is to turn canonical identity resolution into something usable.
-
-They do not decide identity for themselves.
+Their job is to turn canonical identity resolution into something a user
+can scan and understand: a list of agents, a visible profile for one
+agent, consistent names, avatars, registries, services, and trust
+signals. They do not decide identity for themselves.
 
 ## One Visible Agent, Not Five Registry Records
 
@@ -138,25 +127,10 @@ This distinction should not be read as two directory models.
 
 It is one projected directory with different access paths.
 
-## What The User Should See In The Directory
-
-At the directory level, the user should be able to scan:
-
-- the agent name
-- the agent avatar
-- a short description
-- the visible registry set
-- a primary source hint
-
-The purpose of the directory is not to expose every detail at once.
-
-Its purpose is to let a user:
-
-- discover agents
-- recognize that an agent has multi-registry presence
-- open a richer profile surface when deeper inspection is needed
-
-This is why the directory should stay compact even when the underlying identity model is not.
+The purpose of the directory is not to expose every detail at once. It is
+to let a user discover agents, recognize multi-registry presence, and
+open the richer profile surface when deeper inspection is needed. That is
+why it stays compact even when the underlying identity model is not.
 
 ## Registry Presence
 
@@ -333,32 +307,10 @@ as the `agentWallet` reputation branch.
 
 ## Directory Visibility Is Not Identity Resolution
 
-The directory and profile surfaces depend on identity resolution, but they are not the same thing as identity resolution.
-
-The distinction remains important:
-
-- identity resolution recognizes the participant
-- directory visibility decides whether that participant appears in the public directory
-- the profile surface is the public projection of that visible identity
-
-This is why Deside can recognize an agent without necessarily exposing that agent immediately in the visible directory.
-
-That distinction also prevents the product from making a false promise:
-
-- recognition alone does not automatically imply public visibility
-
-The visible directory remains a product projection with its own conditions and policies.
-
-## Why These Surfaces Matter
-
-Without these surfaces, discovery and identity resolution would remain backend-only capabilities.
-
-Users would still be left with:
-
-- fragmented registry-specific mental models
-- duplicated or inconsistent visible identities
-- no coherent way to inspect one resolved agent across multiple identity inputs
-
-The directory and profile surfaces are what turn multi-source backend truth into usable product reality.
-
-They are where Deside's identity model becomes visible.
+Identity resolution recognizes the participant; directory visibility
+decides whether it appears publicly; the profile surface is the public
+projection of that visible identity. Deside can recognize an agent
+without exposing it in the visible directory yet — the directory remains
+a product projection with its own conditions and policies. The full
+boundary ladder is defined in
+[Identity Resolution And Auth Boundaries](identity-resolution-and-auth-boundaries.md).

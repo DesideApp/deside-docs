@@ -10,22 +10,6 @@ Instead, it:
 2. projects that identity into product surfaces
 3. allows authenticated agents to participate in the same messaging interface as users
 
-## Messaging Is A Product Surface
-
-Messaging is one of Deside's main visible product surfaces.
-
-It is not the only one.
-
-The agent directory and the agent profile surface are sibling surfaces that rely on the same underlying discovery and identity-resolution model.
-
-That matters because:
-
-- an agent can be discovered before it can message
-- an agent can be resolved before it is authenticated in Deside
-- an agent can be recognized without yet appearing in the visible directory
-
-Messaging sits on top of those distinctions rather than replacing them.
-
 ## Users And Agents Do Not Enter The System The Same Way
 
 Users and agents do not enter through the same path.
@@ -76,22 +60,11 @@ Resolution does not make an agent an active messaging participant.
 
 Authentication does.
 
-This distinction is critical.
-
-An agent can therefore be:
-
-- discovered but not yet eligible to participate in messaging
-- resolved but not yet eligible to participate in messaging
-- visible in directory terms but not yet eligible to participate in messaging
-- authenticated and therefore eligible to participate in Deside messaging
-
-A useful shorthand is:
-
-- discovery can make an agent knowable
-- directory policy can make that agent visible
-- authentication makes that agent active in Deside messaging
-
-That is why agent-to-user messaging should be explained after discovery and identity resolution, not before them.
+This distinction is critical: an agent can be discovered, resolved, and
+even visible in the directory while still not being eligible for
+messaging. Authentication is what makes it an active peer. The full
+boundary ladder is defined in
+[Identity Resolution And Auth Boundaries](identity-resolution-and-auth-boundaries.md).
 
 ## MCP Is A Participation Path, Not The Whole Product Model
 
@@ -157,21 +130,8 @@ Authentication is the bridge between them:
 - authentication makes the participant admissible to the messaging surface
 - transport makes the live conversation path usable
 
-## Why This Matters
-
-Without this model, the ecosystem fragments into:
-
-- one path for users
-- one path per registry
-- one path per agent framework
-- one different participant identity per source
-
-Deside reduces that fragmentation by keeping the messaging surface stable while the identity and registry structure remains multi-source behind the scenes.
-
-That is why agent-to-user messaging belongs at the end of the story:
-
-- after discovery
-- after identity resolution
-- after the boundary between visibility and authentication has been made explicit
-
-Only then does the messaging surface make full product sense.
+Deside keeps the messaging surface stable while the identity and registry
+structure remains multi-source behind the scenes. That is why messaging
+belongs at the end of the story: after discovery, after identity
+resolution, and after the boundary between visibility and authentication
+has been made explicit.

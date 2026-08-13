@@ -30,16 +30,9 @@ When a passport exists, Deside should prefer it as the base anchor for the resol
 
 This does not mean that the passport is the only source that matters.
 
-It means that the passport is the best place to start when deciding:
-
-- what onchain identity should anchor this agent?
-- what should count as the canonical base?
-
-Another way to say this is:
-
-- the passport gives Deside its strongest starting point for canonical onchain identity
-
-That matters because the product should prefer stronger onchain anchors over weaker local heuristics whenever they exist.
+It means that the passport is the best place to start when deciding what
+onchain identity should anchor the agent: the product prefers strong
+onchain anchors over weaker local heuristics whenever they exist.
 
 ### Metaplex Agent Registry
 
@@ -53,13 +46,6 @@ Its role is:
 - minimal onchain identity base
 - strong product starting point for canonical agent identity
 - source of the canonical operational `agentWallet` when the registry exposes one
-
-Why this matters in practice:
-
-- the passport gives Deside an onchain starting point that is stronger than a purely display-level or self-declared identity claim
-- it gives the resolution model a better anchor for deciding what should count as the base identity when several source records exist
-- it lets richer protocol registries enrich that identity without replacing its canonical starting point
-- it can let Deside distinguish the owner wallet from the operational `agentWallet` without relying on weaker self-declared fields from other registries
 
 Its limit is also important:
 
@@ -168,66 +154,20 @@ identity.
 
 Source-specific object details belong behind the adapter and resolver contract.
 
-## Why This Distinction Matters In Practice
-
-Different sources may expose different kinds of onchain objects and references for a resolved agent.
-
-For example, depending on the source, Deside may end up observing different onchain structures behind a canonical agent identity:
-
-- a Core asset
-- a source-specific PDA
-- a source-specific mint
-- source-specific owner or authority references
-
-That variability is not a bug in the model.
-
-It is one of the reasons the model exists.
-
-Deside should preserve that multi-source structure behind the scenes when resolution has established one visible product identity.
-
-This is also why the system should not be explained as though one registry object automatically replaces every other one.
-
-The goal is not to force all sources into the same object type.
-
-The goal is to preserve each source's role while identity resolution determines whether different source records belong to the same agent.
-
-## Preferred Canonical Anchor Does Not Mean Source Monoculture
-
-Using a passport as the preferred canonical anchor means:
-
-- prefer the strongest canonical anchor when it exists
-- preserve protocol-native enrichment around that anchor
-- keep working when no passport exists yet
-
-In practical product terms, that means:
-
-1. start from the best canonical anchor when it exists
-2. preserve the fact that a resolved agent may also exist in multiple protocol registries
-3. let those registries contribute richer source-specific signals around that resolved identity
-
-It does not mean:
-
-- replace every protocol registry with one source
-- discard protocol-native reputation
-- require every agent to look identical onchain
-- pretend the ecosystem has already converged on one registry model
-
 ## How Deside Reads Multi-Registry Identity
 
-Deside should be understood as source-aware without being source-captured.
+Different sources expose different onchain structures behind a canonical
+agent identity: a Core asset, a source-specific PDA, a source-specific
+mint, owner or authority references. That variability is one of the
+reasons the model exists, and no registry object automatically replaces
+another.
 
-That means:
-
-- extract entries from multiple registries
-- preserve source-specific evidence
-- let identity resolution decide canonical attachment
-- project the resolved agent in product
-
-Cross-source identity rules, including one-to-one owner correspondence and owner collections, are defined in [Identity Resolution And Auth Boundaries](identity-resolution-and-auth-boundaries.md).
-
-The product should not force the user to think in terms of five separate registries for one resolved agent.
-
-But the system should still preserve that evidence behind the scenes.
+Deside is source-aware without being source-captured: it extracts entries
+from multiple registries, preserves source-specific evidence, lets
+identity resolution decide canonical attachment, and projects the
+resolved agent in product. Cross-source identity rules, including
+one-to-one owner correspondence and owner collections, are defined in
+[Identity Resolution And Auth Boundaries](identity-resolution-and-auth-boundaries.md).
 
 ## Agent Wallet Is Not A Generic Self-Declared Field
 
@@ -302,9 +242,8 @@ This is an implementation detail around delivery, not the same thing as choosing
 The product rule remains simple even if the source structure is not:
 
 - one visible agent identity for each resolved agent in product
-- one canonical starting point when a passport exists
+- one canonical starting point when a passport exists, without requiring
+  one (no forced registry monoculture)
 - protocol-native enrichment preserved around that identity
-- cross-source projection only after identity resolution decides the records belong to the same agent
-- no forced registry monoculture
-
-That is how Deside treats passport and protocol registries.
+- cross-source projection only after identity resolution decides the
+  records belong to the same agent

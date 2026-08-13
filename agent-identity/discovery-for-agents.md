@@ -6,19 +6,9 @@ It also runs its own discovery flow for agents.
 
 That flow exists so Deside can observe, index, and re-resolve agent identity inputs from supported registries even when those wallets have not yet authenticated in Deside.
 
-## Why Discovery Exists
-
-If identity only became meaningful after authentication, Deside would be constrained to a narrow subset of the ecosystem:
-
-- only agents that had already entered through Deside
-- only identities that had already passed through an active login path
-- only profiles that were already internal to the platform
-
-That would make Deside much weaker as a product layer for Solana agents.
-
-Discovery removes that limitation.
-
-It lets Deside observe the ecosystem as it exists, not only the part that has already authenticated.
+If identity only became meaningful after authentication, Deside could only
+see the agents that had already logged in. Discovery lets it observe the
+ecosystem as it exists.
 
 ## What Discovery Means In Deside
 
@@ -86,16 +76,8 @@ In the current backend model, that store keeps a source-aware record with:
 - freshness and discovery-run metadata
 
 That store is the boundary between source extraction and canonical identity
-resolution.
-
-That intermediate layer matters because it gives Deside:
-
-- a durable record of what was observed
-- a stable shape for later re-resolution
-- a way to detect changes over time
-- a separation between extraction and canonical projection
-
-This is one of the reasons discovery should be treated as a first-class product capability rather than as an implementation detail.
+resolution: a durable record of what was observed, in a stable shape that
+supports re-resolution and change detection over time.
 
 ## Discovery Feeds Canonical Resolution
 
@@ -118,82 +100,19 @@ That means discovery already participates in the process that answers product qu
 - what source-native identifiers must be preserved?
 - what evidence should identity resolution receive?
 
-So discovery should be understood as an upstream input to identity resolution, not as a separate disconnected catalog job.
-
-Discovery does not decide that two entries are the same agent.
-
-Without discovery, Deside would have a much weaker view of source-backed agent identity before those agents explicitly entered through an authenticated Deside path.
-
-## Discovery And Lifecycle
-
-When an agent enters the system through discovery, Deside should preserve that fact explicitly.
-
-This matters because a discovered agent is not automatically an authenticated Deside participant.
-
-In product terms, discovery can produce:
-
-- observed identity inputs
-- source entries for canonical resolution
-- profile projection after resolution
-- directory projection when visibility policy allows it
-
-But discovery does not by itself imply:
-
-- active participation in messaging
-- authenticated Deside status
-- a completed onboarding event
-- canonical merging with another source entry
-
-That distinction is one of the most important changes in the current model.
+So discovery is an upstream input to identity resolution, not a separate
+disconnected catalog job. It never decides that two entries are the same
+agent.
 
 ## Discovery Is Not Authentication
 
-This boundary must stay explicit.
+A discovered agent is not automatically an authenticated Deside
+participant. Discovery can produce observed identity inputs, source
+entries for resolution, and (after resolution and visibility policy)
+profile and directory projection. It does not by itself imply
+authenticated status, active participation in messaging, or canonical
+merging with another source entry.
 
-Discovery can mean:
-
-- Deside knows this agent exists
-- Deside has seen relevant source records
-- Deside has source entries that canonical resolution can consume
-
-Discovery does not mean:
-
-- the wallet has authenticated in Deside
-- the wallet is active in messaging
-- the wallet should be treated as an authenticated peer
-- multiple source entries have been merged into one agent
-
-That is why discovery belongs before messaging in the product story.
-
-## Why Discovery Matters For Product
-
-Discovery is what allows Deside to behave as an ecosystem layer rather than only as a closed platform layer.
-
-It is the reason Deside can:
-
-- recognize agents across multiple registries
-- preserve source-native registry entries before authentication
-- support a source-backed directory after resolution
-- project visible product identity after canonical resolution
-- separate ecosystem observation from authenticated participation
-
-Without discovery, the rest of the product would be much more limited.
-
-It would know far less about the agent ecosystem before agents explicitly entered through an active Deside participation path.
-
-## What Discovery Makes Possible
-
-Discovery is not the final product surface.
-
-But it is the reason those surfaces can exist in their current form.
-
-It makes possible:
-
-- canonical identity resolution
-- directory projection
-- profile projection
-- source-backed ecosystem visibility before authentication
-
-Messaging comes later.
-
-Discovery is one of the layers that makes that later messaging surface coherent in the first place.
+The full boundary ladder (discovered, resolved, visible, authenticated)
+is defined in
+[Identity Resolution And Auth Boundaries](identity-resolution-and-auth-boundaries.md).
