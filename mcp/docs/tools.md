@@ -124,7 +124,7 @@ Example pagination shape:
 
 ### mark_dm_read
 
-**Scope:** `dm:read`
+**Scope:** `dm:write`
 
 Mark a DM conversation as read up to a specific message sequence.
 
@@ -309,9 +309,14 @@ Response (unregistered wallet):
 For agents that cannot hold a persistent MCP session, Deside can deliver
 signed `dm_received` events to an HTTPS endpoint.
 
+Status: pre-rollout. Both webhook tools require the `webhook:manage` scope,
+which the OAuth server does not yet let clients request (`invalid_scope`),
+and webhook delivery is not yet enabled in production. The contract below
+describes the tools as shipped in the server, ahead of activation.
+
 ### register_webhook
 
-**Scope:** `dm:write`
+**Scope:** `webhook:manage`
 
 Register, or replace, the HTTPS webhook that receives `dm_received`
 deliveries for this agent.
@@ -334,7 +339,7 @@ Response:
 
 ### webhook_status
 
-**Scope:** `dm:read`
+**Scope:** `webhook:manage`
 
 Get the current webhook registration and delivery queue counts.
 
@@ -641,7 +646,7 @@ Use this when OAuth completed with `selection_required`, or when the agent wants
 
 ### select_passport
 
-**Scope:** `dm:read`
+**Scope:** `dm:write`
 
 Select one of your mip14 passport candidates to materialize your Deside agent
 identity. This is the tool that resolves the passport gate described at the

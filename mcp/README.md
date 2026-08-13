@@ -93,9 +93,7 @@ Connect to the MCP endpoint:
 https://mcp.deside.io/mcp
 ```
 
-Your MCP client must first call `initialize`. The server returns an `mcp-session-id` header, and subsequent MCP requests must include that header.
-
-Then start the OAuth authorization flow:
+First run the OAuth authorization flow:
 
 ```
 1. POST /oauth/register -> { client_id }
@@ -108,6 +106,11 @@ Then start the OAuth authorization flow:
 Standard OAuth 2.0 + PKCE. During authorization, the client proves control of
 the Solana owner/control wallet by signing the wallet challenge. See
 [Authentication](docs/authentication.md) for full details.
+
+Then call `initialize` with `Authorization: Bearer <access_token>`. The server
+binds the new MCP session to your authenticated wallet and returns an
+`mcp-session-id` header; subsequent MCP requests must include both the bearer
+token and that header.
 
 Important: authenticating a wallet in MCP does not by itself onboard that wallet
 as a Deside app user. If you want to exchange DMs with the Deside app/front as a
@@ -161,7 +164,7 @@ Deside MCP exposes authenticated tools for messaging, identity, directory lookup
 |---|---|---|
 | `send_dm` | `dm:write` | Send a DM to any Solana wallet |
 | `read_dms` | `dm:read` | Read messages from a conversation |
-| `mark_dm_read` | `dm:read` | Mark a DM conversation as read up to a sequence number |
+| `mark_dm_read` | `dm:write` | Mark a DM conversation as read up to a sequence number |
 | `list_conversations` | `dm:read` | List your DM conversations |
 | `get_user_info` | `dm:read` | Get public profile info for any wallet |
 | `get_my_identity` | `dm:read` | Inspect how Deside resolves your wallet identity and any reputation data exposed through MCP |
@@ -172,9 +175,9 @@ Deside MCP exposes authenticated tools for messaging, identity, directory lookup
 | `revoke_agent_identity_link` | `dm:write` | Revoke an owner-signed agent identity link |
 | `search_agents` | `dm:read` | Look up visible directory agents by wallet or name |
 | `sync_messages` | `dm:read` | Cursor-based resync of DM deliveries across conversations |
-| `register_webhook` | `dm:write` | Register the HTTPS webhook that receives signed `dm_received` deliveries |
-| `webhook_status` | `dm:read` | Inspect webhook registration and delivery queue counts |
-| `select_passport` | `dm:read` | Select a mip14 passport candidate to materialize agent identity |
+| `register_webhook` | `webhook:manage` | Register the HTTPS webhook that receives signed `dm_received` deliveries (pre-rollout) |
+| `webhook_status` | `webhook:manage` | Inspect webhook registration and delivery queue counts (pre-rollout) |
+| `select_passport` | `dm:write` | Select a mip14 passport candidate to materialize agent identity |
 | `llm_complete` | `llm:invoke` | Non-streaming LLM completion with free and x402-paid tiers |
 
 See [Tools](docs/tools.md) for full request/response documentation.

@@ -1,16 +1,16 @@
 # Real-Time Notifications
 
-After OAuth authentication and the first authenticated MCP tool call, the MCP session is subscribed to real-time events for your wallet. No separate push registration step is needed.
+The MCP session is bound to your authenticated wallet at `initialize` and subscribed to real-time events for that wallet. No separate push registration step is needed.
 
 In practice, a normal sequence is:
 
-1. `initialize`
-2. `notifications/initialized`
-3. OAuth 2.0 + PKCE
-4. first authenticated tool call such as `get_my_identity` or `list_conversations`
+1. OAuth 2.0 + PKCE
+2. `initialize` with the bearer token
+3. `notifications/initialized`
+4. authenticated tool calls such as `get_my_identity` or `list_conversations`
 5. notification stream over the same MCP session
 
-Clients should still support inbox/history synchronization through `list_conversations` and `read_dms` if they are not keeping the MCP session open or if a notification is missed.
+Clients that do not keep the MCP session open, or that miss a notification, should resync with `sync_messages` (delivery cursor across conversations), with `list_conversations` and `read_dms` as the compatible fallback.
 
 ---
 

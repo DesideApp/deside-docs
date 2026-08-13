@@ -19,9 +19,13 @@ Before tool execution, the MCP HTTP transport can return plain JSON HTTP errors 
 
 | Error | Status | Meaning |
 |---|---|---|
+| `AUTH_REQUIRED` | 401 | Missing or invalid bearer token; `initialize` itself requires a valid bearer |
 | `session_required` | 400 | Missing `mcp-session-id` on MCP requests after `initialize` |
 | `session_not_found` | 404 | Unknown or expired `mcp-session-id` |
 | `invalid_request` | 400 | `initialize` was sent with an `mcp-session-id`, which is not allowed |
+| `session_conflict` | 409 | Another MCP session is already active for this wallet; the payload includes `active_session_id` |
+| `session_mismatch` | 403 | The bearer token wallet does not match the wallet bound to the session |
+| `payload_too_large` | 413 | Request body exceeds the HTTP size limit |
 
 These are transport-level MCP session errors, not tool-level MCP error payloads.
 
@@ -71,6 +75,7 @@ These are OAuth flow responses, not MCP tool errors.
 | `BLOCKED` | 403 | Recipient blocked you |
 | `POLICY_BLOCKED` | 403 | DM not allowed by platform policy |
 | `COOLDOWN` | 403 | Temporary protection when sending too quickly to the same recipient |
+| `cannot_dm_self` | 400 | `send_dm` to your own authenticated wallet |
 | `INVALID_INPUT` | 400 or 422 | Bad parameters |
 | `INPUT_TOO_LARGE` | 400 | `llm_complete` input exceeds message or character limits |
 | `RATE_LIMITED` | 429 | Too many LLM calls for the wallet and tier bucket |
@@ -78,6 +83,8 @@ These are OAuth flow responses, not MCP tool errors.
 | `PAYMENT_REQUIRED` | 402 | Paid `llm_complete` tier requires x402 payment; payload includes `data.accepts[]` |
 | `PAYMENT_INVALID` | 402 | x402 payment signature, nonce, amount, network, asset, or receiver is invalid |
 | `PAYMENT_FAILED` | 402 | x402 settlement failed after provider success |
+| `passport_selection_required` | 409 | The wallet has multiple unresolved mip14 passports; call `select_passport` (payload lists `data.candidates[]`) |
+| `passport_state_unavailable` | 503 | Passport state could not be resolved; retry later |
 | `MODEL_UNAVAILABLE` | 400 | Requested LLM tier cannot be served for this request |
 | `PROVIDER_TIMEOUT` | 504 | Upstream model provider timed out |
 | `PROVIDER_ERROR` | 502 | Upstream model provider failed |
@@ -104,9 +111,9 @@ For `send_dm`, these outcomes are returned as normal success payload statuses:
 
 | Status | Meaning |
 |---|---|
-| `delivered` | Message was accepted and delivered to the conversation |
+| `sent` | Message persisted with its `seq`; read state arrives separately via read receipts |
 | `pending_acceptance` | A DM request/contact-acceptance flow is still pending |
-| `user_not_registered` | The destination wallet is not yet a registered Deside user |
+| `user_not_authenticated` | The destination wallet has never authenticated with Deside |
 
 Treat these as tool results, not error codes.
 
@@ -133,7 +140,7 @@ Treat these as tool results, not error codes.
 - **On `PAYMENT_FAILED`**, treat the attempt as failed settlement and retry carefully with a fresh quote if the user or agent policy allows it
 - **On `MODEL_UNAVAILABLE`**, try another tier or wait for the tier to become available
 - **On `PROVIDER_TIMEOUT` or `PROVIDER_ERROR`**, retry later or reduce `max_tokens`; Deside does not settle payment when the provider fails after verification
-- **`send_dm` deduplicates** via a server-generated `clientMsgId` — safe to retry on network errors, but do not assume exactly-once delivery
+- **`send_dm` deduplicates**: pass the same `idempotency_key` on retries for client-controlled dedup; without it the server generates a `clientMsgId` per attempt, so do not assume exactly-once delivery
 - **Read and identity tools** are safe to retry without side effects
 - **`llm_complete` free calls** are safe to retry technically, but attempts that reach the provider can count against the free daily cap
 - **Do NOT retry invalid OAuth requests blindly** — fix the bad parameter (`redirect_uri`, `scope`, `code_verifier`, etc.) first

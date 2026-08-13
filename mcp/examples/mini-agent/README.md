@@ -6,9 +6,9 @@ This example is client-side only. It does not configure the MCP server. It conne
 
 ## What it does
 
-1. `initialize` MCP session.
-2. Authenticate via OAuth 2.0 + PKCE:
+1. Authenticate via OAuth 2.0 + PKCE:
    `/oauth/register -> /oauth/authorize -> /oauth/wallet-challenge -> /oauth/token`
+2. `initialize` MCP session with the bearer token; the session is bound to the authenticated wallet.
 3. Call `get_my_identity`.
 4. Call `list_conversations`.
 5. If `TO_WALLET` is set, call `send_dm` and `read_dms`.

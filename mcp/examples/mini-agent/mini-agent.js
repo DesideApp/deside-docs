@@ -124,8 +124,11 @@ async function mcpRpc({ sessionId, bearerToken, method, params, id }) {
   };
 }
 
-async function initializeSession() {
+async function initializeSession({ bearerToken }) {
+  // initialize requires a valid bearer: the MCP session is bound to the
+  // authenticated wallet at creation time. Run OAuth first.
   const initialize = await mcpRpc({
+    bearerToken,
     id: 1,
     method: 'initialize',
     params: {
@@ -137,7 +140,7 @@ async function initializeSession() {
 
   const sessionId = initialize.sessionId;
   assert(sessionId, 'initialize_failed_missing_mcp_session_id', initialize.raw);
-  await mcpRpc({ sessionId, method: 'notifications/initialized' });
+  await mcpRpc({ sessionId, bearerToken, method: 'notifications/initialized' });
   return sessionId;
 }
 
@@ -305,10 +308,9 @@ async function main() {
   console.log(`[mini-agent] wallet=${agent.wallet} ephemeral=${agent.ephemeral}`);
   console.log(`[mini-agent] mcp=${ENV.mcpBaseUrl}${ENV.mcpPath} auth=oauth_pkce`);
 
-  const sessionId = await initializeSession();
   const authResult = await authOAuth({ agent });
-
   const bearerToken = authResult.accessToken || null;
+  const sessionId = await initializeSession({ bearerToken });
   const summary = {
     sessionId,
     auth: authResult.mode,
