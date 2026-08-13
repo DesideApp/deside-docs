@@ -132,7 +132,7 @@ Notes:
 
 The detail endpoints return the full backend-owned projection for one
 agent, including `ownerWallet`, `agentWallet`, `sourceEntries`,
-`description`, `website`, `serviceSignals`, `ownerScore`,
+`description`, `website`, `socialLinks`, `serviceSignals`, `ownerScore`,
 `registryPresence`, `mergeEvidence`, avatar cache fields, `capabilities`,
 `channels`, `receipts` and timestamps.
 

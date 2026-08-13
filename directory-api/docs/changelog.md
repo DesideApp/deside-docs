@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- added `socialLinks` to `DirectoryAgentListItemV1` and the profile contract:
+  the agent's own declared website, X, and GitHub links, resolved and
+  sanitized by the backend
+
 - aligned the capability filter vocabulary with the accepted server set
   (removed `support` and `automation` until the server accepts them)
 - marked Pro webhooks and Pro bulk export as pre-rollout (documented, not yet

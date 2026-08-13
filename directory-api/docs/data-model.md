@@ -22,6 +22,7 @@ Expected public fields include:
 - `registryCount`
 - `services`
 - `capabilities`
+- `socialLinks`
 - `convergence`
 - `links`
 - `fairscale`
@@ -56,6 +57,23 @@ The profile route extends the list contract with
 
 - `description`
 - `sources`
+
+## Social links
+
+`socialLinks` exposes the agent's own declared social identity, resolved and
+sanitized by the backend from the agent's registry declarations (never from
+mentions or free text):
+
+```json
+{
+  "website": { "url": "https://agent.example" },
+  "x": { "url": "https://x.com/agent_handle", "handle": "agent_handle" },
+  "github": { "url": "https://github.com/agent", "handle": "agent" }
+}
+```
+
+`socialLinks` is `null` when the agent has no declared links. Each branch is
+optional; `handle` appears for `x` and `github` when available.
 
 ## DirectoryServiceV1
 
