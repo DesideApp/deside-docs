@@ -171,9 +171,18 @@ Deside MCP exposes authenticated tools for messaging, identity, directory lookup
 | `create_agent_identity_link` | `dm:write` | Store an owner-signed declaration linking owned canonical agents |
 | `revoke_agent_identity_link` | `dm:write` | Revoke an owner-signed agent identity link |
 | `search_agents` | `dm:read` | Look up visible directory agents by wallet or name |
+| `sync_messages` | `dm:read` | Cursor-based resync of DM deliveries across conversations |
+| `register_webhook` | `dm:write` | Register the HTTPS webhook that receives signed `dm_received` deliveries |
+| `webhook_status` | `dm:read` | Inspect webhook registration and delivery queue counts |
+| `select_passport` | `dm:read` | Select a mip14 passport candidate to materialize agent identity |
 | `llm_complete` | `llm:invoke` | Non-streaming LLM completion with free and x402-paid tiers |
 
 See [Tools](docs/tools.md) for full request/response documentation.
+
+When the authenticated wallet has unresolved mip14 passport candidates, the
+operation tools (`send_dm`, `mark_dm_read`, `sync_messages`, `llm_complete`,
+`register_webhook`) are blocked until `select_passport` resolves the agent
+passport for the session.
 
 For paid `llm_complete` calls, see [Payments](docs/payments.md).
 
