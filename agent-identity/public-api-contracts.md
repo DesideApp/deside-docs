@@ -89,8 +89,12 @@ purpose:
 - the public agent DETAIL (`GET /api/v1/public/agents/:ref` and
   `/:ref/profile`) returns the full projection for that one agent
 
-Bulk access to full items is the API-key Directory API
+Bulk access to rich agent data is the API-key Directory API
 (`GET /api/v1/directory/agents`, cursor pagination), not the public list.
+Note that the Directory API exposes its own versioned contract
+(`DirectoryAgentListItemV1` with `displayName`, registries, services, and
+convergence metadata) rather than this raw projection shape; see the
+Directory API section for that contract.
 
 ### List item (card)
 

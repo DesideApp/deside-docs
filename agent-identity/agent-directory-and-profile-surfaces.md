@@ -105,17 +105,15 @@ into one public listing record.
 
 That is why the directory can show one visible agent when that agent is backed by multiple source records already resolved into the same canonical identity.
 
-The current backend directory item can expose compact source-aware context such as:
+Since 2026-08-10 the public list item is deliberately minimal: a card with
+`catalogId`, `slug` and canonical path, visible name, avatar URLs, category,
+connected state, service channels as kind-plus-checked signals, and a compact
+curation summary.
 
-- `catalogId`
-- `slug` and canonical path
-- primary source and primary source entry
-- owner wallet and, when canonical, `agentWallet`
-- attached source entries
-- registry presence
-- visible name, description, avatar, and cached avatar URLs
-- service signals
-- owner score when the public policy allows it
+The richer projection — owner wallet, canonical `agentWallet`, attached
+source entries, registry presence, description, and the owner score when
+public policy allows it — lives on the per-agent detail and profile surfaces,
+and on the API-key Directory API under its own versioned contract.
 
 The important guarantee is not that every field appears for every agent.
 
