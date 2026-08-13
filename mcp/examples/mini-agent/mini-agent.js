@@ -138,6 +138,16 @@ async function initializeSession({ bearerToken }) {
     },
   });
 
+  // Una sesion MCP por wallet: si ya hay una viva (otra ejecucion, un
+  // proceso anterior), el servidor devuelve 409 con su id. Adoptarla es lo
+  // correcto; morir aqui dejaria al agente esperando 45 minutos.
+  if (initialize.status === 409 && initialize.raw?.error === 'session_conflict') {
+    const active = initialize.raw.active_session_id;
+    assert(active, 'session_conflict_without_active_id', initialize.raw);
+    console.log(`[mini-agent] sesion activa reutilizada: ${active}`);
+    return active;
+  }
+
   const sessionId = initialize.sessionId;
   assert(sessionId, 'initialize_failed_missing_mcp_session_id', initialize.raw);
   await mcpRpc({ sessionId, bearerToken, method: 'notifications/initialized' });

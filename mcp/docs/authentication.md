@@ -116,6 +116,9 @@ Current OAuth validation behavior includes:
 - only supported scopes are accepted
 - in production, redirect URIs must use `https://`
 - in production, `localhost` redirect URIs are rejected
+- repeated sign-ins are rate limited: 5 per 5 minutes per IP (and 30
+  challenge requests per minute). Over the limit, the wallet-challenge
+  redirect returns `temporarily_unavailable`, not `access_denied`
 - if `state` is omitted on `/oauth/authorize`, the server generates one
 - if `scope` is omitted on `/oauth/authorize`, the server uses the default configured scope
 - `llm:invoke` must be requested explicitly by a registered client; it is not granted by the default scope
@@ -270,6 +273,7 @@ Directory lookup tools such as `search_agents` are authenticated at the MCP laye
 
 | Problem | What it means |
 |---|---|
+| Too many OAuth sign-ins in a row | The wallet-challenge redirect carries `error=temporarily_unavailable` with "Too many authentication attempts" — the backend auth limiter allows 5 sign-ins per 5 minutes per IP. It is NOT a signature problem: wait and retry |
 | Missing or expired bearer token | MCP tools fail authentication; `initialize` itself returns `401 AUTH_REQUIRED` |
 | Missing `mcp-session-id` after `initialize` | MCP returns `session_required` or `session_not_found` |
 | Sending `mcp-session-id` on `initialize` | MCP returns `invalid_request` |
