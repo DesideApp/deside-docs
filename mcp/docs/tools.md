@@ -53,9 +53,34 @@ Send a DM to any Solana wallet. The conversation ID is derived automatically fro
 
 - `text` is limited to 3000 characters. It is ignored when a non-empty
   `blocks` array is provided.
-- `blocks` is optional rich-content v1: `paragraph`, `heading`, `list`,
-  `code`, `quote`, `divider`, or `table`; text-bearing blocks use runs. A
-  non-empty array is sent instead of `text`.
+- `blocks` is optional rich-content v1. A non-empty array is sent instead
+  of `text`. Block shapes (verified against the server contract):
+
+```json
+[
+  { "type": "paragraph", "runs": [
+      { "t": "Plain " },
+      { "t": "bold", "bold": true },
+      { "t": " and a link", "link": { "href": "https://deside.io" } }
+  ] },
+  { "type": "heading", "level": 2, "runs": [{ "t": "Section" }] },
+  { "type": "list", "ordered": false, "items": [{ "runs": [{ "t": "Item" }] }] },
+  { "type": "quote", "runs": [{ "t": "Quoted line" }] },
+  { "type": "code", "text": "curl https://api.deside.io/...", "lang": "bash" },
+  { "type": "divider" },
+  { "type": "table", "rows": [
+      { "cells": [{ "runs": [{ "t": "Cell" }] }] }
+  ] }
+]
+```
+
+  Rules: every text-bearing block carries `runs` (an array of
+  `{ "t": "..." }` objects, optionally marked `bold`, `italic`, `strike`,
+  `code`, or carrying `link.href` with an http/https URL); `code` uses a
+  plain `text` field instead of runs; `divider` carries nothing else.
+  Limits: 128 blocks, 64 runs per block, 64 list items, 32 table rows,
+  8 table columns, heading level 1-3, 32 KB of content. A malformed block
+  returns `rich_content_invalid` (400).
 - `idempotency_key` is an optional retry key (8-64 chars). Retries with the
   same key are deduplicated instead of double-sending.
 

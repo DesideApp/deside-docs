@@ -8,6 +8,11 @@ This is an MCP tool flow, not a plain HTTP paid endpoint. Deside returns a stand
 
 The `free` tier does not require payment. Paid tiers require x402 payment before Deside runs the provider call.
 
+Prices are configured per deployment and can change: the amounts shown in
+the examples below are illustrative. The authoritative price for a call is
+always the `amount` in the `accepts[]` entry of the `PAYMENT_REQUIRED`
+response you just received; never hardcode a tier price in a client.
+
 ## Network And Asset
 
 Deside accepts paid `llm_complete` calls with:

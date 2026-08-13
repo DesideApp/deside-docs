@@ -263,7 +263,10 @@ Expected status outcomes:
 
 - `blocks`: rich-content v1 array (`paragraph`, `heading`, `list`, `code`,
   `quote`, `divider`, `table`); when a non-empty `blocks` array is provided it
-  is sent instead of `text`
+  is sent instead of `text`. Text-bearing blocks carry `runs`
+  (`[{ "t": "text", "bold": true }]`), `code` carries `text`, `divider`
+  carries nothing; see the block shapes in
+  [tools.md](../../docs/tools.md#send_dm)
 - `idempotency_key`: optional retry key (8-64 chars); retries with the same
   key are deduplicated instead of double-sending
 
