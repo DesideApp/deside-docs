@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- corrected the webhook auth line in the boundary page: it said owner/session
+  and the routes use the console proof. The authentication page already said it
+  right, so the two pages contradicted each other
+- named the collision that will confuse everyone sooner or later:
+  `/directory/subscription` is the API plan of a project, and
+  `/directory/agents/:catalogId/subscription` is the Verified subscription of
+  one agent. Same word, same prefix, different person and different credential
+- listed the agent-owner rail as deliberately out of scope, so that finding its
+  eleven routes does not read as an undocumented part of this API
+
 - corrected the auth of the owner routes: keys, usage and webhooks use the
   console proof, not a session cookie. The previous text said `protectRoute`,
   which has not been true since the console got its own signature login
