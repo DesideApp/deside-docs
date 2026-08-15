@@ -136,7 +136,8 @@ curl -sS "$DESIDE_API_BASE_URL/api/v1/directory/keys" \
 ### `GET /api/v1/directory/usage`
 
 - auth: console proof
-- response envelope: usage and quota summary
+- response envelope: usage and quota summary, plus a `tiers` object with the
+  live `monthlyRequests` and `requestsPerMinute` of every tier
 - main errors: unauthorized, forbidden, internal_error
 
 These routes belong to the owner console boundary. They do not appear in the
@@ -157,6 +158,10 @@ wallet inside the proof, never from an id in the body.
 - returns `enabled`, `tier`, `billingStatus`, `subscription` and `plan`
 - `plan` describes the on-chain plan (`planAddress`, `amount` in base units,
   `mint`, `periodDays`) and is `null` when those terms cannot be read
+- when the mint is one this rail knows, the plan also carries `mintSymbol` and
+  `mintDecimals`, so a client can render "20 USDC" without deciding on its own
+  what the token is. The signed figure is always `amount`, in base units;
+  scaling it is presentation, never the contract
 - `subscription.status` is one of `none`, `active`, `past_due`, `canceled`
 
 ### `POST /api/v1/directory/subscription/intent`

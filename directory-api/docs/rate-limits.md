@@ -4,20 +4,29 @@ These are the public preview limits for Directory API keys.
 
 ## Tiers
 
+The useful unit here is not the single request. A full sweep of the directory
+costs about 104 requests today (one page of 100 agents per request), so it is
+worth reading these numbers as how much of the directory each tier lets you
+take, and how often.
+
 Free:
 
-- `15,000` requests/month
+- `2,500` requests/month
 - 30 requests/min
+- roughly 24 full sweeps a month: enough to explore, to run a small panel, and
+  to keep a weekly sync. Not enough to mirror the directory daily.
 
 Developer:
 
-- `250,000` requests/month
+- `50,000` requests/month
 - 90 requests/min
+- a full daily sync costs about 3,120 requests a month, so this leaves room to
+  spare for lookups on top of it.
 
 Pro (webhooks and bulk export are pre-rollout: documented, not yet enabled in
 production):
 
-- `1,000,000` requests/month
+- `500,000` requests/month
 - 180 requests/min
 - Webhook subscriptions: 3 active subscriptions per project.
 - Webhook delivery attempts: 5 attempts with exponential backoff.
@@ -59,6 +68,14 @@ Successful and error responses can include:
   count
 - rate-limited requests fail before the request handler runs
 - webhook management and bulk export have separate Pro limits from read quota
+
+## Where these numbers come from
+
+The limits are operator configuration, not constants baked into a client. The
+owner console reads them from `GET /api/v1/directory/usage`, which returns a
+`tiers` object with `monthlyRequests` and `requestsPerMinute` for every tier.
+If you are building something that shows quotas, read them from there too:
+values copied into a client go stale silently the day an operator changes them.
 
 ## Operational note
 
