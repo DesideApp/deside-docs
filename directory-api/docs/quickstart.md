@@ -66,12 +66,45 @@ The detail routes can return:
 - `agent`
 - `disambiguation: true` with a short list of visible matches
 
-## 7. Handle errors
+## 7. Keep a copy in sync without re-reading everything
+
+Most integrations start by walking the whole directory once and then asking, on
+every run, only for what changed. Do that and your daily cost drops from about
+104 requests to a handful.
+
+First, the one-time backfill. Page through with the cursor and record the
+newest `updatedAt` you saw:
+
+```bash
+curl -sS -H "x-api-key: $DESIDE_DIRECTORY_API_KEY" \
+  "$DESIDE_API_BASE_URL/api/v1/directory/agents?limit=100"
+# follow pagination.nextCursor until hasMore is false,
+# and keep the highest agents[].updatedAt of the whole walk
+```
+
+Then, on every later run, ask only for what moved since that timestamp:
+
+```bash
+curl -sS -H "x-api-key: $DESIDE_DIRECTORY_API_KEY" \
+  "$DESIDE_API_BASE_URL/api/v1/directory/agents?limit=100&updatedSince=2026-08-15T18:00:00.000Z"
+```
+
+`updatedSince` takes an ISO date string and filters on the same `updatedAt`
+that the list is ordered by, so a run that finds nothing new costs one request.
+Store the new high-water mark only after you have consumed every page of the
+response, and subtract a small overlap (a minute is plenty) from the timestamp
+you send: repeating an agent you already have is free, missing one is not.
+
+An agent that stops being listed simply stops appearing. If you need to detect
+removals, compare your local set against a full sweep from time to time; a
+weekly one is enough for most uses and costs about 104 requests.
+
+## 8. Handle errors
 
 Use the documented error `code` and `docsUrl` fields rather than parsing
 messages.
 
-## 8. Move to a paid tier when you outgrow Free
+## 9. Move to a paid tier when you outgrow Free
 
 Paid tiers are bought with your owner wallet, not with an invoice. From the
 console you authorize a recurring USDC payment on Solana, and the tier changes

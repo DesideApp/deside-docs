@@ -9,19 +9,24 @@ costs about 104 requests today (one page of 100 agents per request), so it is
 worth reading these numbers as how much of the directory each tier lets you
 take, and how often.
 
+Before sizing yourself by these numbers, read the incremental sync recipe in the
+[Quickstart](quickstart.md). Re-downloading the whole directory every day costs
+about 3,120 requests a month; asking only for what changed since your last run
+costs a handful. Almost nobody needs a paid tier for volume alone.
+
 Free:
 
-- `2,500` requests/month
+- `5,000` requests/month
 - 30 requests/min
-- roughly 24 full sweeps a month: enough to explore, to run a small panel, and
-  to keep a weekly sync. Not enough to mirror the directory daily.
+- enough to explore and to keep a daily sync running, with margin for retries
+  and one-off lookups on top of it
 
 Developer:
 
 - `50,000` requests/month
 - 90 requests/min
-- a full daily sync costs about 3,120 requests a month, so this leaves room to
-  spare for lookups on top of it.
+- about 16 full sweeps a day. This is the tier for a product that runs on the
+  directory rather than one that reads it now and then.
 
 Pro (webhooks and bulk export are pre-rollout: documented, not yet enabled in
 production):
