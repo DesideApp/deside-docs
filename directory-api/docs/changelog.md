@@ -2,6 +2,29 @@
 
 ## Unreleased
 
+- corrected the auth of the owner routes: keys, usage and webhooks use the
+  console proof, not a session cookie. The previous text said `protectRoute`,
+  which has not been true since the console got its own signature login
+- documented the console proof itself: nonce, signature, short-lived bearer,
+  its own audience, and why it is a separate credential family
+- documented the subscription and billing routes: the five endpoints, the
+  unsigned-transaction flow, the 30-day cycle, why the tier only changes once
+  the first charge settles, why cancelling stays open when selling is closed,
+  that changing tier means cancel and subscribe again, and the actionable
+  error codes
+- documented `POST /directory/agents/ask`: no API key, no quota, human and
+  headless lanes with their own rate limits, never a `500`, and the announced
+  `402` for the paid machine lane
+- added the two filters that the list route really accepts, `collection` and
+  `collectionCase`, and stated that there is no free-text search on it
+- documented the list ordering and what invalidates a cursor
+- added the five item fields that were exposed but undocumented: `connected`,
+  `primaryWalletSource`, `collectionBadges`, `channels` and `curationPublic`,
+  the last one being where the measured facts live
+- documented the verified fields in the trust response (`verified`,
+  `verifiedCheck`, `verifiedCheckedAt`, `verifiedFailed`) and how to read
+  them: a positive fact when present, no information when absent
+
 - added `socialLinks` to `DirectoryAgentListItemV1` and the profile contract:
   the agent's own declared website, X, and GitHub links, resolved and
   sanitized by the backend

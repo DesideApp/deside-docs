@@ -13,6 +13,8 @@ Query parameters:
 - `registry`
 - `service`
 - `capability`
+- `collection`
+- `collectionCase`
 - `updatedSince`
 
 Notes:
@@ -21,6 +23,11 @@ Notes:
 - `limit` is constrained to `1..100`
 - the response returns `agents` plus `pagination`
 - `cursor` is opaque
+- there is no free-text search parameter on this route: filters are exact
+  values, and a `q` sent here is ignored
+- results are ordered by `updatedAt` descending, then by internal id; the
+  cursor encodes that position together with a hash of the active filters, so
+  changing a filter invalidates the cursor
 - the envelope is the Directory API contract, not the legacy
   `/api/v1/public/agents` shape
 
@@ -50,82 +57,189 @@ Notes:
 - may redirect to the canonical slug with `301`
 - returns `agent_not_found` when no single visible match resolves
 
-## Owner and dashboard boundary
+## Ask
 
-The following routes are part of the owner/session boundary and are not part of
-the API-key public read scope.
+### `POST /api/v1/directory/agents/ask`
+
+One natural-language question about the directory, answered from measured
+directory facts. This route is deliberately outside the API-key surface: it
+does not read `x-api-key`, and it does not consume Directory API quota.
+
+- auth: none required. A logged-in browser session upgrades the request to the
+  human lane; everything else is the headless lane
+- body: `{ "question": "..." }`, 3 to 500 characters
+- rate limit: 10 requests/min per IP on the human lane, 3 requests/min per IP
+  on the headless lane
+- response: `answer`, `agents`, `claimed`, `claimedTotal`, `unmet`, `intent`,
+  `measuredAt`, `degraded`
+- this route never returns `500`. When the engine cannot answer it returns
+  `200` with `degraded: true` and empty facts
+- `400 INVALID_QUESTION` when the question is outside the length bounds
+- when the whole feature is disabled the route answers `404`, indistinguishable
+  from not existing
+
+The headless lane is the one that will eventually be paid. When paid access is
+switched on, that lane answers `402` with an x402 `accepts` block instead of an
+answer. The price is not set yet, so this is announced, not live.
+
+## Owner console boundary
+
+The following routes belong to the project owner, not to a Directory API key.
+They authenticate with a console proof, which is a short-lived bearer token
+obtained by signing a nonce with the owner wallet. The chat session cookie does
+not open these routes: the proof carries its own audience
+(`aud=directory-console`) and nothing else is accepted.
+
+### `GET /api/v1/directory/console/nonce`
+
+- auth: none. This is the entry point
+- returns the nonce to sign with the owner wallet
+- rate-limited with the same limiter as the chat login nonce
+
+### `POST /api/v1/directory/console/auth`
+
+- auth: none. The signature is the credential
+- body: the signed nonce plus the owner wallet public key
+- returns the console proof to send as `Authorization: Bearer <proof>`
+- rate-limited with the same limiter as the chat login
 
 ### `GET /api/v1/directory/keys`
 
-- auth: owner/session via `protectRoute`
+- auth: console proof
 - response envelope: owner-managed key list
 - main errors: unauthorized, forbidden, internal_error
 - example:
 
 ```bash
-curl -sS "$DESIDE_API_BASE_URL/api/v1/directory/keys"
+curl -sS "$DESIDE_API_BASE_URL/api/v1/directory/keys" \
+  -H "Authorization: Bearer $DESIDE_CONSOLE_PROOF"
 ```
 
 ### `POST /api/v1/directory/keys`
 
-- auth: owner/session via `protectRoute`
-- response envelope: created key metadata
+- auth: console proof
+- response envelope: created key metadata, including the raw key once
 - main errors: unauthorized, forbidden, invalid_request, internal_error
 
 ### `PATCH /api/v1/directory/keys/:keyId`
 
-- auth: owner/session via `protectRoute`
+- auth: console proof
 - response envelope: updated key metadata
 - main errors: unauthorized, forbidden, invalid_request, internal_error
 
 ### `DELETE /api/v1/directory/keys/:keyId`
 
-- auth: owner/session via `protectRoute`
+- auth: console proof
 - response envelope: deleted key acknowledgement
 - main errors: unauthorized, forbidden, key_not_found, internal_error
 
 ### `GET /api/v1/directory/usage`
 
-- auth: owner/session via `protectRoute`
+- auth: console proof
 - response envelope: usage and quota summary
 - main errors: unauthorized, forbidden, internal_error
 
-These routes belong to the owner dashboard boundary. They do not appear in the API-key public OpenAPI scope.
+These routes belong to the owner console boundary. They do not appear in the
+API-key public OpenAPI scope.
+
+## Subscription and billing
+
+The paid tier of a project is bought with a recurring on-chain authorization in
+USDC, signed by the owner wallet. Deside never signs and never holds the key:
+the backend returns an unsigned transaction, the wallet signs it, and the
+backend then reads the chain before persisting anything.
+
+All five routes use the console proof. The project is always resolved from the
+wallet inside the proof, never from an id in the body.
+
+### `GET /api/v1/directory/subscription`
+
+- returns `enabled`, `tier`, `billingStatus`, `subscription` and `plan`
+- `plan` describes the on-chain plan (`planAddress`, `amount` in base units,
+  `mint`, `periodDays`) and is `null` when those terms cannot be read
+- `subscription.status` is one of `none`, `active`, `past_due`, `canceled`
+
+### `POST /api/v1/directory/subscription/intent`
+
+- body: `{ "tier": "developer" }`
+- returns an unsigned `transaction`, a `step`, the `delegation` it will create
+  and the `plan` terms (`amount`, `mint`, `periodSeconds`)
+- `step` is `init_authority` when a setup transaction is still missing, and
+  `create_delegation` when this transaction is the one that grants the
+  recurring charge
+- calling it has no effect and can be repeated
+
+### `POST /api/v1/directory/subscription/accept`
+
+- body: `{ "tier": "developer" }`
+- confirms against the chain what the owner signed, and persists it
+- it does NOT grant the tier: the tier changes when the first charge settles
+
+### `POST /api/v1/directory/subscription/cancel-intent`
+
+- returns the unsigned transaction that revokes the recurring authorization
+- available even when new subscriptions are closed: a flag stops the sale, not
+  the exit
+
+### `POST /api/v1/directory/subscription/cancel-confirm`
+
+- confirms the revocation against the chain
+- the paid tier stays available until the paid period ends
+
+Billing rules that the API enforces:
+
+- one cycle is 30 days
+- changing tier is not an in-place operation: cancel the current subscription
+  and subscribe again. A new subscription charges on the day it settles and
+  starts a fresh 30-day cycle. Asking for a different tier while one is live
+  answers `dapi_subs_tier_change_not_supported`
+- a project on a manual billing agreement cannot use this rail and answers
+  `dapi_subs_billing_manual`
+
+Actionable error codes: `dapi_subs_disabled`, `dapi_subs_tier_invalid`,
+`dapi_subs_billing_manual`, `dapi_subs_payer_not_owner`,
+`dapi_subs_project_blocked`, `dapi_subs_project_not_found`,
+`dapi_subs_already_active`, `dapi_subs_tier_change_not_supported`,
+`dapi_subs_delegation_not_found`, `dapi_subs_delegation_terms_mismatch`,
+`dapi_subs_delegation_already_used`, `dapi_subs_state_changed`,
+`dapi_subs_not_cancelable`, `dapi_subs_delegation_still_active`,
+`dapi_subs_delegation_already_revoked`. Anything else is operator
+configuration and is reported as `dapi_subs_unavailable`.
 
 ## Pro webhooks
 
-These routes are Pro owner/session configuration routes. They are not API-key
-read routes.
+These routes are Pro owner console routes, authenticated with the console
+proof. They are not API-key read routes.
 
 Pro webhooks are documented ahead of rollout and are not yet enabled in
 production; until the Pro rollout enables them, these routes are not mounted.
 
 ### `GET /api/v1/directory/webhooks`
 
-- auth: owner/session via `protectRoute`
+- auth: console proof
 - returns `{ "webhooks": [] }`
 - secret material is never returned
 
 ### `POST /api/v1/directory/webhooks`
 
-- auth: owner/session via `protectRoute`
+- auth: console proof
 - body: `{ "url": "https://example.com/webhook", "events": ["agent.indexed"] }`
 - returns `{ "webhook": {}, "secret": "whsec_..." }`
 - the secret is returned once on create
 
 ### `DELETE /api/v1/directory/webhooks/:id`
 
-- auth: owner/session via `protectRoute`
-- soft-deletes the subscription
+- auth: console proof
+- soft-deletes the webhook subscription
 
 ### `POST /api/v1/directory/webhooks/:id/rotate-secret`
 
-- auth: owner/session via `protectRoute`
+- auth: console proof
 - returns a new `whsec_...` secret once
 
 ### `POST /api/v1/directory/webhooks/:id/test`
 
-- auth: owner/session via `protectRoute`
+- auth: console proof
 - queues a `test.ping` webhook delivery
 
 Webhook deliveries include these signing headers:

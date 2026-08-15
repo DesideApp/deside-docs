@@ -17,9 +17,13 @@ This surface documents the Free and Developer read contract:
 - detail responses return `agent` or a disambiguation payload
 - responses expose public agent data, not internal storage models
 
+Managing the project behind those reads (keys, usage, subscription) is a
+separate boundary with its own credential, documented in
+[Endpoints](docs/endpoints.md) and [Authentication](docs/authentication.md).
+
 ## What this surface is not
 
-- It is not the owner/session API.
+- It is not the owner console API.
 - It is not the legacy `/api/v1/public/agents` catalog.
 - It is not an MCP runtime.
 - It is not a quota-free public endpoint.

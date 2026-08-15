@@ -2,9 +2,10 @@
 
 ## 1. Obtain a Free key
 
-Open the gated API Console at `https://deside.io/developer/api` or request
-preview access through `support@deside.io`. Directory API keys start with
-`dapi_...`.
+Open the API Console at `https://deside.io/developer/api` and sign in with your
+wallet. A Free key is self-serve: you create it yourself, no request and no
+waiting. Directory API keys start with `dapi_...`. The raw key is shown once,
+at creation.
 
 ## 2. Export the key locally
 
@@ -69,3 +70,18 @@ The detail routes can return:
 
 Use the documented error `code` and `docsUrl` fields rather than parsing
 messages.
+
+## 8. Move to a paid tier when you outgrow Free
+
+Paid tiers are bought with your owner wallet, not with an invoice. From the
+console you authorize a recurring USDC payment on Solana, and the tier changes
+once the first charge settles. Both `developer` and `pro` are bought the same
+way.
+
+Nothing is charged when you authorize: authorizing grants the charge, and the
+first charge is what grants the tier. You can revoke that authorization at any
+time from the same console, and the tier you already paid for stays available
+until the paid period ends.
+
+The endpoints behind that flow, the 30-day cycle, and what happens when you
+change tier are documented in [Endpoints](endpoints.md).

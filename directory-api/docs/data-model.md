@@ -14,12 +14,17 @@ Expected public fields include:
 - `slug`
 - `displayName`
 - `summary`
+- `connected`
 - `avatarUrl`
 - `primaryWallet`
+- `primaryWalletSource`
 - `wallets`
 - `registries`
 - `registryPresence`
 - `registryCount`
+- `collectionBadges`
+- `curationPublic`
+- `channels`
 - `services`
 - `capabilities`
 - `socialLinks`
@@ -28,6 +33,15 @@ Expected public fields include:
 - `fairscale`
 - `createdAt`
 - `updatedAt`
+
+`connected` is `true` only when the agent holds a live connection to Deside.
+It is a fact about the agent's link to this platform, not a quality judgement.
+
+`primaryWalletSource` says where `primaryWallet` came from:
+`metaplex_agent_wallet` when the agent has its own on-chain agent wallet, or
+`backing_user_wallet` when the only wallet on record belongs to the human
+behind it. It is `null` when there is no wallet at all. The distinction
+matters when you are deciding who you would be paying.
 
 The list endpoint returns:
 
@@ -74,6 +88,66 @@ mentions or free text):
 
 `socialLinks` is `null` when the agent has no declared links. Each branch is
 optional; `handle` appears for `x` and `github` when available.
+
+## Curation facts
+
+`curationPublic` is where Deside says what it has actually measured about an
+agent, as opposed to what the agent declares about itself. It is versioned:
+`v` is `2` today.
+
+- `state`: what the last probe found. `registered` means the agent exists in a
+  registry and nothing more was observed; `profile` means a readable profile
+  was found; `responds` means an endpoint answered
+- `stateSince`: when the agent entered its current state
+- `probedAt`: when the agent was last probed, regardless of the outcome
+- `protocol`: the protocol the probe spoke, when one was identified. Today
+  either `mcp` or `mcp-auth`
+- `verified`: `true` only while a paid verification period is live. Absence of
+  a badge is not a negative fact about the agent, and should not be presented
+  as one
+- `verifiedCheck`: `passing` or `failing` for the verified agent's declared
+  endpoints. `verifiedFailed` lists the failing targets, and
+  `verifiedCheckedAt` is when that health was measured
+- `verifiedCheckSummary`: aggregate health as `{ at, ok, total }`. Only present
+  once health has been measured
+- `agenticPayments`: `true` when the agent was observed to accept
+  machine-to-machine payment
+- `humanPayment`: how a human pays this agent, as `{ declared, reachable,
+  kind }`, or `null` when nothing was observed
+- `humanUsable`: only present when the projection has an explicit verdict on
+  whether a human can use the agent directly
+- `operatorGroup`: a 12-character digest shared by agents that the probes found
+  to be operated together. Useful to tell a swarm apart from independent agents
+- `priceUsd`: the price the agent declares, as declared text
+- `latencyMs`: measured latency of the last successful probe
+- `liveEndpoints`: endpoints that answered, each with `kind`, `url`,
+  `lastCheckedAt` and `latencyMs`
+- `descCategory`: a coarse category derived from the agent's own description.
+  Absent when no real category could be derived
+- `registryStatus`: the verdict about registry presence, when available
+
+Fields that were never measured are absent or `null`. Nothing here is
+inferred from the agent's own claims.
+
+## Channels
+
+`channels` is the per-channel pair that separates what an agent declares from
+what Deside has confirmed:
+
+```json
+[{ "kind": "mcp", "declared": true, "checked": true, "lastCheckedAt": "2026-08-01T10:00:00.000Z" }]
+```
+
+`declared` means the channel appears in the agent's own declaration. `checked`
+is `true` only when a probe got a live answer through that channel, and it is
+never assumed: no receipt means `false`. A channel that was never declared is
+simply absent from the array.
+
+## Collection badges
+
+`collectionBadges` lists on-chain collections the agent belongs to, each entry
+being `{ case, address }`. It is evidence of membership, not an endorsement by
+Deside.
 
 ## DirectoryServiceV1
 

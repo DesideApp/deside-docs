@@ -22,6 +22,11 @@ the standard Directory API error envelope.
   "id": "agent-catalog-1",
   "slug": "agent-slug",
   "connected": true,
+  "verified": true,
+  "verifiedCheck": "passing",
+  "verifiedCheckedAt": "2026-07-06T21:00:00.000Z",
+  "verifiedFailed": [],
+  "collectionBadges": [{ "case": "PASSPORT", "address": "Coll111..." }],
   "lastActiveAt": "2026-07-06T22:33:11.000Z",
   "receipts": {
     "payer": {
@@ -54,6 +59,11 @@ Fields:
 | `id` | Canonical Directory API agent id (`catalogId`). |
 | `slug` | Current public slug, or `null`. |
 | `connected` | `true` only when the directory projection marks the agent connected. |
+| `verified` | `true` only while a paid verification period is live. It is a live fact, not a stored label: it turns off by itself when the period ends. |
+| `verifiedCheck` | `passing` or `failing` for a verified agent's declared endpoints, or `null` when the agent is not verified or has not been checked. |
+| `verifiedCheckedAt` | When that health was last measured, or `null`. |
+| `verifiedFailed` | The failing targets, populated only when `verifiedCheck` is `failing`. Empty otherwise. |
+| `collectionBadges` | On-chain collection membership as `{ case, address }` entries. Evidence of membership, not an endorsement. |
 | `lastActiveAt` | Raw projected last activity timestamp, or `null`; no freshness bucket is derived by the API. |
 | `receipts.payer` | Verified aggregate spend by the agent as payer: `calls`, `totalUsdc`, and `lastAt`. |
 | `receipts.service` | Reserved for future service/gateway receipts; always `null` in V1. |
@@ -63,6 +73,17 @@ Fields:
 | `thirdPartyScores.fairscale` | Attributed FairScale owner score when the shared two-or-more-registry exposure rule allows it; otherwise `null`. Includes `score`, `tier`, `scoreKind` (for example `fairscore`), and `walletClassification`. |
 | `receiptsAuditUrl` | Relative URL for the public payer-receipt audit trail. |
 | `generatedAt` | Timestamp for this API response. |
+
+## Reading the verified fields
+
+`verified` answers one question: is someone paying to keep this agent's claims
+under active checking, right now. It says nothing bad about an agent that does
+not have it, and it is not a score. Treat it as a positive fact when present
+and as no information when absent.
+
+When an agent is verified, `verifiedCheck` tells you whether its declared
+endpoints are answering. A verified agent whose check is failing is still
+verified: the badge is about the commitment, and the check is about today.
 
 ## Freshness
 
