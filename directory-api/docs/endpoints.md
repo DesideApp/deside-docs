@@ -111,7 +111,7 @@ not open these routes: the proof carries its own audience
 - example:
 
 ```bash
-curl -sS "$DESIDE_API_BASE_URL/api/v1/directory/keys" \
+curl -sS "https://api.deside.io/api/v1/directory/keys" \
   -H "Authorization: Bearer $DESIDE_CONSOLE_PROOF"
 ```
 

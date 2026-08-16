@@ -7,11 +7,15 @@ wallet. A Free key is self-serve: you create it yourself, no request and no
 waiting. Directory API keys start with `dapi_...`. The raw key is shown once,
 at creation.
 
-## 2. Export the key locally
+## 2. Export the key and the base URL
 
 ```bash
 export DESIDE_DIRECTORY_API_KEY=dapi_<public_prefix>_<secret>
+export DESIDE_API_BASE_URL=https://api.deside.io
 ```
+
+Every command on this page uses these two variables, so the rest of the
+walkthrough is copy-paste.
 
 ## 3. Send the request
 

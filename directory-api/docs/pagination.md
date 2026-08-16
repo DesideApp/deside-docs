@@ -41,7 +41,7 @@ returns `invalid_cursor`.
 ```bash
 curl -sS \
   -H "x-api-key: $DESIDE_DIRECTORY_API_KEY" \
-  "$DESIDE_API_BASE_URL/api/v1/directory/agents?limit=25"
+  "https://api.deside.io/api/v1/directory/agents?limit=25"
 ```
 
 The developer contract does not use `skip` or `offset`.
