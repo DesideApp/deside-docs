@@ -5,7 +5,7 @@
 | Surface | Auth | Notes |
 |---|---|---|
 | `/api/v1/directory/agents` reads | `x-api-key: dapi_...` | Canonical Directory API read surface for Free and Developer. A key is required on every tier, including Free. |
-| `/api/v1/directory/agents/ask` | none, session upgrades the lane | Outside the key surface. Does not read `x-api-key` and does not consume quota. |
+| `/api/v1/ask` | none, session upgrades the lane | Outside the key surface. Does not read `x-api-key` and does not consume quota. |
 | `/api/v1/directory/keys`, `/usage`, `/subscription`, `/webhooks` | console proof | Owner console. Signature to short-lived bearer, see below. |
 | `/api/v1/directory/exports` | `x-api-key: dapi_...` | Pro bulk export uses the API key, not the console proof. |
 | `/api/v1/public/agents` | public product surface | Open product reads (minimal list card plus per-agent detail); not the vendible developer contract and not deprecated. |

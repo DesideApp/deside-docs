@@ -59,11 +59,14 @@ Notes:
 
 ## Ask
 
-### `POST /api/v1/directory/agents/ask`
+### `POST /api/v1/ask`
 
 One natural-language question about the directory, answered from measured
 directory facts. This route is deliberately outside the API-key surface: it
 does not read `x-api-key`, and it does not consume Directory API quota.
+
+The historical address `POST /api/v1/directory/agents/ask` still answers as an
+alias and will be retired; integrate against `/api/v1/ask`.
 
 - auth: none required. A logged-in browser session upgrades the request to the
   human lane; everything else is the headless lane

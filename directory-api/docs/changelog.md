@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Ask moved to its own address: `POST /api/v1/ask` is now canonical. The old
+  `POST /api/v1/directory/agents/ask` keeps answering as an alias and will be
+  retired. Rationale: Ask has its own regime (no key, no quota, its own rate
+  limits, and an announced pay-per-question machine lane), so it gets its own
+  street instead of living inside the key-protected read surface's path
+
 - corrected the webhook auth line in the boundary page: it said owner/session
   and the routes use the console proof. The authentication page already said it
   right, so the two pages contradicted each other
