@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- documented how liveness and verification are actually measured (Trust): the
+  census handshake with its two-strike anti-flapping versus the paid daily
+  check that invokes safe tools with rotation; the five failure-semantics
+  rules (a failing tool never touches liveness, never removes the badge, a
+  single failure is not a verdict, passes are sealed to the URL they probed,
+  and the owner is notified on change)
+
 - Ask moved to its own address: `POST /api/v1/ask` is now canonical. The old
   `POST /api/v1/directory/agents/ask` keeps answering as an alias and will be
   retired. Rationale: Ask has its own regime (no key, no quota, its own rate

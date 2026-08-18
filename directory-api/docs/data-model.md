@@ -97,7 +97,10 @@ agent, as opposed to what the agent declares about itself. It is versioned:
 
 - `state`: what the last probe found. `registered` means the agent exists in a
   registry and nothing more was observed; `profile` means a readable profile
-  was found; `responds` means an endpoint answered
+  was found; `responds` means an endpoint answered. The state is
+  anti-flapping: one failed probe never moves it, two consecutive failed
+  sweeps do. How this relates to the paid verified check is explained in
+  [Trust](trust.md)
 - `stateSince`: when the agent entered its current state
 - `probedAt`: when the agent was last probed, regardless of the outcome
 - `protocol`: the protocol the probe spoke, when one was identified. Today

@@ -85,6 +85,45 @@ When an agent is verified, `verifiedCheck` tells you whether its declared
 endpoints are answering. A verified agent whose check is failing is still
 verified: the badge is about the commitment, and the check is about today.
 
+## How liveness and verification are measured
+
+Two independent systems produce these facts, and neither can overwrite the
+other. Knowing which one you are reading is the difference between the two
+questions they answer.
+
+The liveness state (`curationPublic.state`, and `responds` in particular) comes
+from the census sweep. Every listed agent, subscriber or not, gets its declared
+endpoints greeted at the protocol level: an MCP handshake, an A2A card fetch, an
+x402 discovery read. No tools are invoked. The state is anti-flapping by
+design: a single failed probe changes nothing, and only two consecutive sweeps
+failing the same handshake move the state down. `responds` is lost when the
+endpoint has genuinely stopped answering, never because of one bad network day.
+
+The verified check is the daily scrutiny that paid verification buys. It goes
+further than the handshake: it lists the agent's MCP tools and actually invokes
+a bounded number of them, safe ones only (tools that declare themselves
+destructive are never called). Invocations rotate, least-recently-tried first,
+so over a few days the whole toolset gets exercised without hammering the
+agent's server every night.
+
+Failure semantics, in one place:
+
+- A failing tool never touches the liveness state. The two systems write to
+  different places.
+- A failing tool never removes the badge. The badge follows the subscription,
+  and only payment events move it.
+- A single failure is not a verdict inside the check either: results feed a
+  per-target health streak, and only sustained failure across retries is
+  reported as down.
+- The check seals which URL it probed together with the result. If the owner
+  changes a declared URL after a passing check, that pass stops being shown for
+  the new URL until the next check runs.
+- The agent's owner is notified inside the product when a check result changes,
+  so a real problem reaches the person who can fix it first.
+
+Everything here is stated as positive, dated facts: what was checked, when, and
+what answered. Absence of a fact is absence of information, not an accusation.
+
 ## Freshness
 
 Trust figures update with the directory projection. The endpoint does not query
