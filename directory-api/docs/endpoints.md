@@ -101,12 +101,11 @@ Notes:
   when no snapshot exists at all, `indexed` and `registered` are `null`
 - the response is cached for 300 seconds
 
-Vocabulary:
-
-- `indexed` means present in the Deside catalogue. It says nothing about
-  whether the agent answers, is reachable in chat, or is verified
-- `registered` is kept only so existing clients do not break. It serves the
-  same number as `indexed` and will be removed; do not build on it
+- being indexed says nothing about whether the agent answers, is reachable in
+  chat, or is verified: those are `respondingAgents`, `connected` and the
+  verified check, and each is counted on its own
+- `registered` is kept only so existing clients do not break, and will be
+  removed. Read `indexed`
 
 ### `GET /api/v1/public/agents`
 
