@@ -57,6 +57,66 @@ Notes:
 - may redirect to the canonical slug with `301`
 - returns `agent_not_found` when no single visible match resolves
 
+## Public product surface
+
+These routes need no key and consume no quota. They serve the open product
+(the public catalogue and its counters), not the developer contract above.
+
+### `GET /api/v1/public/agents/stats-summary`
+
+One measured snapshot of the Deside catalogue. No parameters.
+
+What the numbers count:
+
+| Key | Counts | Unit |
+|---|---|---|
+| `indexed` | agents listed in the Deside catalogue | agents |
+| `registered` | deprecated alias of `indexed`, same number | agents |
+| `connected` | listed agents reachable in Deside chat | agents |
+| `respondingAgents` | listed agents with at least one live endpoint | agents |
+| `respondingByKind` | the same, split by `mcp`, `a2a`, `x402` | agents |
+| `byCategory` | listed agents per category | agents |
+| `endpoints` | per protocol, `declared` / `checked` / `alive` | URLs |
+| `topSkills` | `{ label, n }` per skill | agents |
+| `signalCounts` | agents declaring `mcp`, `a2a`, `x402`, `web`, `x` | agents |
+| `measuredAt` | when the snapshot was taken | timestamp |
+
+Notes:
+
+- `indexed` counts AGENTS, not registry entries. One agent present in three
+  registries is one agent here. The number matches the `total` of
+  `GET /api/v1/public/agents`, because both count the same catalogue
+- `endpoints` is the only block counted in URLs, and the two units do not
+  convert into each other. One URL can be declared by many agents, so `alive`
+  is routinely far smaller than `respondingAgents`, and both are right. Read
+  `alive` as "how many endpoints answer" and `respondingAgents` as "how many
+  agents have one"
+- `byCategory` always carries the same eleven category keys, and a category
+  with no agents is a measured `0`. Its sum is lower than `indexed` because
+  unclassified agents are not spread across categories
+- the snapshot is written once a day. Between writes the response repeats the
+  last one, with its own `measuredAt`: the date is never hidden or moved
+  forward
+- a key that is absent was not measured. Absence is never served as `0`, and
+  when no snapshot exists at all, `indexed` and `registered` are `null`
+- the response is cached for 300 seconds
+
+Vocabulary:
+
+- `indexed` means present in the Deside catalogue. It says nothing about
+  whether the agent answers, is reachable in chat, or is verified
+- `registered` is kept only so existing clients do not break. It serves the
+  same number as `indexed` and will be removed; do not build on it
+
+### `GET /api/v1/public/agents`
+
+Notes:
+
+- the open catalogue list: minimal card per agent plus `total`
+- `total` counts the same agents as `indexed` above
+- this is the product shape, not the Directory API contract; the vendible
+  contract is `GET /api/v1/directory/agents`
+
 ## Ask
 
 ### `POST /api/v1/ask`

@@ -8,7 +8,7 @@
 | `/api/v1/ask` | none, session upgrades the lane | Outside the key surface. Does not read `x-api-key` and does not consume quota. |
 | `/api/v1/directory/keys`, `/usage`, `/subscription`, `/webhooks` | console proof | Owner console. Signature to short-lived bearer, see below. |
 | `/api/v1/directory/exports` | `x-api-key: dapi_...` | Pro bulk export uses the API key, not the console proof. |
-| `/api/v1/public/agents` | public product surface | Open product reads (minimal list card plus per-agent detail); not the vendible developer contract and not deprecated. |
+| `/api/v1/public/agents` | public product surface | Open product reads (minimal list card, per-agent detail, and `stats-summary` counters); not the vendible developer contract and not deprecated. No key, no quota. |
 | `/api/v1/mcp` | session auth | MCP uses session-based auth and does not consume Directory API quota. |
 | SDK/widget legacy | out of scope | Not part of the Directory API auth model. |
 

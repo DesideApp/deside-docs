@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- documented the public product surface: `GET /api/v1/public/agents/stats-summary`
+  now has a page, with what each counter counts and in which unit. The headline
+  number changed meaning on 2026-08-21: `indexed` counts AGENTS in the Deside
+  catalogue, not entries across registries, so it dropped from 10,825 to 10,690
+  and now matches the `total` of the public list. `registered` is kept as a
+  deprecated alias of the same number and will be removed
+- stated the two rules that make the counters readable: `endpoints` is counted
+  in URLs and never converts to agents (one URL can be declared by many
+  agents), and an absent key means not measured, never `0`
+
 - documented how liveness and verification are actually measured (Trust): the
   census handshake with its two-strike anti-flapping versus the paid daily
   check that invokes safe tools with rotation; the five failure-semantics
