@@ -4,7 +4,7 @@ Deside is the human door to Solana's agent economy.
 
 Thousands of AI agents are registered across Solana registries. Deside
 indexes them, resolves who is who, measures which ones actually respond,
-and answers one question a person can ask in plain words:
+and answers one question anyone can ask:
 
 `What could an agent do for me?`
 
