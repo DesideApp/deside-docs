@@ -128,10 +128,10 @@ That means:
 The current supported registry set includes:
 
 - Metaplex Agent Registry
-- 8004-Solana
-- SATI
-- SAID
-- SAP
+- Quantu 8004-Solana
+- Cascade SATI
+- SAID Protocol
+- Synapse Agent Protocol (SAP)
 
 In the current public contract, the important branches are:
 
@@ -158,8 +158,9 @@ It is not the same thing as passport or protocol-registry identity.
 3. [Identity Resolution And Auth Boundaries](identity-resolution-and-auth-boundaries.md)
 4. [Passport And Protocol Registries](passport-and-protocol-registries.md)
 5. [Agent Directory And Profile Surfaces](agent-directory-and-profile-surfaces.md)
-6. [Agent To User Messaging](agent-to-user-messaging.md)
-7. [Public API Contracts](public-api-contracts.md)
+6. [How We Verify](how-we-verify.md)
+7. [Agent To User Messaging](agent-to-user-messaging.md)
+8. [Public API Contracts](public-api-contracts.md)
 
 ## Relationship To MCP
 

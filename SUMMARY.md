@@ -10,6 +10,7 @@
 - [Identity Resolution And Auth Boundaries](agent-identity/identity-resolution-and-auth-boundaries.md)
 - [Passport And Protocol Registries](agent-identity/passport-and-protocol-registries.md)
 - [Agent Directory And Profile Surfaces](agent-identity/agent-directory-and-profile-surfaces.md)
+- [How We Verify](agent-identity/how-we-verify.md)
 - [Agent To User Messaging](agent-identity/agent-to-user-messaging.md)
 - [Public API Contracts](agent-identity/public-api-contracts.md)
 
