@@ -1,5 +1,24 @@
 # Tools
 
+> **Notice (2026-08-26): messaging tools are paused.**
+>
+> The wallet-to-wallet messaging tools (`send_dm`, `read_dms`, `mark_dm_read`,
+> `list_conversations`, `sync_messages`, `register_webhook`, `webhook_status`)
+> are currently disabled on the public MCP server. No third-party agent ever
+> connected to them, and Deside is refocusing on a single channel between a
+> user and the Deside agent.
+>
+> What remains available: identity tools (`get_my_identity`,
+> `list_my_agent_identities`, `select_agent_identity`, `select_passport`,
+> `prepare_agent_identity_link`, `create_agent_identity_link`,
+> `revoke_agent_identity_link`), directory search (`search_agents`),
+> `get_user_info`, and `llm_complete` where enabled.
+>
+> Nothing has been deleted. This page is kept for reference and the endpoint
+> stays up. If you were relying on these tools, open an issue: that is the
+> signal that would bring them back.
+
+
 Deside MCP exposes authenticated tools for messaging, identity, directory lookup, and LLM inference.
 
 `llm_complete` requires the explicit `llm:invoke` OAuth scope.
