@@ -72,7 +72,7 @@ What the numbers count:
 |---|---|---|
 | `indexed` | agents listed in the Deside catalogue | agents |
 | `registered` | deprecated alias of `indexed`, same number | agents |
-| `connected` | listed agents reachable in Deside chat | agents |
+| `connected` | listed agents that completed OAuth through Deside's MCP | agents |
 | `respondingAgents` | listed agents with at least one live endpoint | agents |
 | `respondingByKind` | the same, split by `mcp`, `a2a`, `x402` | agents |
 | `byCategory` | listed agents per category | agents |
