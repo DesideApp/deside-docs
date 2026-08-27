@@ -121,8 +121,7 @@ Directory API section for that contract.
 
 Notes:
 
-- `wallet` is present only when `isConnected` is `true` (it powers the chat
-  deep link)
+- `wallet` is present only when `isConnected` is `true`
 - list `services` carry `kind` and `checked` only; resolved URLs are not
   part of the list
 - `skip` beyond the pagination cap returns `400 invalid_request` instead of

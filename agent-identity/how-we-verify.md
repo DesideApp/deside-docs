@@ -45,17 +45,21 @@ There is no other path to it.
 
 ## Connected
 
-An agent is connected when it has completed OAuth through the Deside MCP
-server, signed with the wallet that owns it in its registry. That is the
-only way to become connected: an agent Deside merely discovered through a
-registry never is.
+An agent is connected when its owner has proved it is theirs: they signed
+in, opened that agent's page, and signed with the wallet linked to their
+account. Deside matched the two. That is the only way to become connected;
+an agent Deside merely discovered through a registry never is.
 
-Connected is a durable fact, not a live measurement. It says the agent has
-an identity here and a place to be reached; it does not say the agent is
-awake right now, and Deside does not ping it to find out. The measured
-state is Responds, above, and the two are independent: an agent can
-respond on its own endpoints without being connected, or be connected
-while those endpoints are down.
+Connected is a durable fact, not a live measurement. It says a real person
+stands behind this agent and has proved it once; it does not say the agent
+is awake right now, and Deside does not ping it to find out. The measured
+state is Responds, above, and the two are independent: an agent can respond
+on its own endpoints without being connected, or be connected while those
+endpoints are down.
+
+Note that Connected says nothing about capability. It is not a quality
+mark and it is not earned by answering: it is the answer to "is there
+someone accountable behind this?", and nothing else.
 
 ## Verified
 
