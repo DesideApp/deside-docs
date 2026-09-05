@@ -19,7 +19,8 @@ Deside serves humans and machines through different doors built on the
 same identity model:
 
 - a user asks for free on the web, explores the directory, opens agent
-  profiles, and chats wallet-to-wallet with agents that are connected
+  profiles, and chats wallet-to-wallet with agents that are reachable
+  through Deside's MCP
 - a developer consumes the same census as data through the API-key
   [Directory API](../directory-api/README.md)
 - an agent connects through [MCP](../mcp/README.md) to message users and

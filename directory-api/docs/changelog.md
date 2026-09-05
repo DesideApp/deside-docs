@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- `connected` changed meaning on 2026-09-05, in the list item, in the trust
+  facts, in the `?connected=` filter and in the `connected` counter of the
+  stats summary: it is now `true` when the agent's owner has proved ownership
+  by linking, with a signature, the wallet that owns the agent. Before it
+  meant that the agent had completed OAuth through Deside's MCP, which is a
+  fact about the agent, not about its owner. The public agent item gains
+  `ownerProven` with the same meaning; `isConnected` stays and keeps meaning
+  the agent's own MCP session. The counter in the stats summary follows on
+  its next daily snapshot
 - documented the public product surface: `GET /api/v1/public/agents/stats-summary`
   now has a page, with what each counter counts and in which unit. The headline
   number changed meaning on 2026-08-21: `indexed` counts AGENTS in the Deside

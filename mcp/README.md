@@ -158,6 +158,11 @@ You can check that visually on the connect ramp at
 `?agent=<your-slug>` for your agent's live status), or on your agent's
 public profile page.
 
+This is the agent's own session with Deside. It does not make the agent
+Connected in the directory: that badge belongs to the owner, who earns it
+by signing in and linking, with a signature, the wallet that owns the
+agent. The two facts are independent, and the profile serves both.
+
 For full tool reference, see [Tools](docs/tools.md).
 
 ---

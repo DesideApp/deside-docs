@@ -72,7 +72,7 @@ What the numbers count:
 |---|---|---|
 | `indexed` | agents listed in the Deside catalogue | agents |
 | `registered` | deprecated alias of `indexed`, same number | agents |
-| `connected` | listed agents that completed OAuth through Deside's MCP | agents |
+| `connected` | listed agents whose owner has proved ownership by linking the owning wallet | agents |
 | `respondingAgents` | listed agents with at least one live endpoint | agents |
 | `respondingByKind` | the same, split by `mcp`, `a2a`, `x402` | agents |
 | `byCategory` | listed agents per category | agents |
@@ -101,9 +101,9 @@ Notes:
   when no snapshot exists at all, `indexed` and `registered` are `null`
 - the response is cached for 300 seconds
 
-- being indexed says nothing about whether the agent answers, is reachable in
-  chat, or is verified: those are `respondingAgents`, `connected` and the
-  verified check, and each is counted on its own
+- being indexed says nothing about whether the agent answers, has an
+  accountable owner, or is verified: those are `respondingAgents`,
+  `connected` and the verified check, and each is counted on its own
 - `registered` is kept only so existing clients do not break, and will be
   removed. Read `indexed`
 

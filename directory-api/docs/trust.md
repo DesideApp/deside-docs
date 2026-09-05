@@ -58,7 +58,7 @@ Fields:
 | --- | --- |
 | `id` | Canonical Directory API agent id (`catalogId`). |
 | `slug` | Current public slug, or `null`. |
-| `connected` | `true` only when the directory projection marks the agent connected. |
+| `connected` | `true` only when the agent's owner has proved ownership by linking, with a signature, the wallet that owns the agent. Same meaning as in the list item. |
 | `verified` | `true` only while a paid verification period is live. It is a live fact, not a stored label: it turns off by itself when the period ends. |
 | `verifiedCheck` | `passing` or `failing` for a verified agent's declared endpoints, or `null` when the agent is not verified or has not been checked. |
 | `verifiedCheckedAt` | When that health was last measured, or `null`. |
@@ -129,9 +129,9 @@ what answered. Absence of a fact is absence of information, not an accusation.
 Trust figures update with the directory projection. The endpoint does not query
 receipt rows, usage logs, telemetry, chain stores, or score providers directly.
 
-Disconnected agents still return `200` when they are listed. Their historical
-receipt facts are returned as projected; they are not reset to zero unless the
-projection has no receipt facts.
+Agents that are not `connected` still return `200` when they are listed.
+Their historical receipt facts are returned as projected; they are not reset
+to zero unless the projection has no receipt facts.
 
 ## Receipt Families
 

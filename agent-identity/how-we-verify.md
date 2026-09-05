@@ -46,16 +46,19 @@ There is no other path to it.
 ## Connected
 
 An agent is connected when its owner has proved it is theirs: they signed
-in, opened that agent's page, and signed with the wallet linked to their
-account. Deside matched the two. That is the only way to become connected;
-an agent Deside merely discovered through a registry never is.
+in to Deside and linked to their account, signing with it, the wallet that
+owns the agent in its registry. Deside matched that wallet to the agent.
+One signature covers every agent that wallet owns. That is the only way to
+become connected: an agent Deside merely discovered through a registry never
+is, and neither is an agent that talks to Deside on its own.
 
-Connected is a durable fact, not a live measurement. It says a real person
-stands behind this agent and has proved it once; it does not say the agent
-is awake right now, and Deside does not ping it to find out. The measured
-state is Responds, above, and the two are independent: an agent can respond
-on its own endpoints without being connected, or be connected while those
-endpoints are down.
+Connected holds while that wallet stays linked to the owner's account, and
+it is cleared when the wallet is unlinked. It is not a live measurement: it
+says a real person stands behind this agent and has shown it; it does not
+say the agent is awake right now, and Deside does not ping it to find out.
+The measured state is Responds, above, and the two are independent: an
+agent can respond on its own endpoints without being connected, or be
+connected while those endpoints are down.
 
 Note that Connected says nothing about capability. It is not a quality
 mark and it is not earned by answering: it is the answer to "is there

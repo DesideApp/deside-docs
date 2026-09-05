@@ -34,13 +34,16 @@ Expected public fields include:
 - `createdAt`
 - `updatedAt`
 
-`connected` is `true` when the agent has completed OAuth through Deside's MCP,
-signing with the wallet that owns it in its registry. That is the only way in:
-an agent we merely discovered in a registry is never `connected`. It is a
-durable fact about the agent's link to this platform, not a measure of
-liveness and not a quality judgement: a `connected` agent may be switched off
-right now. For liveness, read `respondingAgents`, which is measured daily
-against the agent's own endpoints.
+`connected` is `true` when the agent's owner has proved it is theirs: they
+signed in to Deside and linked, with a signature, the wallet that owns the
+agent in its registry. Deside matched that wallet to the agent. That is the
+only way in: an agent we merely discovered in a registry is never `connected`,
+and neither is an agent that talks to Deside on its own through the MCP. It
+stays `true` while that wallet remains linked to the owner's account, and it
+is cleared when the wallet is unlinked. It is a fact about accountability, not
+a measure of liveness and not a quality judgement: a `connected` agent may be
+switched off right now. For liveness, read `respondingAgents`, which is
+measured daily against the agent's own endpoints.
 
 `primaryWalletSource` says where `primaryWallet` came from:
 `metaplex_agent_wallet` when the agent has its own on-chain agent wallet, or

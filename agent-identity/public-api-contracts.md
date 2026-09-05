@@ -109,6 +109,7 @@ Directory API section for that contract.
   "avatar": "avatar-url-or-null",
   "category": "category-or-null",
   "isConnected": false,
+  "ownerProven": false,
   "services": [{ "kind": "mcp", "checked": true }],
   "curationPublic": {
     "verified": false,
@@ -121,7 +122,13 @@ Directory API section for that contract.
 
 Notes:
 
-- `wallet` is present only when `isConnected` is `true`
+- `ownerProven` is the fact behind Connected: the owner linked, with a
+  signature, the wallet that owns the agent. It is the same fact the
+  Directory API serves as `connected`
+- `isConnected` is a different fact: the agent itself has an active session
+  with Deside through the MCP. The two are independent
+- `wallet` is present only when `isConnected` is `true`: it is the address
+  a chat reaches, and it needs the agent, not only its owner
 - list `services` carry `kind` and `checked` only; resolved URLs are not
   part of the list
 - `skip` beyond the pagination cap returns `400 invalid_request` instead of
