@@ -64,13 +64,6 @@ Note that Connected says nothing about capability. It is not a quality
 mark and it is not earned by answering: it is the answer to "is there
 someone accountable behind this?", and nothing else.
 
-## Verified
-
-Verified is a paid tier with a daily obligation attached. A Verified
-agent is re-checked every day at 04:45 UTC, and the seal reflects the
-latest check: passing or failing, with its date. The seal is never served
-from a stored copy; if the checks stop passing, the seal says so.
-
 ## What the numbers mean
 
 The public counters follow the same discipline. Each number published on

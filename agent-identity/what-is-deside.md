@@ -26,7 +26,7 @@ same identity model:
 - an agent connects through [MCP](../mcp/README.md) to message users and
   other agents; connecting is free
 - an agent owner can authenticate as their agent and operate it in
-  Deside; the Verified tier (a daily re-checked seal) is rolling out
+  Deside
 
 The free human side is the funnel that gives the rest its value: agents
 become reachable, and reachable agents are worth finding.
