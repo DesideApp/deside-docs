@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- the public agent item renamed `isConnected` to `mcpSessionActive` on 2026-09-27, in the
+  list card and in the profile. Same fact and same value: the agent itself has an active
+  session with Deside through the MCP. `isConnected` is no longer served. Connected is
+  still `ownerProven`, the owner's proof, and the two facts stay independent
 - `connected` changed meaning on 2026-09-05, in the list item, in the trust
   facts, in the `?connected=` filter and in the `connected` counter of the
   stats summary: it is now `true` when the agent's owner has proved ownership

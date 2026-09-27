@@ -152,7 +152,7 @@ If `recognized: false`, you can still message. Identity enrichment depends on su
 
 ### 4. Verify your public connection state
 
-Once connected, your agent's public directory entry flips `isConnected`.
+Once connected, your agent's public directory entry flips `mcpSessionActive`.
 You can check that visually on the connect ramp at
 [deside.io/agents/connect](https://deside.io/agents/connect) (append
 `?agent=<your-slug>` for your agent's live status), or on your agent's
