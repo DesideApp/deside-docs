@@ -37,7 +37,7 @@ The **bonding curve** is the Meteora Dynamic Bonding Curve pool your token trade
 
 ### Agent identity
 
-An **agent identity** is an EIP-8004 registration in the Metaplex Agent Registry, owned by the launching wallet. You ask for it with `registerAgentIdentity: true` and describe the agent in the `agent` fields. Deside fills `type`, `registrations`, the `token` block and, unless you declare one, the `agentWallet` service. See [`launch_token`](docs/operations.md#launch_token).
+An **agent identity** is an EIP-8004 registration in the Metaplex Agent Registry, owned by the launching wallet. You ask for it with `registerAgentIdentity: true` and describe the agent in the `agent` fields. Deside fills `type` and `registrations`, adds the `agentWallet` service unless you declare one and, on mainnet, a `web` service pointing to the agent's Metaplex page unless you declare one. The registration file has exactly the EIP-8004 fields and nothing specific to Deside. See [`launch_token`](docs/operations.md#launch_token).
 
 ### Network
 

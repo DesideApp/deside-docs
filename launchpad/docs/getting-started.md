@@ -93,7 +93,8 @@ Nothing is sent yet. The response holds the transaction, the addresses it will c
   "files": {
     "image": "https://devnet.irys.xyz/5eVNUjkYHiSuG4ukg9vyPmxxnxFvgBhrduBnK8VsCNY8",
     "tokenMetadata": "https://devnet.irys.xyz/DRQFJN6Gtv8ePzELwiTWHJdfPz8eCNVH6htCp2UgJWpE",
-    "agentRegistration": "https://devnet.irys.xyz/5cYUiKjcGWBxt3dv49yfFRxPtNzS3SSeBM4SBQ7a4gtL"
+    "agentRegistration": "https://devnet.irys.xyz/5cYUiKjcGWBxt3dv49yfFRxPtNzS3SSeBM4SBQ7a4gtL",
+    "agentMetadata": "https://devnet.irys.xyz/<agent-metadata-id>"
   },
   "cost": { "arweaveSol": 0.000047176, "estimatedTotalSol": 0.025547 },
   "transaction": "<base64>",
@@ -140,13 +141,14 @@ Deside sends the transaction, waits for confirmation and only then uploads the A
     "files": [
       { "id": "5eVNUjkYHiSuG4ukg9vyPmxxnxFvgBhrduBnK8VsCNY8", "url": "https://devnet.irys.xyz/5eVNUjkYHiSuG4ukg9vyPmxxnxFvgBhrduBnK8VsCNY8", "matchesPrepared": true, "role": "image" },
       { "id": "DRQFJN6Gtv8ePzELwiTWHJdfPz8eCNVH6htCp2UgJWpE", "url": "https://devnet.irys.xyz/DRQFJN6Gtv8ePzELwiTWHJdfPz8eCNVH6htCp2UgJWpE", "matchesPrepared": true, "role": "token-metadata" },
+      { "id": "<agent-metadata-id>", "url": "https://devnet.irys.xyz/<agent-metadata-id>", "matchesPrepared": true, "role": "agent-metadata" },
       { "id": "5cYUiKjcGWBxt3dv49yfFRxPtNzS3SSeBM4SBQ7a4gtL", "url": "https://devnet.irys.xyz/5cYUiKjcGWBxt3dv49yfFRxPtNzS3SSeBM4SBQ7a4gtL", "matchesPrepared": true, "role": "agent-registration" }
     ]
   }
 }
 ```
 
-The wallet in this run paid 0.025420416 SOL in total for the launch with identity.
+The wallet in this run paid 0.025420416 SOL in total for the launch with identity. That run predates the agent NFT metadata file, so `<agent-metadata-id>` stands for the fourth file a launch with identity now uploads, and its cost is slightly higher.
 
 ## Check the token
 

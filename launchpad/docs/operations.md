@@ -96,7 +96,11 @@ Prepares one unsigned transaction that creates your token and its Meteora bondin
 | `supportedTrust` | array | `[]` | Any of `reputation`, `crypto-economic`, `tee-attestation`. List only what you implement. |
 | `services` | array | `[]` | Up to 40 entries, each `{ name, endpoint, version?, mcpTools?, a2aSkills?, skills?, domains?, resources? }`. `name` is up to 64 characters, for example `web`, `MCP`, `A2A`, `x402`, `agentWallet`. `endpoint` is up to 512 characters. |
 
-Deside fills the rest of the registration: `type`, `registrations` (the new agent asset in the Agent Registry), a `token` block with the mint, creator, pool and configuration, and an `agentWallet` service set to the signing wallet when you do not declare one.
+Deside fills the rest of the registration: `type`, `registrations` (the new agent asset, with `agentRegistry` set to `solana:101:metaplex` on mainnet and `solana:103:metaplex` on devnet), an `agentWallet` service set to the signing wallet when you do not declare one and, on mainnet only, a `web` service pointing to the agent's Metaplex page when you do not declare one.
+
+The registration file follows the EIP-8004 registration fields exactly, in this order: `type`, `name`, `description`, `image`, `services`, `x402Support`, `active`, `registrations`, `supportedTrust`. It carries no token data: the link between the agent and the token is on chain, because the pool creator is the owner of the agent asset.
+
+With an identity, the agent asset also gets its own NFT metadata file (`name`, `symbol`, `description`, `image`), which is what the Metaplex agent page and DAS indexers read. The registration file is attached separately through the Agent Identity plugin.
 
 **Response fields**
 
@@ -104,7 +108,7 @@ Deside fills the rest of the registration: `type`, `registrations` (the new agen
 |---|---|
 | `mint`, `pool`, `creator` | The new token, its curve pool and the creator wallet. |
 | `agentAsset` | The new agent identity asset, or `null`. |
-| `files` | Final URLs of `image`, `tokenMetadata` and, with an identity, `agentRegistration`. They are fixed before you sign. |
+| `files` | Final URLs of `image`, `tokenMetadata` and, with an identity, `agentRegistration` and `agentMetadata` (the NFT metadata of the agent asset). They are fixed before you sign. `image` is uploaded only when you send `imageBase64`; otherwise it is your URL. |
 | `cost` | `arweaveSol` and `estimatedTotalSol`. |
 | `transaction`, `bytes`, `simulation`, `next` | See [How write operations work](#how-write-operations-work). |
 | `expiresInSeconds` | `60`. |
