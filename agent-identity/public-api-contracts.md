@@ -182,6 +182,7 @@ The main branches are:
 | `services` | Declared services with their latest check, as in the single-agent response. |
 | `ownerProven`, `mcpSessionActive` | As in the card. |
 | `identity` | `slug`, `canonicalPath` and `mergeEvidence`. |
+| `relations` | Tokens and x402 tools related to the agent. See [Relation Fields](relations-api.md#agent-profile-relations). |
 
 `agentToken.status` is `declared` or `none`, with the declaring sources in `declaredBy` and a native Metaplex binding in `nativeBy`. What that means is in [Directory And Profile](agent-directory-and-profile-surfaces.md#does-it-have-a-token).
 

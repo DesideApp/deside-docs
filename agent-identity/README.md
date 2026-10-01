@@ -51,6 +51,10 @@ In this section you will find:
 
 **A declaration is what a registry or owner says about the agent. Responds is what we measured. Connected is what the owner proved.** The three are independent. See [How We Verify](how-we-verify.md).
 
+### Relation
+
+**A relation is a link between an agent and a token or x402 tool, marked Declared, Matches or Proven.** See [How To Read A Relation](relations.md).
+
 ## Quick reference
 
 | Item | Value |
@@ -70,6 +74,7 @@ In this section you will find:
 - [How We Verify](how-we-verify.md): what Listed, Declared, Responds and Connected mean, so you know how much weight to give each.
 - [Registries](passport-and-protocol-registries.md): which registries and chains are read, and the identifier each one uses.
 - [Directory And Profile](agent-directory-and-profile-surfaces.md): what a profile shows, including tokens, holdings and reputation.
+- [Prove An Agent Or Token Is Yours](prove-ownership.md): the wallet signature, domain proof and Your token steps.
 - [Public Agents API](public-api-contracts.md): every public endpoint, parameter and error.
 
 ## License

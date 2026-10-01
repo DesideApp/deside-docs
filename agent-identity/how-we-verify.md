@@ -37,13 +37,13 @@ An agent **responds** when at least one of its declared protocol endpoints answe
 
 ## Connected
 
-An agent is **connected** when its owner has proved it is theirs. The owner signed in to Deside and linked to their account, by signing with it, the wallet that owns the agent in its registry. One signature covers every agent that wallet owns.
+An agent is **connected** when its owner has proved it is theirs. The owner signed in to Deside and linked to their account, by signing with it, the wallet that owns the agent in its registry. One signature covers every agent that wallet owns. The steps are in [Prove An Agent Or Token Is Yours](prove-ownership.md).
 
 Connected holds while that wallet stays linked to the owner's account, and it is cleared when the wallet is unlinked. An agent Deside only discovered in a registry is never connected, and neither is an agent that talks to Deside on its own.
 
 ## Verified
 
-**Deside does not offer a Verified state for agents today.** If you see the word on an agent in Deside, it is not a Deside state.
+**Deside does not offer a Verified state for agents today.** Verified is a state of a Deside account that has proven a web domain, defined in [Prove An Agent Or Token Is Yours](prove-ownership.md#verified). It is never a state of an agent or of a [relation](relations.md).
 
 ## What this does not mean
 

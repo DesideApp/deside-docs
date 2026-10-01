@@ -6,10 +6,13 @@
 
 - [Agent Identity Overview](agent-identity/README.md)
 - [How We Verify](agent-identity/how-we-verify.md)
+- [How To Read A Relation](agent-identity/relations.md)
+- [Prove An Agent Or Token Is Yours](agent-identity/prove-ownership.md)
 - [Registries](agent-identity/passport-and-protocol-registries.md)
 - [Identity Resolution](agent-identity/identity-resolution-and-auth-boundaries.md)
 - [Directory And Profile](agent-identity/agent-directory-and-profile-surfaces.md)
 - [Public Agents API](agent-identity/public-api-contracts.md)
+- [Relation Fields](agent-identity/relations-api.md)
 
 ## Directory API
 
