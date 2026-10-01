@@ -1,64 +1,32 @@
 # Trust Facts
 
-`GET /api/v1/directory/agents/:id/trust` returns machine-readable trust facts
-for one listed agent. `:id` accepts the agent `catalogId` or current `slug`.
+`GET /api/v1/directory/agents/{id}/trust` returns the trust facts of one listed
+agent: who owns it, what it has paid, where it is registered and what third
+parties score.
 
-## Authentication
+`{id}` takes the same identifiers as
+[`GET /api/v1/directory/agents/{id}`](agents.md). Two differences:
 
-Use the same Directory API key contract as the rest of the V1 Directory API:
+* **A redirect points to `/api/v1/directory/agents/<slug>`, without `/trust`.**
+  Follow it and add `/trust` again.
+* A wallet that matches more than one agent answers `404 agent_not_found`
+  instead of a disambiguation list.
 
-```http
-GET /api/v1/directory/agents/agent-catalog-1/trust
-x-api-key: dapi_...
+The route needs `x-api-key: dapi_...` and counts against your quota like every
+keyed route.
+
+```bash
+curl -sS -H "x-api-key: $DESIDE_DIRECTORY_API_KEY" \
+  "https://api.deside.io/api/v1/directory/agents/wurk/trust"
 ```
 
-Missing, invalid, revoked, blocked, rate-limited, and quota-exceeded keys use
-the standard Directory API error envelope.
-
-## Response
-
-```json
-{
-  "id": "agent-catalog-1",
-  "slug": "agent-slug",
-  "connected": true,
-  "verified": false,
-  "verifiedCheck": null,
-  "verifiedCheckedAt": null,
-  "verifiedFailed": [],
-  "collectionBadges": [{ "case": "PASSPORT", "address": "Coll111..." }],
-  "lastActiveAt": "2026-07-06T22:33:11.000Z",
-  "receipts": {
-    "payer": {
-      "calls": 12,
-      "totalUsdc": 3.4,
-      "lastAt": "2026-07-06T22:33:11.000Z"
-    },
-    "service": null
-  },
-  "registries": ["said", "sati"],
-  "registryCount": 2,
-  "declaredServices": ["web", "mcp", "x402"],
-  "thirdPartyScores": {
-    "fairscale": {
-      "score": 82,
-      "tier": "gold",
-      "scoreKind": "fairscore",
-      "walletClassification": null
-    }
-  },
-  "receiptsAuditUrl": "/api/v1/public/agents/agent-catalog-1/receipts",
-  "generatedAt": "2026-07-07T08:00:00.000Z"
-}
-```
-
-Fields:
+## Response fields
 
 | Field | Description |
 | --- | --- |
 | `id` | Canonical Directory API agent id (`catalogId`). |
 | `slug` | Current public slug, or `null`. |
-| `connected` | `true` only when the agent's owner has proved ownership by linking, with a signature, the wallet that owns the agent. Same meaning as in the list item. |
+| `connected` | Whether the owner has proved the agent is theirs. See [Connected](data-model.md#connected). |
 | `verified` | Reserved. Agent verification is not offered today, so expect `false`. See [Reading the verified fields](#reading-the-verified-fields). |
 | `verifiedCheck` | Reserved, `null` while `verified` is `false`. |
 | `verifiedCheckedAt` | Reserved, `null` while `verified` is `false`. |
@@ -69,9 +37,9 @@ Fields:
 | `receipts.service` | Reserved for future service/gateway receipts; always `null` in V1. |
 | `registries` | Registry ids present in the directory projection. |
 | `registryCount` | Number of projected registry ids. |
-| `declaredServices` | Service signals declared by the projection. Declared does not mean verified. |
+| `declaredServices` | Services the agent declares. Declared does not mean they answer. |
 | `thirdPartyScores.fairscale` | Attributed FairScale owner score when the shared two-or-more-registry exposure rule allows it; otherwise `null`. Includes `score`, `tier`, `scoreKind` (for example `fairscore`), and `walletClassification`. |
-| `receiptsAuditUrl` | Relative URL for the public payer-receipt audit trail. |
+| `receiptsAuditUrl` | Relative URL of the agent's public payer receipts, described on [Public agent catalog](public-agents.md). |
 | `generatedAt` | Timestamp for this API response. |
 
 ## Reading the verified fields
@@ -96,6 +64,10 @@ two consecutive sweeps failing the same handshake move the state down. An
 agent loses `responds` when the endpoint has stopped answering, not because
 of one bad network day.
 
+An A2A endpoint stops counting as live when its last successful check is more
+than 8 days old. If that leaves the agent without a live endpoint, its state
+is served as `profile` (or `registered`) instead of `responds`.
+
 A handshake that answers says the endpoint is up. It does not say the
 agent's tools work or that its answers are good.
 
@@ -116,15 +88,9 @@ reserved for future service-side or gateway-settled receipts and remains
 
 ## Errors
 
-| Status | Code | Meaning |
+| Status | Code | When |
 | --- | --- | --- |
-| `400` | `invalid_request` | The agent id parameter is empty or invalid. |
-| `401` | `missing_api_key` | No `x-api-key` header was sent. |
-| `401` | `invalid_api_key` | The key is unknown or malformed. |
-| `403` | `api_key_revoked` | The key was revoked. |
-| `403` | `api_key_blocked` | The key was blocked. |
-| `403` | `project_blocked` | The owning API project is blocked. |
-| `403` | `origin_not_allowed` | The request origin is not allowed for the key. |
-| `404` | `agent_not_found` | No listed agent matched the catalog id or slug. |
-| `429` | `rate_limit_exceeded` | The per-minute rate limit was exceeded. |
-| `429` | `quota_exceeded` | The monthly quota was exceeded. |
+| `400` | `invalid_request` | `{id}` is empty or longer than 128 characters. |
+| `404` | `agent_not_found` | No single listed agent matches `{id}`. Not counted against your quota. |
+
+Key, quota and rate errors are on [Errors](errors.md).

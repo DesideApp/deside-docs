@@ -1,89 +1,54 @@
-# Directory API Rate Limits
+# Rate Limits
 
-These are the public preview limits for Directory API keys.
+Every keyed request counts against two limits: a per-minute rate and a monthly
+quota. The public routes have per-IP limits instead, listed on
+[Access model](access-model.md).
 
 ## Tiers
 
-The useful unit here is not the single request. A full sweep of the directory
-costs about 104 requests today (one page of 100 agents per request), so it is
-worth reading these numbers as how much of the directory each tier lets you
-take, and how often.
+| Tier | Requests a month | Requests a minute |
+| --- | --- | --- |
+| Free | 5,000 | 30 |
+| Developer | 50,000 | 90 |
+| Pro | 500,000 | 180 |
 
-Before sizing yourself by these numbers, read the incremental sync recipe in the
-[Quickstart](quickstart.md). Re-downloading the whole directory every day costs
-about 3,120 requests a month; asking only for what changed since your last run
-costs a handful. Almost nobody needs a paid tier for volume alone.
+These are the defaults of the server. The live values for every tier are in
+the `tiers` object of `GET /api/v1/directory/usage` ([Owner console](console.md));
+read them there if you display them.
 
-Free:
+A full walk of the agent directory costs one request per 100 agents. The
+[Quickstart](quickstart.md#keep-a-copy-in-sync) shows what that cost is today
+and how to keep a copy in sync for far less.
 
-- `5,000` requests/month
-- 30 requests/min
-- enough to explore and to keep a daily sync running, with margin for retries
-  and one-off lookups on top of it
+## How they are counted
 
-Developer:
-
-- `50,000` requests/month
-- 90 requests/min
-- about 16 full sweeps a day. This is the tier for a product that runs on the
-  directory rather than one that reads it now and then.
-
-Pro (webhooks and bulk export are pre-rollout: documented, not yet enabled in
-production):
-
-- `500,000` requests/month
-- 180 requests/min
-- Webhook subscriptions: 3 active subscriptions per project.
-- Webhook delivery attempts: 5 attempts with exponential backoff.
-- Bulk export: 1 `jsonl.gz` export per day.
-- Bulk export active jobs: 1 queued or running job per project.
-- Export download URLs expire after 24 hours by default.
+* The minute window is 60 seconds. The rate applies per key and per project:
+  several keys do not multiply it.
+* The monthly quota applies per project and resets at the start of each UTC
+  month. Creating or rotating keys does not reset it.
+* A request with a missing, invalid, revoked or blocked key, or from an origin
+  the key does not allow, is not counted.
+* A request that answers `404` is refunded: looking up a missing agent or tool
+  is not billed.
+* Any other answer to an accepted key is counted, errors such as `400`
+  included.
+* A request rejected for rate or quota is not counted as a served request.
 
 ## Headers
 
-Successful and error responses can include:
+Keyed responses carry:
 
-- `X-RateLimit-Limit`
-- `X-RateLimit-Remaining`
-- `X-RateLimit-Reset`
-- `X-Deside-Quota-Limit`
-- `X-Deside-Quota-Remaining`
+| Header | Meaning |
+| --- | --- |
+| `X-RateLimit-Limit` | Requests allowed in the minute window. |
+| `X-RateLimit-Remaining` | Requests left in it. |
+| `X-RateLimit-Reset` | When it resets, as a Unix time in seconds. |
+| `X-Deside-Quota-Limit` | Requests allowed this month. |
+| `X-Deside-Quota-Remaining` | Requests left this month. |
 
-## Error codes
+## Errors
 
-- `rate_limit_exceeded` means the current minute window is exhausted
-- `quota_exceeded` means the monthly quota is exhausted
-
-## Response behavior
-
-- the rate window is 60 seconds
-- rate-limit state is enforced per project and key
-- monthly quota is enforced per project
-- creating or rotating keys does not reset the monthly quota
-- multiple keys do not multiply the requests-per-minute allowance
-- `X-RateLimit-Reset` is a Unix epoch value in seconds
-- `X-Deside-Quota-Remaining` reflects the monthly project budget
-- not-found responses (`404`) are refunded and do not consume monthly quota,
-  so exploring a missing agent is not billed
-- other handled errors with a valid key (such as a malformed request) still
-  consume quota
-- requests with a missing or invalid key do not consume quota
-- rejected over-quota requests are not counted as served requests; they
-  increment a separate quota-exceeded counter instead of inflating the used
-  count
-- rate-limited requests fail before the request handler runs
-- webhook management and bulk export have separate Pro limits from read quota
-
-## Where these numbers come from
-
-The limits are operator configuration, not constants baked into a client. The
-owner console reads them from `GET /api/v1/directory/usage`, which returns a
-`tiers` object with `monthlyRequests` and `requestsPerMinute` for every tier.
-If you are building something that shows quotas, read them from there too:
-values copied into a client go stale silently the day an operator changes them.
-
-## Operational note
-
-The monthly period is UTC and resets at the start of the next `YYYY-MM`
-month. Use the tier values above directly; do not replace them with a generic
-"contact us" message.
+| Code | Status | When |
+| --- | --- | --- |
+| `rate_limit_exceeded` | 429 | The minute window is used up. |
+| `quota_exceeded` | 429 | The monthly quota is used up. |
