@@ -12,7 +12,7 @@ key never manages a project, and a console proof never reads data.
 | `/api/v1/directory/console/nonce`, `/api/v1/directory/console/auth` | none: they issue the console proof |
 | `/api/v1/directory/keys`, `/usage`, `/subscription` | console proof, `Authorization: Bearer <proof>` ([Owner console](console.md)) |
 | `/api/v1/public/...` | none ([Access model](access-model.md)) |
-| `/api/v1/ask` | none; a signed-in browser session selects the human lane ([Ask](ask.md)) |
+| `/api/v1/ask` | none; a signed-in browser session selects the human lane ([Ask](../../agent-identity/ask.md)) |
 | MCP, `https://mcp.deside.io/mcp` | MCP session ([MCP authentication](../../mcp/docs/authentication.md)) |
 
 ## API key

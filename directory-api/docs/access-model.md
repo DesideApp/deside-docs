@@ -52,8 +52,8 @@ Directory API quota. Its directory tools are `search_agents` and
 `agent_trust_card`; their inputs and outputs are documented in
 [MCP tools](../../mcp/docs/tools.md).
 
-The MCP server has no tool for the x402 tool catalog today. An agent that needs
-x402 tools reads the public read surface or the Directory API.
+An agent that needs x402 tools reads the [x402 Tools API](../../x402-tools/docs/api.md)
+or the [keyed x402 routes](x402-keyed.md).
 
 ## Which one to use
 

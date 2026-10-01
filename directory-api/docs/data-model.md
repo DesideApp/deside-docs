@@ -2,7 +2,7 @@
 
 This page describes the objects the keyed agent routes return
 ([Agents](agents.md)). The x402 tool objects are described on
-[x402 tool catalog](x402-tools.md), and the trust object on
+[x402 Tools API](../../x402-tools/docs/api.md), and the trust object on
 [Trust facts](trust.md).
 
 Timestamps are ISO 8601 strings. A field that was never measured is `null`,

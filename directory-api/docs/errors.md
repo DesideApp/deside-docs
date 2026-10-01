@@ -19,7 +19,7 @@ contact support.
 
 Three groups of routes use other shapes, documented on their own pages: the
 public routes and the x402 routes after the key is accepted
-([x402 tool catalog](x402-tools.md#errors)), the console proof
+([x402 Tools API](../../x402-tools/docs/api.md#errors)), the console proof
 ([Owner console](console.md)) and the subscription routes
 ([Subscription and billing](subscription.md)).
 
@@ -117,6 +117,4 @@ Each code has its own section below, which is where `docsUrl` points.
 ## When every route answers 404
 
 If every keyed route answers `404` with no envelope and no `code`, the
-Directory API is switched off in that environment. A key will not fix it. The
-same plain `404` comes from the Pro routes while they are not enabled
-([Pro webhooks and exports](pro.md)).
+Directory API is switched off in that environment. A key will not fix it.

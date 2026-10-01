@@ -55,7 +55,7 @@ curl -sS -H "x-api-key: $DESIDE_DIRECTORY_API_KEY" \
 
 A full walk costs one request per 100 listed agents. On 2026-09-30 the
 directory listed 109,235 agents (`listed` in the
-[stats summary](public-agents.md)), so a full walk took about 1,093 requests.
+[stats summary](../../agent-identity/public-api-contracts.md)), so a full walk took about 1,093 requests.
 Repeating it every day would take about 33,000 requests a month, against the
 5,000 of the Free tier.
 

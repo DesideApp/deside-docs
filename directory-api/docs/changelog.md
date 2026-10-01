@@ -5,12 +5,12 @@ corrections to these docs. A change that breaks a client says what to do.
 
 ## 2026-10-01: docs restructured
 
-The pages now follow one reference page per group of routes. `Endpoints` was
-split into [Agents](agents.md), [Public agent catalog](public-agents.md),
-[Ask](ask.md), [Owner console](console.md),
-[Subscription and billing](subscription.md) and
-[Pro webhooks and exports](pro.md). New pages:
-[Access model](access-model.md), [x402 tool catalog](x402-tools.md) and
+The docs are now organized by product: [Agent Directory](../../agent-identity/README.md),
+[x402 Tool Directory](../../x402-tools/README.md) and the Agent Token Launchpad, with
+the Directory API and MCP under Developer Access. The public agents routes
+are on one page, [Public Agents API](../../agent-identity/public-api-contracts.md).
+The public x402 routes moved to [x402 Tools API](../../x402-tools/docs/api.md).
+[Ask](../../agent-identity/ask.md) moved to the Agent Directory. New page:
 [x402 data with an API key](x402-keyed.md).
 
 Corrections to what the docs said before:
@@ -141,17 +141,14 @@ Corrections to what the docs said before:
   limits, and an announced pay-per-question machine lane), so it gets its own
   street instead of living inside the key-protected read surface's path
 
-- corrected the webhook auth line in the boundary page: it said owner/session
-  and the routes use the console proof. The authentication page already said it
-  right, so the two pages contradicted each other
 - named the collision that will confuse everyone sooner or later:
   `/directory/subscription` is the API plan of a project, and
-  `/directory/agents/:catalogId/subscription` is the Verified subscription of
-  one agent. Same word, same prefix, different person and different credential
+  `/directory/agents/:catalogId/subscription` belongs to the owner of one
+  agent, outside this API. Same word, same prefix, different person and different credential
 - listed the agent-owner rail as deliberately out of scope, so that finding its
   eleven routes does not read as an undocumented part of this API
 
-- corrected the auth of the owner routes: keys, usage and webhooks use the
+- corrected the auth of the owner routes: keys and usage use the
   console proof, not a session cookie. The previous text said `protectRoute`,
   which has not been true since the console got its own signature login
 - documented the console proof itself: nonce, signature, short-lived bearer,
@@ -180,8 +177,6 @@ Corrections to what the docs said before:
 
 - aligned the capability filter vocabulary with the accepted server set
   (removed `support` and `automation` until the server accepts them)
-- marked Pro webhooks and Pro bulk export as pre-rollout (documented, not yet
-  enabled in production)
 - corrected the trust `fairscale` example (`scoreKind` values such as
   `fairscore`, added `walletClassification`)
 - reworded the public catalog auth row: it is an open product surface, not a
@@ -191,8 +186,6 @@ Corrections to what the docs said before:
 - documented the API-key read surface, pagination, errors, limits, data
   product fields, and boundary notes
 - reconciled `api_key_revoked` to the `403` status contract
-- added Pro documentation for webhook subscription management, signed
-  deliveries, and `jsonl.gz` bulk exports
 - documented the trust facts endpoint, including `connected`, receipt
   families, declared services, and FairScale attribution rules
 

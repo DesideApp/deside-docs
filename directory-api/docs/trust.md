@@ -39,7 +39,7 @@ curl -sS -H "x-api-key: $DESIDE_DIRECTORY_API_KEY" \
 | `registryCount` | Number of projected registry ids. |
 | `declaredServices` | Services the agent declares. Declared does not mean they answer. |
 | `thirdPartyScores.fairscale` | Attributed FairScale owner score when the shared two-or-more-registry exposure rule allows it; otherwise `null`. Includes `score`, `tier`, `scoreKind` (for example `fairscore`), and `walletClassification`. |
-| `receiptsAuditUrl` | Relative URL of the agent's public payer receipts, described on [Public agent catalog](public-agents.md). |
+| `receiptsAuditUrl` | Relative URL of the agent's public payer receipts, described on [Public Agents API](../../agent-identity/public-api-contracts.md). |
 | `generatedAt` | Timestamp for this API response. |
 
 ## Reading the verified fields

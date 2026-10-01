@@ -3,11 +3,11 @@
 These routes serve the x402 tool catalog to Directory API keys. They need
 `x-api-key: dapi_...` and count against your quota like every keyed route
 ([Rate limits](rate-limits.md)). Unlike the
-[public tool catalog](x402-tools.md), their cursors have no depth limit, so
+[x402 Tools API](../../x402-tools/docs/api.md), their cursors have no depth limit, so
 they can walk the whole catalog.
 
 The live check, the field meanings and the public examples are on
-[x402 tool catalog](x402-tools.md). This page lists only what differs.
+[x402 Tools API](../../x402-tools/docs/api.md). This page lists only what differs.
 
 {% hint style="warning" %}
 A missing or invalid key answers with the keyed error envelope (see
@@ -63,7 +63,7 @@ An unknown slug answers `404` with `{ "error": "not_found" }`.
 ## `GET /api/v1/directory/x402-wallet-edges`
 
 Same parameters, response and rules as the public
-[`/public/x402/wallet-edges`](x402-tools.md), without the depth limit.
+[`/public/x402/wallet-edges`](../../x402-tools/docs/api.md), without the depth limit.
 
 ## `GET /api/v1/directory/x402-resources`
 

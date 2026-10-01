@@ -12,7 +12,7 @@ carries `pagination`:
 
 The public agent routes (`/api/v1/public/agents...`) are the exception: they
 page with `skip` and `limit` and answer `{ items, total, limit, skip, hasMore }`
-([Public agent catalog](public-agents.md)).
+([Public Agents API](../../agent-identity/public-api-contracts.md)).
 
 ## Rules
 

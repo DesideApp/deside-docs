@@ -34,30 +34,22 @@ On these pages:
 
 ## Core concepts
 
-### Listed
+The state words in its fields, `listed`, `responds` and `connected`, are defined
+once in [State Words](../start/state-words.md). `responds` is the API value of
+[Live](../start/state-words.md#live).
 
-**An agent is listed when it is in the Deside catalogue.** Being listed says
-nothing about whether the agent answers or who runs it. See
-[Data model](docs/data-model.md).
+### API key
 
-### Connected
-
-**`connected` is `true` when the agent's owner has proved the agent is theirs**
-by linking, with a signature, the wallet that owns it. It is a fact about the
-owner, not a measure of liveness. See [Data model](docs/data-model.md#connected).
-
-### Responds
-
-**`responds` means one of the agent's declared endpoints answered a protocol
-check.** It does not say the agent is good at its job. See
-[Trust facts](docs/trust.md#how-liveness-is-measured).
+**An API key is the credential of a Directory API project**, sent as
+`x-api-key: dapi_...` on every keyed request. Keys are self-serve from the
+console. See [Authentication](docs/authentication.md).
 
 ### x402 tool
 
 **An x402 tool is one paid HTTP endpoint that a public x402 catalog lists.**
-Deside reads the catalogs, merges duplicates into one tool, and calls each
-tool's address without paying to record what it answers. See
-[x402 tool catalog](docs/x402-tools.md).
+The keyed routes serve the same tools as the
+[x402 Tool Directory](../x402-tools/README.md), without the 500-row depth
+limit. See [x402 data with an API key](docs/x402-keyed.md).
 
 ## Quick reference
 
@@ -76,6 +68,6 @@ The full limits are on [Rate limits](docs/rate-limits.md).
 ## Next steps
 
 * [Access model](docs/access-model.md): pick the surface that fits what you are building.
-* [x402 tool catalog](docs/x402-tools.md): search tools by host, network, wallet or text.
+* [x402 data with an API key](docs/x402-keyed.md): walk the whole tool catalog.
 * [Quickstart](docs/quickstart.md): get a key and walk the agent directory.
 * [Errors](docs/errors.md): every code, when it happens and what to do.

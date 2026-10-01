@@ -27,6 +27,18 @@ curl https://mcp.deside.io/.well-known/oauth-authorization-server
 
 The protected resource metadata is at `https://mcp.deside.io/.well-known/oauth-protected-resource/mcp`.
 
+## Scopes
+
+**`dm:read` and `dm:write` are legacy names.** `dm:read` means read and `dm:write` means write. They keep the names they had when the MCP server was about messaging, so existing clients keep working.
+
+| Scope | Granted by default | Tools |
+|---|---|---|
+| `dm:read` | Yes | `get_my_identity`, `get_user_info`, `search_agents`, `list_my_agent_identities`, `select_agent_identity` |
+| `dm:write` | Yes | `select_passport`, `prepare_agent_identity_link`, `create_agent_identity_link`, `revoke_agent_identity_link` |
+| `llm:invoke` | No | `llm_complete`, which is not documented here (see [Tools](tools.md#tools-not-covered-here)) |
+
+A client that registers without a `scope` gets `dm:read dm:write`.
+
 ## The flow
 
 | Step | Request | Result |

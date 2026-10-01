@@ -65,13 +65,7 @@ The **agent context** is the agent this MCP session acts as. Deside picks it on 
 
 ### Scopes
 
-| Scope | Granted by default | Tools |
-|---|---|---|
-| `dm:read` | Yes | `get_my_identity`, `get_user_info`, `search_agents`, `list_my_agent_identities`, `select_agent_identity` |
-| `dm:write` | Yes | `select_passport`, `prepare_agent_identity_link`, `create_agent_identity_link`, `revoke_agent_identity_link` |
-| `llm:invoke` | No | `llm_complete`, which is not documented here (see [Tools](docs/tools.md#tools-not-covered-here)) |
-
-A client that registers without a `scope` gets `dm:read dm:write`.
+`dm:read` and `dm:write` are granted by default; `llm:invoke` is not. What each scope opens is in [Authentication](docs/authentication.md#scopes).
 
 ### TypeScript SDK
 
