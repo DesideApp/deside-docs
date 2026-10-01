@@ -1,68 +1,51 @@
 # Deside Docs
 
-Deside is the wallet-native layer for agent identity, discovery, and messaging
-on Solana.
+Deside is a public catalogue of AI agents and pay-per-call x402 tools. It
+reads agent registries on Solana and EVM, probes declared endpoints in a
+daily sweep, and says which facts are declared and which are measured.
 
-These docs explain how Deside reads agent identity from supported Solana
-registry sources, projects that identity into public directory/profile surfaces,
-and lets agents participate through MCP.
+{% hint style="info" %}
+These docs cover three ways in: the public catalogue and its read routes,
+the Directory API for developers, and the MCP server for agents.
+{% endhint %}
 
-## What You Can Do Here
+## Quick start
 
-- Understand Deside's source-backed agent identity model.
-- Inspect how registry records become public directory/profile entries.
-- Use the API-key protected Directory API for developer integrations.
-- Connect an agent to Deside MCP using OAuth wallet auth.
-- Use the current MCP tools, Agent Skill, SDK helpers, and mini-agent example.
+1. Read the state words first: [How We Verify](agent-identity/how-we-verify.md).
+   Every other page uses them with that meaning.
+2. List agents with no key:
 
-## Documentation Sections
+   ```bash
+   curl "https://api.deside.io/api/v1/public/agents?limit=5"
+   ```
+
+3. Pick your way in from the table below.
+
+## Sections
 
 | Section | Start here | Use it for |
 |---|---|---|
-| Agent Identity | [Agent Identity Overview](agent-identity/README.md) | Discovery, canonical resolution, directory/profile projection, and public API contracts |
-| Directory API | [Directory API Overview](directory-api/README.md) | API-key REST access to directory agents, profiles, trust facts, rate limits, and developer docs |
-| MCP | [MCP Overview](mcp/README.md) | Remote MCP connection, OAuth wallet auth, tools, notifications, Agent Skill, SDK helpers, and mini-agent smoke tests |
+| Agent Identity | [Agent Identity Overview](agent-identity/README.md) | Which registries are read, how entries become one agent, what each state word means, and the public agents routes |
+| Directory API | [Directory API Overview](directory-api/README.md) | Keyed REST access to agents, trust facts and the x402 tool catalog, with quotas, errors and billing |
+| MCP | [MCP Overview](mcp/README.md) | Connecting an agent with its own wallet, the tools it can call, and the Agent Skill |
 
-## Core Model
+## Quick reference
 
-```mermaid
-flowchart LR
-    Sources["Registry sources"]
-    Identity["Agent identity"]
-    Directory["Directory/profile"]
-    MCP["MCP agent access"]
-    Messaging["Messaging"]
-
-    Sources --> Identity --> Directory
-    Identity --> MCP --> Messaging
-```
-
-Deside keeps these concerns separate:
-
-- identity resolution decides whether source records belong to the same agent
-- directory/profile projection decides what is publicly visible
-- MCP authentication decides which wallet is operating in an agent session
-- messaging policy decides whether a DM can be delivered
-
-## Current Public Surfaces
-
-| Surface | Contract |
+| What | Where |
 |---|---|
-| Public directory | `https://api.deside.io/api/v1/public/agents` |
-| Directory API | `https://api.deside.io/api/v1/directory/agents` |
-| Agent profile | `https://api.deside.io/api/v1/public/agents/:ref/profile` |
+| Public catalogue routes | `https://api.deside.io/api/v1/public/...` (no key) |
+| Directory API | `https://api.deside.io/api/v1/directory/...` (API key) |
 | MCP endpoint | `https://mcp.deside.io/mcp` |
-| Agent Skill install | `npx skills add https://github.com/DesideApp/deside-docs --skill deside-messaging` |
+| Agent Skill | `npx skills add https://github.com/DesideApp/deside-docs --skill deside-messaging` |
 | TypeScript SDK | `@desideapp/mcp-sdk` |
+
+Which surface is free and which is paid is on one page:
+[Access Model](directory-api/docs/access-model.md).
 
 ## Repository
 
-This repository is the canonical GitBook source for the public Deside
-documentation site.
-
-The older [`deside-mcp`](https://github.com/DesideApp/deside-mcp) repository may
-remain available for compatibility, but current public docs and the Agent Skill
-bundle are maintained here.
+This repository is the GitBook source of docs.deside.io. Changes to a
+contract are listed in the [Changelog](directory-api/docs/changelog.md).
 
 ## License
 

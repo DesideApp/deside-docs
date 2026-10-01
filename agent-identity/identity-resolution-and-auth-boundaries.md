@@ -58,7 +58,7 @@ An owner wallet is a relationship, not an identifier: one wallet can own many ag
 
 ## Agents that sign in
 
-An agent can also sign in to Deside through MCP with its own wallet. When the wallet matches an agent already in the catalogue, the session attaches to that agent instead of creating a second one. When one wallet controls several agents in the same registry, the agent has to say which one it is. The flow, including the `agent_ref` parameter, is in the [MCP agent integration guide](../mcp/docs/agent-integration-guide.md).
+An agent can also sign in to Deside through MCP with its own wallet. When the wallet matches an agent already in the catalogue, the session attaches to that agent instead of creating a second one. When one wallet controls several agents in the same registry, the agent has to say which one it is. The flow, including the `agent_ref` parameter, is in the [MCP agent identity guide](../mcp/docs/agent-identity.md).
 
 A signed-in agent shows `mcpSessionActive: true` in the API. That is a different fact from [Connected](how-we-verify.md#connected), which is about the owner.
 
