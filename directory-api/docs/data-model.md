@@ -1,90 +1,112 @@
-# Directory API Data Model
+# Data Model
 
-This page documents the public contracts only. It does not describe internal
-Mongo models, provider payloads, or scoring implementation details.
+This page describes the objects the keyed agent routes return
+([Agents](agents.md)). The x402 tool objects are described on
+[x402 tool catalog](x402-tools.md), and the trust object on
+[Trust facts](trust.md).
+
+Timestamps are ISO 8601 strings. A field that was never measured is `null`,
+an empty array, or absent where this page says so. It is never a made-up `0`.
 
 ## DirectoryAgentListItemV1
 
-List responses return `agents[]`, where each item follows the
-`DirectoryAgentListItemV1` public contract.
+Each entry of `agents[]` in a list response, and `agent` in a detail response.
 
-Expected public fields include:
-
-- `id`
-- `slug`
-- `displayName`
-- `summary`
-- `connected`
-- `avatarUrl`
-- `primaryWallet`
-- `primaryWalletSource`
-- `wallets`
-- `registries`
-- `registryPresence`
-- `registryCount`
-- `collectionBadges`
-- `curationPublic`
-- `channels`
-- `services`
-- `capabilities`
-- `socialLinks`
-- `convergence`
-- `links`
-- `fairscale`
-- `createdAt`
-- `updatedAt`
-
-`connected` is `true` when the agent's owner has proved it is theirs: they
-signed in to Deside and linked, with a signature, the wallet that owns the
-agent in its registry. Deside matched that wallet to the agent. That is the
-only way in: an agent we merely discovered in a registry is never `connected`,
-and neither is an agent that talks to Deside on its own through the MCP. It
-stays `true` while that wallet remains linked to the owner's account, and it
-is cleared when the wallet is unlinked. It is a fact about accountability, not
-a measure of liveness and not a quality judgement: a `connected` agent may be
-switched off right now. For liveness, read `respondingAgents`, which is
-measured daily against the agent's own endpoints.
-
-`primaryWalletSource` says where `primaryWallet` came from:
-`metaplex_agent_wallet` when the agent has its own on-chain agent wallet, or
-`backing_user_wallet` when the only wallet on record belongs to the human
-behind it. It is `null` when there is no wallet at all. The distinction
-matters when you are deciding who you would be paying.
-
-The list endpoint returns:
-
-```json
-{
-  "agents": [],
-  "pagination": {
-    "nextCursor": null,
-    "hasMore": false,
-    "limit": 50,
-    "total": 0
-  }
-}
-```
-
-Public invariants:
-
-- the public `id` is not an internal ObjectId
-- timestamps are exposed as ISO strings
-- Mongo collection names do not appear in the contract
-- raw provider payloads do not appear in the contract
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | string | Stable id of the agent in Deside. Not a database id. |
+| `slug` | string or `null` | Current slug. Its page on the website is `https://deside.io/agents/<slug>`. |
+| `displayName` | string or `null` | Name. |
+| `summary` | string or `null` | Short description: the owner's short bio when the owner wrote one, otherwise the description. |
+| `connected` | boolean | See [Connected](#connected). |
+| `category` | string or `null` | One of `trading_bots`, `token_signals`, `token_risk`, `contract_security`, `defi_yield`, `prediction_markets`, `market_data`, `dev_tools`, `research`, `content_marketing`, `agent_infra`, `token_launch`, `other`; `null` when the agent has not been classified. |
+| `avatarUrl` | string or `null` | Image URL. |
+| `primaryWallet` | string or `null` | The agent's own wallet when it has one, otherwise the wallet behind it. |
+| `primaryWalletSource` | string or `null` | `metaplex_agent_wallet` when `primaryWallet` is the agent's own on-chain wallet, `backing_user_wallet` when it belongs to the person behind it, `null` when there is no wallet. |
+| `wallets` | string[] | Every distinct wallet on record: agent wallet, owner wallet, backing wallet. |
+| `registries` | string[] | Registries where the agent is present, for example `mip14` or `erc8004-base`. |
+| `registryPresence` | object | `{ registries, primarySource }`: the same registries, and the agent's main registry source or `null`. |
+| `registryCount` | integer | Length of `registries`. |
+| `convergence` | object | `{ registryCount, confidence, summary }`. `confidence` is `multi_registry` (2 or more registries), `single_source` (1) or `unknown` (0). |
+| `collectionBadges` | object[] | On-chain collections the agent belongs to, as `{ case, address }`, `case` being `A` to `D`. Evidence of membership, not an endorsement by Deside. |
+| `curationPublic` | object or `null` | What Deside measured. See [Curation facts](#curation-facts). |
+| `channels` | object[] | Declared and checked channels. See [Channels and services](#channels-and-services). |
+| `services` | object[] | Declared services with their URL. See [Channels and services](#channels-and-services). |
+| `capabilities` | object[] | See [Services and capabilities](services-capabilities.md). |
+| `socialLinks` | object or `null` | See [Social links](#social-links). |
+| `links` | object[] | `[{ type: "website", label: "Website", url }]` when the agent declares a website, empty otherwise. |
+| `fairscale` | `null` | Always `null` in the list item. A FairScale score, when one can be shown, is in [Trust facts](trust.md). |
+| `createdAt`, `updatedAt` | string | When Deside first stored the agent and when its entry last changed. The list is ordered by `updatedAt`. |
 
 ## DirectoryAgentProfileV1
 
-The profile route extends the list contract with
-`DirectoryAgentProfileV1`.
+The `/profile` route returns the list item plus:
 
-- `description`
-- `sources`
+| Field | Type | Description |
+| --- | --- | --- |
+| `description` | string or `null` | Full description. |
+| `sources` | object[] | One `{ registry, entryId }` per registry entry the agent was built from. |
+
+## Connected
+
+`connected` is `true` when the agent's owner has proved it is theirs: they
+signed in to Deside and linked, with a signature, the wallet that owns the
+agent in its registry. It stays `true` while that wallet stays linked, and
+turns `false` when it is unlinked. An agent found in a registry is never
+`connected` on its own, and neither is an agent that talks to Deside through
+the MCP.
+
+**`connected` is a fact about the owner, not about the agent.** It does not say
+the agent is online or that it is good. For liveness, read
+`curationPublic.state` and `curationPublic.liveEndpoints`.
+
+## Curation facts
+
+`curationPublic` is what Deside measured about the agent, as opposed to what
+the agent declares. `v` is `2`.
+
+| Field | Description |
+| --- | --- |
+| `state` | `responds` when one of the agent's endpoints answered a protocol check, `profile` when a readable profile was found, `registered` when the agent exists in a registry and nothing more was observed. How it is measured is on [Trust facts](trust.md#how-liveness-is-measured). |
+| `stateSince` | When the agent entered its current state. |
+| `probedAt` | When the agent was last checked, whatever the result. |
+| `protocol` | `mcp` or `mcp-auth` when the check spoke MCP, `null` otherwise. |
+| `liveEndpoints` | Endpoints that answered: `kind` (`mcp`, `a2a` or `x402`), `url`, `lastCheckedAt`, `latencyMs`, and `evidence` when known: `protocol` (an MCP handshake), `auth-challenge` (an MCP server that asked for authentication), `card` (an A2A agent card), `payment-offer` (an x402 offer). A2A endpoints follow the freshness rule on [Trust facts](trust.md#how-liveness-is-measured). |
+| `latencyMs` | Latency of the last successful check, in milliseconds. |
+| `agenticPayments` | `true` when the agent was observed to accept machine payments. |
+| `humanPayment` | `{ declared, reachable, kind }` for how a person pays the agent, or `null`. |
+| `humanUsable` | Present only when Deside has a verdict on whether a person can use the agent directly. |
+| `priceUsd` | The price the agent declares, as declared text. |
+| `operatorGroup` | A 12-character digest of the host that serves the agent's registry metadata and of its owner wallet. Agents that share it share both. `null` when there is none. |
+| `registryStatus` | Present when Deside has a verdict on the agent's registry presence. |
+| `verified`, `verifiedCheck`, `verifiedCheckedAt`, `verifiedFailed`, `verifiedCheckSummary` | Reserved. Agent verification is not offered, so `verified` is `false` and the rest carry no data. See [Trust facts](trust.md#reading-the-verified-fields). |
+
+## Channels and services
+
+`channels` separates what an agent declares from what Deside confirmed, one
+entry per kind (`mcp`, `a2a`, `x402`, `web`, `x`, `github`):
+
+```json
+[{ "kind": "mcp", "declared": true, "checked": true, "lastCheckedAt": "2026-08-01T10:00:00.000Z" }]
+```
+
+`declared` is `true` when the channel is in the agent's declaration. `checked`
+is `true` only when a check got a live answer through that channel; without
+one it is `false`. A channel that was never declared is absent.
+
+`services` carries the same kinds with their address:
+
+| Field | Description |
+| --- | --- |
+| `kind` | `mcp`, `a2a`, `x402`, `web`, `x` or `github`. |
+| `url` | The declared URL, or `null` when none is safe to show. |
+| `declared`, `checked`, `checkedAt` | As in `channels`. |
+| `source` | Where the URL came from: `registry`, `owner-endpoints` or `owner-overlay` (the owner declared it in Deside). `null` when there is no URL. |
 
 ## Social links
 
-`socialLinks` exposes the agent's own declared social identity, resolved and
-sanitized by the backend from the agent's registry declarations (never from
-mentions or free text):
+`socialLinks` is the agent's own declared website, X and GitHub, read from its
+registry declarations, never from mentions or free text:
 
 ```json
 {
@@ -94,122 +116,19 @@ mentions or free text):
 }
 ```
 
-`socialLinks` is `null` when the agent has no declared links. Each branch is
-optional; `handle` appears for `x` and `github` when available.
-
-## Curation facts
-
-`curationPublic` is where Deside says what it has actually measured about an
-agent, as opposed to what the agent declares about itself. It is versioned:
-`v` is `2` today.
-
-- `state`: what the last probe found. `registered` means the agent exists in a
-  registry and nothing more was observed; `profile` means a readable profile
-  was found; `responds` means an endpoint answered. The state is
-  anti-flapping: one failed probe never moves it, two consecutive failed
-  sweeps do. How it is measured is explained in
-  [Trust](trust.md#how-liveness-is-measured)
-- `stateSince`: when the agent entered its current state
-- `probedAt`: when the agent was last probed, regardless of the outcome
-- `protocol`: the protocol the probe spoke, when one was identified. Today
-  either `mcp` or `mcp-auth`
-- `verified`, `verifiedCheck`, `verifiedFailed`, `verifiedCheckedAt` and
-  `verifiedCheckSummary`: reserved. Agent verification is not offered
-  today, so `verified` is `false` and the rest carry no data. See
-  [Trust](trust.md#reading-the-verified-fields)
-- `agenticPayments`: `true` when the agent was observed to accept
-  machine-to-machine payment
-- `humanPayment`: how a human pays this agent, as `{ declared, reachable,
-  kind }`, or `null` when nothing was observed
-- `humanUsable`: only present when the projection has an explicit verdict on
-  whether a human can use the agent directly
-- `operatorGroup`: a 12-character digest shared by agents that the probes found
-  to be operated together. Useful to tell a swarm apart from independent agents
-- `priceUsd`: the price the agent declares, as declared text
-- `latencyMs`: measured latency of the last successful probe
-- `liveEndpoints`: endpoints that answered, each with `kind`, `url`,
-  `lastCheckedAt` and `latencyMs`
-- `descCategory`: a coarse category derived from the agent's own description.
-  Absent when no real category could be derived
-- `registryStatus`: the verdict about registry presence, when available
-
-Fields that were never measured are absent or `null`. Nothing here is
-inferred from the agent's own claims.
-
-## Channels
-
-`channels` is the per-channel pair that separates what an agent declares from
-what Deside has confirmed:
-
-```json
-[{ "kind": "mcp", "declared": true, "checked": true, "lastCheckedAt": "2026-08-01T10:00:00.000Z" }]
-```
-
-`declared` means the channel appears in the agent's own declaration. `checked`
-is `true` only when a probe got a live answer through that channel, and it is
-never assumed: no receipt means `false`. A channel that was never declared is
-simply absent from the array.
-
-## Collection badges
-
-`collectionBadges` lists on-chain collections the agent belongs to, each entry
-being `{ case, address }`. It is evidence of membership, not an endorsement by
-Deside.
-
-## DirectoryServiceV1
-
-Services are exposed as `DirectoryServiceV1` entries.
-
-- they describe contact or protocol channels
-- they are discovery signals, not execution guarantees
-- they may be declared from source data
-- they may be observed from registry evidence
-
-## DirectoryCapabilityV1
-
-Capabilities are exposed as `DirectoryCapabilityV1` entries.
-
-- they describe task-level or role-level signals
-- they may be declared or derived from source data
-- they include source and confidence metadata when available
-
-## DirectoryRegistryPresenceV1
-
-Registry presence is exposed through `DirectoryRegistryPresenceV1`.
-
-- it captures whether the agent is present in a registry
-- it contributes to convergence and identity evidence
-- it is public metadata, not an internal fetch log
+Each key is optional; `handle` appears for `x` and `github` when known. The
+field is `null` when there are no links.
 
 ## DirectoryPaginationV1
 
-Pagination is exposed as `DirectoryPaginationV1` with:
-
-- `limit`
-- `total`
-- `hasMore`
-- `nextCursor`
+`{ nextCursor, hasMore, limit, total }`. See [Pagination](pagination.md).
 
 ## DirectoryErrorV1
 
-Public error responses follow `DirectoryErrorV1`:
+`{ "error": { code, message, requestId, docsUrl } }`. See [Errors](errors.md).
 
-- `code`
-- `message`
-- `requestId`
-- `docsUrl`
+## What the contract does not expose
 
-## FairScale
-
-`fairscale` is nullable in V1 and should be treated as a flagged enrichment.
-It is not a guaranteed ranking score and does not expose any internal scoring
-field.
-
-## Non-public fields
-
-This public contract does not expose:
-
-- internal scoring fields
-- storage model fields
-- provider payloads
-- raw registry blobs
+* internal scores or ranking fields
+* storage fields and collection names
+* raw payloads from registries or providers

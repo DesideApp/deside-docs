@@ -1,12 +1,10 @@
 # Table of contents
 
 * [Overview](README.md)
-* [How it works](docs/how-it-works.md)
+* [Getting started](docs/getting-started.md)
 * [Authentication](docs/authentication.md)
-* [Tools](docs/tools.md)
-* [Payments](docs/payments.md)
-* [Notifications](docs/notifications.md)
-* [Error Handling](docs/error-handling.md)
-* [Agent Integration Guide](docs/agent-integration-guide.md)
+* [Agent identity](docs/agent-identity.md)
+* [Tools reference](docs/tools.md)
+* [Error handling](docs/error-handling.md)
 * [Agent Skill](skills/deside-messaging/SKILL.md)
-* [Mini Agent Example](examples/mini-agent/README.md)
+* [Mini agent example](examples/mini-agent/README.md)

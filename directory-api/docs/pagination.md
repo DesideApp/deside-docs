@@ -1,47 +1,43 @@
-# Directory API Pagination
+# Pagination
 
-## Model
+Every list route of the Directory API pages with an opaque cursor. A page
+carries `pagination`:
 
-Directory API uses cursor pagination.
+| Field | Description |
+| --- | --- |
+| `nextCursor` | Pass it as `cursor` to get the next page. `null` on the last page. |
+| `hasMore` | `true` when another page exists. |
+| `limit` | The page size used. |
+| `total` | Every item that matches the filters, not only this page. |
 
-The list endpoint accepts:
+The public agent routes (`/api/v1/public/agents...`) are the exception: they
+page with `skip` and `limit` and answer `{ items, total, limit, skip, hasMore }`
+([Public agent catalog](public-agents.md)).
 
-- `limit`
-- `cursor`
+## Rules
 
-The response includes:
+1. **Send the same filters with every page.** A cursor carries the filters it
+   was issued for, and a cursor sent with other filters answers `400`.
+2. Do not build or edit a cursor. Its content is not part of the contract.
+3. A cursor does not expire. On `GET /api/v1/directory/agents` it encodes a
+   position in the `updatedAt` order, so an agent updated while you walk moves
+   to the front of the list. Use `updatedSince` to catch it on your next run
+   ([Quickstart](quickstart.md#keep-a-copy-in-sync)).
 
-- `pagination.nextCursor`
-- `pagination.hasMore`
-- `pagination.limit`
-- `pagination.total`
+## Differences by route
 
-## Behavior
+| Route | Default `limit` | Maximum | Depth | Cursor mismatch |
+| --- | --- | --- | --- | --- |
+| `GET /api/v1/directory/agents` | 50 | 100 | none | `invalid_cursor` |
+| `GET /api/v1/directory/x402-...` | 25 | 100 | none | `invalid_request` |
+| `GET /api/v1/public/x402/tools`, `/wallet-edges` | 25 | 100 | 500 rows | `invalid_request` |
+| `GET /api/v1/public/x402/indices` | 25 | 100 | none | |
 
-- `limit` defaults to `50`
-- `limit` cannot exceed `100`
-- `nextCursor` is opaque
-- cursors are tied to the current filter set
-- changing the filter set invalidates the cursor
-- `total` counts the current filter set
-- `hasMore` indicates whether another page exists
+On `GET /api/v1/directory/agents`, the cursor is bound to `registry`, `chain`,
+`service`, `capability` and `updatedSince`. Changing `collection` or
+`collectionCase` does not reject the cursor but gives a walk that is neither
+the old filter nor the new one, so restart without `cursor` when you change
+them.
 
-## Practical use
-
-When `pagination.nextCursor` is non-null, pass it back as the next `cursor`
-value to continue reading the directory from the same filter set.
-
-## Invalid cursor
-
-If the cursor payload does not match the current request filters, the API
-returns `invalid_cursor`.
-
-## Example
-
-```bash
-curl -sS \
-  -H "x-api-key: $DESIDE_DIRECTORY_API_KEY" \
-  "https://api.deside.io/api/v1/directory/agents?limit=25"
-```
-
-The developer contract does not use `skip` or `offset`.
+On `GET /api/v1/public/x402/tools`, a search with `q` returns a single page and
+does not take a cursor.

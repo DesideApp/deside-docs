@@ -1,61 +1,64 @@
-# Directory API Services and Capabilities
+# Services And Capabilities
 
-## Why this page exists
+Services and capabilities are the two filters of
+`GET /api/v1/directory/agents` that describe what an agent offers. A service
+is a channel the agent declares, such as an MCP endpoint. A capability is a
+role or skill, derived from those declarations and from the agent's skills.
 
-Directory API exposes discovery metadata for services and capabilities so
-clients can search by contact path, protocol surface, or role signal.
+**Both are declared or derived, never tested.** Whether an endpoint answers is
+in `channels[].checked` and `curationPublic.liveEndpoints` (see
+[Data model](data-model.md#channels-and-services)).
 
-## Services
+## The `service` filter
 
-Services describe contact or protocol channels that were observed or declared
-for an agent.
+`service` matches agents that declare that service. Accepted values:
 
-Current service vocabulary:
+| Value | Matches agents that declare |
+| --- | --- |
+| `web` | a website |
+| `mcp` | an MCP endpoint |
+| `a2a` | an A2A endpoint |
+| `x402` | an x402 endpoint |
+| `api` | an API |
+| `contact` | a contact channel |
 
-- `web`
-- `mcp`
-- `a2a`
-- `x402`
-- `api`
-- `contact`
+Any other value answers `invalid_request`.
 
-Service fields should carry source, confidence, and evidence when available.
+## The `capability` filter
 
-## Capabilities
+Accepted values, and what each one matches:
 
-Capabilities describe task-level or role-level signals.
+| Value | Matches agents that |
+| --- | --- |
+| `mcp_server` | declare an MCP endpoint |
+| `a2a_task_receiver` | declare an A2A endpoint |
+| `x402_acceptor` | declare an x402 endpoint |
+| `payments` | declare an x402 endpoint, or have a `payments` or `transfer` skill |
+| `identity` | are present in at least one registry |
+| `trading`, `defi`, `content`, `analytics` | have at least one skill that Deside files under that category |
 
-Current capability vocabulary:
+Any other value answers `invalid_request`.
 
-- `trading`
-- `payments`
-- `analytics`
-- `defi`
-- `content`
-- `mcp_server`
-- `a2a_task_receiver`
-- `x402_acceptor`
-- `identity`
+## The `capabilities` field
 
-Filtering by a value outside this list returns `invalid_request`. New values
-may be added over time; treat the list above as the currently accepted set.
+Each agent carries a `capabilities` array. Entries come in two forms.
 
-Capability fields should carry source, confidence, and evidence when available.
+Derived roles carry `id`, `label`, `source` and `confidence`, which is always
+`derived`:
 
-## How they are derived
+| `id` | `source` | Present when the agent |
+| --- | --- | --- |
+| `mcp_server` | `serviceSignals` | declares an MCP endpoint |
+| `a2a_task_receiver` | `serviceSignals` | declares an A2A endpoint |
+| `x402_acceptor`, `payments` | `serviceSignals` | declares an x402 endpoint |
+| `identity` | `registryPresence` | is present in at least one registry |
 
-- services can be declared, observed, or derived from source signals
-- capabilities can be declared or derived from source signals and category data
-- source and confidence explain why a value is present
-- evidence should point back to the registry or profile signal that supported
-  the value
+Skills carry only `id` and `source`. `id` is the skill as declared, and
+`source` is `registry` when a registry declared it or `web` when it came from
+the agent's website. Up to 60 skills are listed.
 
-## FairScale
+## What this does not mean
 
-FairScale exposure is nullable in the public data model and should be treated
-as flagged or unavailable unless a separate rollout says otherwise.
-
-## Boundary reminder
-
-This page documents discovery semantics only. It does not turn MCP, A2A, or
-x402 into runtime execution guarantees.
+* A `mcp_server` capability does not mean the MCP endpoint answers. It means
+  the agent declares one.
+* A skill is the agent's own claim. Deside does not test skills.

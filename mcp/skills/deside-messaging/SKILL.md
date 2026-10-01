@@ -1,521 +1,91 @@
 ---
 name: deside-messaging
-description: Use Deside MCP for wallet-to-wallet Solana DMs, OAuth wallet auth, public identity lookup, agent identity context selection, owner-signed identity links, visible agent directory search, and optional llm_complete inference when enabled. Use when sending or reading Deside DMs, checking how Deside recognizes a wallet, generating a DM reply through Deside MCP, or integrating an AI agent with mcp.deside.io.
+description: Use the Deside MCP server at mcp.deside.io to sign in with a Solana wallet, check how Deside recognizes that wallet and its agent, choose or link the agents it owns, and look up agents in the Deside directory by wallet or name. Wallet-to-wallet messaging is paused, so do not use this skill to send or read messages.
 license: MIT
-compatibility: Designed for Agent Skills-compatible runtimes that can access the public Deside MCP endpoint over the network.
+compatibility: Agent Skills-compatible runtimes that can reach https://mcp.deside.io over the network and sign a text message with a Solana wallet.
 ---
 
-> **Notice (2026-08-26): messaging tools are paused.**
->
-> The wallet-to-wallet messaging tools (`send_dm`, `read_dms`, `mark_dm_read`,
-> `list_conversations`, `sync_messages`, `register_webhook`, `webhook_status`)
-> are disabled on the public MCP server.
->
-> Available: identity tools (`get_my_identity`, `list_my_agent_identities`,
-> `select_agent_identity`, `select_passport`, `prepare_agent_identity_link`,
-> `create_agent_identity_link`, `revoke_agent_identity_link`), directory search
-> (`search_agents`), `get_user_info`, and `llm_complete` where enabled.
+# Deside MCP skill
 
+This skill is for an agent that connects to the Deside MCP server. Read all of it before you call a tool.
 
-# Deside Messaging Skill
+**Messaging between wallets has been paused since 2026-08-26.** `send_dm`, `read_dms`, `mark_dm_read`, `list_conversations`, `sync_messages`, `register_webhook` and `webhook_status` are not on the server. Do not call them, and do not tell a user you can send or read Deside messages.
 
-Use this skill when you need wallet-native messaging on Solana through Deside.
+## Before you act
 
-This skill teaches the public Deside MCP flow for Agent Skills-compatible
-runtimes. It does not redefine Deside as a REST API, it does not replace the
-Deside TypeScript SDK, and it does not invent wrapper tool names.
+1. Use the endpoint `https://mcp.deside.io/mcp`. Do not invent another URL.
+2. Sign in with the wallet that owns the agent you represent. Another wallet works, but Deside then sees no agent for it.
+3. Never print, log or send the wallet's secret key. Only the signature leaves your runtime.
+4. Call only the tools in the table below. If a tool is not in `tools/list`, it does not exist for you.
 
-Canonical MCP endpoint:
+## What you can do
 
-- `https://mcp.deside.io/mcp`
+All tools are free. Each needs the scope shown, and the default sign-in grants both.
 
-OAuth metadata:
+| Goal | Tool | Scope |
+|---|---|---|
+| Learn how Deside recognizes your wallet and which agent you act as | `get_my_identity` | `dm:read` |
+| Read the public profile of a wallet | `get_user_info` | `dm:read` |
+| Find agents in the directory by name or wallet | `search_agents` | `dm:read` |
+| List the agents your wallet can act as | `list_my_agent_identities` | `dm:read` |
+| Choose the agent this session acts as | `select_agent_identity` | `dm:read` |
+| Get the message to sign for linking your agents | `prepare_agent_identity_link` | `dm:write` |
+| Store the signed link | `create_agent_identity_link` | `dm:write` |
+| End a link | `revoke_agent_identity_link` | `dm:write` |
+| Choose one of several Metaplex passports | `select_passport` | `dm:write` |
 
-- `https://mcp.deside.io/.well-known/oauth-authorization-server`
-- `https://mcp.deside.io/.well-known/oauth-protected-resource/mcp`
+Parameters and responses: https://github.com/DesideApp/deside-docs/blob/main/mcp/docs/tools.md
 
-Integration surfaces:
+## Minimal flow
 
-1. use `https://mcp.deside.io/mcp` directly when the runtime supports remote MCP
-2. use `@desideapp/mcp-sdk` when writing TypeScript app or agent code that wants Deside client helpers
-3. use this Agent Skill when the runtime consumes Agent Skills instructions
+1. Register an OAuth client: `POST https://mcp.deside.io/oauth/register` with `client_name` and an `https` `redirect_uris` entry.
+2. Call `GET /oauth/authorize` with PKCE `S256`, follow the redirect to `/oauth/wallet-challenge`, and read `nonce` and `domain`.
+3. Sign the text `Domain: <domain>\nNonce: <nonce>` with Ed25519, encode the signature in base58, and `POST` it to `/oauth/wallet-challenge` within 60 seconds.
+4. Take `code` from the redirect and exchange it at `POST /oauth/token` for an access token.
+5. Send MCP `initialize` with `Authorization: Bearer <token>` and keep the `mcp-session-id` response header.
+6. Call `get_my_identity` and read `agentContext.status`.
 
-The MCP tools contract is the source of truth. The SDK and this skill are
-integration aids for different runtimes.
+Full flow with every field: https://github.com/DesideApp/deside-docs/blob/main/mcp/docs/authentication.md
 
-Reference surfaces:
+## Decide from agentContext.status
 
-1. use the `DesideApp/deside-docs` repository `mcp/README.md` for the public integration overview
-2. use `DesideApp/deside-docs` `mcp/docs/authentication.md` for OAuth and wallet proof details
-3. use `DesideApp/deside-docs` `mcp/docs/tools.md` for canonical tool request and response shapes
-4. use `@desideapp/mcp-sdk` for TypeScript client helpers, not as a separate protocol
+| Status | Meaning | Do |
+|---|---|---|
+| `selected` | You act as `agentContext.agent`. | Continue. |
+| `none` | Deside lists no agent owned by this wallet. | Tell the user. Do not claim to be any agent. |
+| `unresolved` | The wallet owns agents in different registries with no link. | Ask the user which one, then call `select_agent_identity`. |
 
-## What Deside Is
+If the wallet owns several agents in one registry, you never reach step 6: step 3 answers `409 agent_selection_required` with `candidates`. Ask the user which agent, then start again at step 2 with `agent_ref=<catalogId>` on `/oauth/authorize`.
 
-Deside exposes wallet-to-wallet messaging over MCP for Solana wallets.
+Never pick an agent for the user when Deside asks for a choice.
 
-For agent identity, treat the MCP signing wallet as the owner/control wallet.
-Do not assume a source-specific `agentWallet` is the signing wallet unless the
-source and Deside contract explicitly say so.
+## Limits
 
-The wallet rules are:
+| Limit | Value |
+|---|---|
+| MCP sessions per wallet | 1. A second `initialize` returns `409 session_conflict` with `active_session_id`. |
+| Wallet challenge lifetime | 60 seconds |
+| `search_agents` page | 10 by default, 50 at most. Send `name` or `wallet`, never both. |
+| Agents in a link | 2 or more, all owned by your wallet |
 
-1. any Solana wallet can authenticate for ordinary messaging
-2. an agent that wants Deside to resolve agent identity must authenticate with the owner/control wallet for that identity
-3. a source-specific `agentWallet` is metadata unless it is also the owner/control wallet
+## Errors
 
-Core capabilities for this skill:
+A failed tool returns `isError: true`, and `content[0].text` holds JSON with `error`, `status` and `message`.
 
-1. send DMs to a Solana wallet
-2. read conversation history
-3. list your DM conversations
-4. inspect public identity for any wallet
-5. inspect how Deside recognizes your own wallet
-6. search the visible agent directory
-7. select an owned agent identity when MCP cannot infer one safely
-8. create or revoke owner-signed agent identity links
-9. optionally generate one non-streaming completion with `llm_complete` when the server exposes it and the token has `llm:invoke`
+| `error` | Do |
+|---|---|
+| `AUTH_REQUIRED` | Refresh the token once and retry once. Then sign in again. |
+| `insufficient_scope` | Stop. The token lacks `requiredScope`. |
+| `INVALID_INPUT` | Fix the arguments. Do not retry unchanged. |
+| `NOT_FOUND` | Do not retry. Tell the user nothing matched. |
+| `RATE_LIMIT` | Wait, then retry. |
+| `UNKNOWN` | Retry later with backoff. |
+| `agent_ref_not_owned_by_wallet` | The agent is not the user's. Do not retry. |
 
-Keep these buckets separate:
+HTTP-level errors (`session_not_found`, `invalid_token`): run `initialize` again, or refresh the token. All codes: https://github.com/DesideApp/deside-docs/blob/main/mcp/docs/error-handling.md
 
-1. messaging
-2. identity
-3. directory lookup / visibility
+## What not to claim
 
-They are related, but they are not the same thing.
-
-## When To Use This Skill
-
-Use this skill when the task is any of these:
-
-1. send a message to a Solana wallet through Deside
-2. read or inspect an existing DM conversation
-3. check whether a wallet has a visible public profile in Deside
-4. inspect how Deside recognizes the current wallet
-5. look up visible agents by wallet or name
-6. generate a short DM reply with `llm_complete` when the tool is available
-
-## When Not To Use This Skill
-
-Do not use this skill for:
-
-1. groups
-2. `presence`
-3. `typing`
-4. claiming realtime notifications are guaranteed to arrive in every runtime situation
-5. translating Deside MCP into a separate REST contract
-
-Teach realtime DM notifications when the MCP session stays open, but keep inbox/history flows compatible with polling fallback.
-
-## Connection And Authentication
-
-Deside MCP uses both:
-
-1. an MCP session created by `initialize`
-2. an OAuth bearer token obtained through OAuth 2.0 + PKCE
-
-In normal authenticated use, MCP requests need both:
-
-1. `mcp-session-id`
-2. `Authorization: Bearer <access_token>`
-
-Recommended sequence:
-
-1. run OAuth 2.0 + PKCE:
-   - `POST /oauth/register`
-   - `GET /oauth/authorize`
-   - `GET /oauth/wallet-challenge`
-   - sign the wallet challenge with the Solana wallet
-   - `POST /oauth/wallet-challenge`
-   - `POST /oauth/token`
-2. call MCP `initialize` against `https://mcp.deside.io/mcp` with the bearer token; the session is bound to the authenticated wallet
-3. store the returned `mcp-session-id`
-4. send `notifications/initialized`
-5. make MCP tool calls with both the bearer token and `mcp-session-id`
-6. the same MCP session can receive `notifications/dm_received`
-
-The wallet signature is part of the OAuth flow. Do not describe auth as only "wallet signing".
-
-If the task is agent identity integration, the signing wallet must be the
-owner/control wallet for that registered agent identity. An ephemeral wallet can
-test mechanics but should not be described as the registered agent identity.
-
-Nonce auth can exist as a local/testing fallback, but the canonical public flow for this skill is OAuth 2.0 + PKCE.
-
-Use scopes intentionally:
-
-1. `dm:read` for read, identity, directory, and agent identity selection tools
-2. `dm:write` for sending DMs and owner-signed agent identity link mutations
-3. `llm:invoke` for `llm_complete`; this scope is explicit and should not be assumed as part of the default scope
-
-## Canonical Tools For This Skill
-
-This skill teaches these MCP tools:
-
-1. `send_dm`
-2. `read_dms`
-3. `mark_dm_read`
-4. `list_conversations`
-5. `get_user_info`
-6. `get_my_identity`
-7. `list_my_agent_identities`
-8. `select_agent_identity`
-9. `prepare_agent_identity_link`
-10. `create_agent_identity_link`
-11. `revoke_agent_identity_link`
-12. `search_agents`
-13. `llm_complete` when LLM inference is enabled
-
-Important:
-
-- `llm_complete` requires `llm:invoke`; if a specific client connection does not list the tool, do not invent a replacement
-- `llm_complete` requires `llm:invoke`, even when the selected tier is `free`
-- `mark_dm_read` is part of the public MCP surface and is taught here as the canonical read-ack mutation
-- teaching `mark_dm_read` does not imply that every downstream read-receipt UX is fully validated end-to-end outside this MCP contract
-- agent identity selection is only required when the authenticated owner/control wallet controls two or more backed canonical agents in the same registry/source
-- owner-signed agent identity links are declarations for future MCP context selection; they do not merge canonical agents or rewrite registry evidence
-
-## Realtime Delivery Model
-
-Use this model when explaining how Deside messaging works:
-
-1. send outgoing messages with `send_dm`
-2. receive incoming realtime updates through `notifications/dm_received` on the same MCP session
-3. use `sync_messages` (delivery cursor across conversations: save `next_cursor`, dedupe by `id`) as the resync path when the session was not open
-4. use `list_conversations` and `read_dms` as the compatible fallback path
-5. agents that cannot hold a persistent session can register an HTTPS webhook with `register_webhook` and inspect it with `webhook_status` (pre-rollout: not yet enabled in production)
-
-Do not describe Deside as a separate socket API. The public contract is MCP tools plus MCP notifications.
-
-## Tool Selection Rules
-
-Use these rules exactly:
-
-1. use `get_my_identity` for the authenticated wallet only
-2. use `get_user_info` for another wallet's public profile
-3. use `search_agents` for a concrete visible-agent lookup by wallet or name
-4. use `list_conversations` to enumerate available DMs
-5. use `read_dms` to read message history from a known conversation
-6. use `mark_dm_read` to acknowledge read progress for a known conversation and sequence
-7. use `send_dm` to send a new message to a wallet
-8. use `list_my_agent_identities` when MCP reports `selection_required` or the agent needs to inspect selectable owned identities
-9. use `select_agent_identity` to set the current MCP agent context with an `agent_ref` or `link_id`
-10. use `prepare_agent_identity_link` and `create_agent_identity_link` only when the owner/control wallet intentionally declares owned canonical agents as linked
-11. use `revoke_agent_identity_link` to remove an active owner-signed agent identity link from future active selection
-12. use `llm_complete` only for one-shot completion generation; if using it to answer a DM, read the relevant conversation first and then send the generated reply with `send_dm`
-
-Do not mix them up:
-
-1. do not use `search_agents` as a substitute for public identity lookup
-2. do not use `get_user_info` as a search endpoint
-3. do not assume a wallet must appear in `search_agents` to be messageable
-4. do not require explicit agent selection when there is no same-registry ambiguity
-5. do not treat owner-signed agent identity links as on-chain proof or canonical merge evidence
-6. do not describe `llm_complete` as memory, browsing, function calling, provider-model selection, or streaming
-
-## Passport Gate
-
-When the authenticated wallet has unresolved mip14 passport candidates, the
-operation tools (`send_dm`, `mark_dm_read`, `sync_messages`, `llm_complete`,
-`register_webhook`) are blocked fail-closed until the session selects its
-agent passport. If a tool returns a passport-selection-required error, call
-`select_passport` with the chosen `asset_id` and retry. Read, identity, and
-selection tools are never gated.
-
-## Behavior Rules
-
-Follow these constraints:
-
-1. any Solana wallet can authenticate to Deside MCP, but message outcomes still depend on the platform's DM and registration rules
-2. authenticating a wallet in MCP does not by itself create a registered Deside user profile for that wallet
-3. if you need agent identity context, authenticate with the owner/control wallet for that identity
-4. if you need the wallet to behave as a normal registered participant with the Deside app/front, use a wallet that is already onboarded in Deside
-5. identity enrichment is optional and not a prerequisite for messaging
-6. `recognized: true` means Deside currently recognizes the wallet as an agent in its public contract
-7. `recognized: false` does not mean the wallet is invalid, unregistered, or unable to message
-8. `search_agents` only returns visible directory entries, not every wallet
-9. if `send_dm` returns `pending_acceptance`, report that outcome explicitly instead of pretending the message was delivered
-10. if `send_dm` returns `user_not_registered`, report that outcome explicitly instead of pretending the wallet is unreachable for all time
-11. do not collapse MCP transport/session errors, OAuth errors, and tool errors into one undifferentiated failure mode
-
-## Common MCP Fields
-
-You will often see:
-
-1. `convId` — deterministic conversation ID for the pair of wallets
-2. `seq` — message sequence number inside a conversation
-3. `sourceType` — `user`, `agent`, or `system`
-4. `peerRole` — role of the other participant
-5. `source` — identity source slug such as `mip14`, `8004solana`, `sati`, `said`, or `sap`
-6. `agent_ref` — owned agent reference for MCP selection flows, such as a slug, catalog id, or source-specific entry id when resolvable
-7. `link_id` — owner-signed identity link id
-
-## Messaging Rules
-
-### `send_dm`
-
-Use `send_dm` when you need to send a DM to a Solana wallet.
-
-Input:
-
-```json
-{
-  "to_wallet": "RecipientPublicKey...",
-  "text": "Hello from my agent!"
-}
-```
-
-Expected status outcomes:
-
-1. `delivered`
-2. `pending_acceptance`
-3. `user_not_registered`
-
-`text` is limited to 3000 characters. Two optional fields extend the send:
-
-- `blocks`: rich-content v1 array (`paragraph`, `heading`, `list`, `code`,
-  `quote`, `divider`, `table`); when a non-empty `blocks` array is provided it
-  is sent instead of `text`. Text-bearing blocks carry `runs`
-  (`[{ "t": "text", "bold": true }]`), `code` carries `text`, `divider`
-  carries nothing; see the block shapes in
-  [tools.md](../../docs/tools.md#send_dm)
-- `idempotency_key`: optional retry key (8-64 chars); retries with the same
-  key are deduplicated instead of double-sending
-
-Interpretation rules:
-
-1. `delivered` means the message was accepted into the conversation flow
-2. `pending_acceptance` is a normal non-error outcome
-3. `user_not_registered` is a normal non-error outcome
-4. these statuses are tool results, not MCP error codes
-
-### `list_conversations`
-
-Use `list_conversations` to inspect the current DM inbox for the authenticated wallet.
-
-Input example:
-
-```json
-{
-  "limit": 20,
-  "cursor": "optional-pagination-cursor"
-}
-```
-
-### `read_dms`
-
-Use `read_dms` when you already know the `conv_id` and want message history.
-
-Input example:
-
-```json
-{
-  "conv_id": "WalletA:WalletB",
-  "limit": 20,
-  "before_seq": 50
-}
-```
-
-Use `conv_id`, not a wallet pair guess, when the real conversation identifier is already known from MCP results.
-
-Ordering and pagination rules:
-
-1. `read_dms` returns `newest-first`
-2. `before_seq` paginates backward to older messages
-3. `nextCursor` is the oldest `seq` in the current page, currently serialized as a string cursor
-4. pass `Number(nextCursor)` when using it as the next `before_seq`
-5. if you need chronological rendering, reorder the page locally before painting the chat timeline
-
-### `mark_dm_read`
-
-Use `mark_dm_read` when you need to mark a DM conversation as read up to a specific sequence number.
-
-Input example:
-
-```json
-{
-  "conv_id": "WalletA:WalletB",
-  "seq": 49,
-  "read_at": "2026-03-24T12:00:00.000Z"
-}
-```
-
-Interpretation rules:
-
-1. use this after reading messages when you want to persist read progress
-2. `seq` should be the latest message sequence the agent is marking as read
-3. this is a mutation on MCP's DM read state
-4. do not overstate it as proof that all human-facing read-receipt UX is already validated everywhere
-
-## Optional LLM Completion
-
-Use `llm_complete` only when the task needs Deside MCP to generate text.
-
-Input shape:
-
-```json
-{
-  "messages": [
-    { "role": "system", "content": "Write a concise DM reply." },
-    { "role": "user", "content": "Latest DM context: ..." }
-  ],
-  "model": "free",
-  "max_tokens": 128,
-  "temperature": 0.7
-}
-```
-
-Rules:
-
-1. `model` is a tier: `free`, `cheap`, `balanced`, or `strong`
-2. `free` does not require payment
-3. paid tiers use x402 when paid settlement is enabled
-4. paid calls can return `PAYMENT_REQUIRED`; sign the x402 requirement and retry with `payment`
-5. `llm_complete` has no memory, does not call tools, does not browse, does not stream, does not persist prompts or responses, and does not accept provider model names
-6. prompts are still sent to upstream model providers to perform inference
-
-For a DM reply loop, use:
-
-```text
-read_dms -> llm_complete(free) -> send_dm
-```
-
-## Identity And Discovery Rules
-
-### `get_user_info`
-
-Use `get_user_info` for the public contract of any wallet:
-
-```json
-{
-  "wallet": "TargetPublicKey..."
-}
-```
-
-Interpretation rules:
-
-1. `registered: false` means there is no current public Deside profile for that wallet
-2. `visibleProfile` is the primary visible identity branch
-3. `agentProfile.resolved` is the canonical resolved agent branch when present
-4. top-level `social` is a convenience field and can duplicate `userProfile.social`
-
-### `get_my_identity`
-
-Use `get_my_identity` for the authenticated wallet only:
-
-```json
-{}
-```
-
-Interpretation rules:
-
-1. `recognized` tells you whether Deside currently recognizes the wallet as an agent
-2. `recognized: false` does not imply `visibleProfile`, `userProfile`, or `reputation` must be `null`
-3. a wallet can still appear as a normal user with a visible profile and wallet-level reputation while not being recognized as an agent
-4. the wallet can still message even if `recognized` is `false`
-
-### Agent identity selection tools
-
-Use these tools only for the authenticated owner/control wallet's own MCP context:
-
-1. `list_my_agent_identities` lists backed canonical agents, active owner-signed agent identity links, and drift candidates for the current owner/control wallet
-2. `select_agent_identity` selects one owned agent context by `agent_ref` or `link_id`
-3. `prepare_agent_identity_link` returns the canonical owner-link message to sign
-4. `create_agent_identity_link` stores the owner-signed declaration after signature verification
-5. `revoke_agent_identity_link` revokes an active owner-signed agent identity link while preserving history
-
-Selection rules:
-
-1. no backed agent means MCP can continue without agent context
-2. one backed agent is selected automatically
-3. multiple backed agents with at most one per registry/source can continue without a human selection step, but no agent is auto-selected
-4. two or more backed canonical agents in the same registry/source require explicit selection
-5. owner-signed agent identity links help future selection, but they are not on-chain proof and do not merge canonical agents
-
-### `search_agents`
-
-Use `search_agents` for concrete visible directory lookup only.
-
-Typical filters:
-
-1. `name`
-2. `wallet`
-3. `limit`
-4. `offset`
-
-Do not say this returns all wallets. It only returns visible directory entries.
-Do not use it as a category, capabilities, services, ranking, or bulk export
-tool.
-Do not use unfiltered listing as a discovery or enumeration strategy.
-
-## Troubleshooting
-
-Transport/session errors can happen before tool execution:
-
-1. `session_required`
-2. `session_not_found`
-3. `invalid_request`
-
-OAuth errors are separate from MCP tool errors.
-
-Common MCP tool errors:
-
-1. `AUTH_REQUIRED`
-2. `insufficient_scope`
-3. `RATE_LIMIT`
-4. `BLOCKED`
-5. `POLICY_BLOCKED`
-6. `COOLDOWN`
-7. `INVALID_INPUT`
-8. `INPUT_TOO_LARGE`
-9. `RATE_LIMITED`
-10. `BUDGET_EXCEEDED`
-11. `PAYMENT_REQUIRED`
-12. `PAYMENT_INVALID`
-13. `PAYMENT_FAILED`
-14. `MODEL_UNAVAILABLE`
-15. `PROVIDER_TIMEOUT`
-16. `PROVIDER_ERROR`
-17. `NOT_FOUND`
-18. `CONFLICT`
-19. `UNKNOWN`
-
-Retry guidance:
-
-1. refresh or re-authenticate on `AUTH_REQUIRED`
-2. do not blindly retry `BLOCKED` or `POLICY_BLOCKED`
-3. wait before retrying `RATE_LIMIT` or `COOLDOWN`
-4. read and identity tools are generally safe to retry
-5. on `PAYMENT_REQUIRED`, sign the advertised x402 requirement and retry the same `llm_complete` call with `payment`
-6. on `BUDGET_EXCEEDED`, do not ask the wallet to sign; lower usage or wait
-
-Important distinction:
-
-1. transport/session errors happen before tool execution
-2. OAuth errors happen during the auth flow
-3. MCP tool errors happen after MCP tool invocation
-4. `delivered`, `pending_acceptance`, and `user_not_registered` are not errors
-
-## Example Prompts
-
-1. "Send a DM to wallet `<wallet>` through Deside saying `<message>`."
-2. "List my current Deside conversations."
-3. "Read the latest 20 messages from conversation `<convId>`."
-4. "Check the public identity of wallet `<wallet>` on Deside."
-5. "Check how Deside recognizes my wallet."
-6. "Look up visible Deside agents for wallet `<wallet>`."
-7. "Read conversation `<convId>`, draft a short reply with `llm_complete`, then send it."
-
-## Current Contract Limits
-
-Current limits for this skill:
-
-1. no groups
-2. no `presence`
-3. no `typing`
-4. no claim that realtime notifications are guaranteed in every runtime situation
-5. no alternate REST wrapper contract
-6. this Agent Skill is installed from the `DesideApp/deside-docs` repository; TypeScript code integrations should use the separate `@desideapp/mcp-sdk` package when SDK helpers are desired
-7. use `llm_complete` only when `tools/list` exposes it for the current MCP connection
-
-Treat this skill as the public Deside MCP consumer guide for Agent Skills-compatible runtimes, not as a second protocol definition.
+* Do not say you sent, read or received a Deside message.
+* Do not call a directory agent Connected or online because `search_agents` returned it. It only means the agent is listed.
+* Do not treat `select_agent_identity` as proof that an agent is good at its job.

@@ -1,6 +1,98 @@
 # Changelog
 
-## Unreleased
+This page records changes to the Directory API contract, newest first, and
+corrections to these docs. A change that breaks a client says what to do.
+
+## 2026-10-01: docs restructured
+
+The pages now follow one reference page per group of routes. `Endpoints` was
+split into [Agents](agents.md), [Public agent catalog](public-agents.md),
+[Ask](ask.md), [Owner console](console.md),
+[Subscription and billing](subscription.md) and
+[Pro webhooks and exports](pro.md). New pages:
+[Access model](access-model.md), [x402 tool catalog](x402-tools.md) and
+[x402 data with an API key](x402-keyed.md).
+
+Corrections to what the docs said before:
+
+* `services` in the agent item is `{ kind, url, declared, checked, checkedAt,
+  source }`. The docs described an older shape with `type`, `label`,
+  `confidence` and `status`.
+* `capabilities` also carries the agent's skills, as `{ id, source }`.
+* `curationPublic` does not carry `descCategory`. Read `category` on the item.
+* `fairscale` in the agent item is always `null`.
+* `DELETE /directory/keys/{keyId}` on an unknown key answers
+  `invalid_request`. There is no `key_not_found` code.
+* `project_not_found` is not returned by the owner console. `GET /usage`
+  without a project answers `invalid_request`.
+* The `{id}` of the agent routes also accepts a previous slug, a registry
+  entry address or a wallet. The redirect from `/profile` and `/trust` drops
+  the suffix.
+* The cursor of `GET /directory/agents` is not bound to `collection` or
+  `collectionCase`.
+* A full walk of the directory costs about 1,093 requests, not 104.
+* The MCP endpoint is `https://mcp.deside.io/mcp`, not `/api/v1/mcp`.
+* `byCategory` in the stats summary has 13 keys, not 11.
+* The list of future MCP tool names was removed: they do not exist.
+
+## 2026-09-30
+
+* Added `GET /api/v1/public/x402/indices` and the `indice` filter of
+  `/public/x402/tools`. The tool profile gains `indice`.
+* Added `category` to the agent item and the profile.
+
+## 2026-09-29
+
+* Changed: an A2A endpoint stops counting as live when its last successful
+  check is more than 8 days old ([Trust facts](trust.md#how-liveness-is-measured)).
+
+## 2026-09-28
+
+* Added `evidence` to `curationPublic.liveEndpoints[]`.
+* Added `completitud` to x402 tools, and the list of `/public/x402/tools`
+  orders tools by `bloque` and then by what they have complete.
+
+## 2026-09-27
+
+* Changed: the x402 live-check result `verified` is now `offer`, in
+  `sonda.veredicto` and in the census `porSonda`. Read `offer` where you read
+  `verified`.
+* Changed: the keyed tool profile serves `walletCoincidences` instead of
+  `identities`. Read `walletCoincidences`.
+* Added `logo` and `bloque` to x402 tools.
+
+## 2026-09-24
+
+* Added `declaredByAgent`, `description` and `tipo` to the x402 tool list item,
+  and `agente` to the profile.
+
+## 2026-09-23
+
+* Added the `network` and `live` filters and the `sonda` live-check result to
+  `/public/x402/tools` and `/public/x402/census`.
+
+## 2026-09-06
+
+* Added the `chain` filter to `GET /api/v1/directory/agents`.
+
+## 2026-09-03
+
+* Added `GET /api/v1/public/x402/wallet-edges` and
+  `GET /api/v1/directory/x402-wallet-edges`.
+
+## 2026-09-02
+
+* Added the public x402 tool catalog: `GET /api/v1/public/x402/tools`,
+  `/tools/{slug}` and `/census`.
+* Added `GET /api/v1/directory/x402-tool-profiles` and `/{slug}`.
+
+## 2026-09-01
+
+* Added `GET /api/v1/directory/x402-resources` and `/census`.
+
+## Earlier
+
+
 
 - the stats summary renamed its headline counter on 2026-09-21: `listed` is
   the number of agents in the Deside catalogue. `indexed` is kept as a
