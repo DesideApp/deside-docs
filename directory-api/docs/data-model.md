@@ -107,20 +107,16 @@ agent, as opposed to what the agent declares about itself. It is versioned:
   registry and nothing more was observed; `profile` means a readable profile
   was found; `responds` means an endpoint answered. The state is
   anti-flapping: one failed probe never moves it, two consecutive failed
-  sweeps do. How this relates to the paid verified check is explained in
-  [Trust](trust.md)
+  sweeps do. How it is measured is explained in
+  [Trust](trust.md#how-liveness-is-measured)
 - `stateSince`: when the agent entered its current state
 - `probedAt`: when the agent was last probed, regardless of the outcome
 - `protocol`: the protocol the probe spoke, when one was identified. Today
   either `mcp` or `mcp-auth`
-- `verified`: `true` only while a paid verification period is live. Absence of
-  a badge is not a negative fact about the agent, and should not be presented
-  as one
-- `verifiedCheck`: `passing` or `failing` for the verified agent's declared
-  endpoints. `verifiedFailed` lists the failing targets, and
-  `verifiedCheckedAt` is when that health was measured
-- `verifiedCheckSummary`: aggregate health as `{ at, ok, total }`. Only present
-  once health has been measured
+- `verified`, `verifiedCheck`, `verifiedFailed`, `verifiedCheckedAt` and
+  `verifiedCheckSummary`: reserved. Agent verification is not offered
+  today, so `verified` is `false` and the rest carry no data. See
+  [Trust](trust.md#reading-the-verified-fields)
 - `agenticPayments`: `true` when the agent was observed to accept
   machine-to-machine payment
 - `humanPayment`: how a human pays this agent, as `{ declared, reachable,

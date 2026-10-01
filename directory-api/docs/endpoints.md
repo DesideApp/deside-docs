@@ -70,12 +70,14 @@ What the numbers count:
 
 | Key | Counts | Unit |
 |---|---|---|
-| `indexed` | agents listed in the Deside catalogue | agents |
-| `registered` | deprecated alias of `indexed`, same number | agents |
+| `listed` | agents listed in the Deside catalogue | agents |
+| `indexed` | deprecated alias of `listed`, same number | agents |
+| `byChain` | `listed` split by `solana` and `evm` | agents |
 | `connected` | listed agents whose owner has proved ownership by linking the owning wallet | agents |
 | `respondingAgents` | listed agents with at least one live endpoint | agents |
 | `respondingByKind` | the same, split by `mcp`, `a2a`, `x402` | agents |
 | `byCategory` | listed agents per category | agents |
+| `byCategoryByChain` | `byCategory` split by `solana` and `evm` | agents |
 | `endpoints` | per protocol, `declared` / `checked` / `alive` | URLs |
 | `topSkills` | `{ label, n }` per skill | agents |
 | `signalCounts` | agents declaring `mcp`, `a2a`, `x402`, `web`, `x` | agents |
@@ -83,7 +85,7 @@ What the numbers count:
 
 Notes:
 
-- `indexed` counts AGENTS, not registry entries. One agent present in three
+- `listed` counts AGENTS, not registry entries. One agent present in three
   registries is one agent here. The number matches the `total` of
   `GET /api/v1/public/agents`, because both count the same catalogue
 - `endpoints` is the only block counted in URLs, and the two units do not
@@ -92,27 +94,27 @@ Notes:
   `alive` as "how many endpoints answer" and `respondingAgents` as "how many
   agents have one"
 - `byCategory` always carries the same eleven category keys, and a category
-  with no agents is a measured `0`. Its sum is lower than `indexed` because
+  with no agents is a measured `0`. Its sum is lower than `listed` because
   unclassified agents are not spread across categories
 - the snapshot is written once a day. Between writes the response repeats the
   last one, with its own `measuredAt`: the date is never hidden or moved
   forward
 - a key that is absent was not measured. Absence is never served as `0`, and
-  when no snapshot exists at all, `indexed` and `registered` are `null`
+  when no snapshot exists at all, `listed` and `indexed` are `null`
 - the response is cached for 300 seconds
 
-- being indexed says nothing about whether the agent answers, has an
-  accountable owner, or is verified: those are `respondingAgents`,
-  `connected` and the verified check, and each is counted on its own
-- `registered` is kept only so existing clients do not break, and will be
-  removed. Read `indexed`
+- being listed says nothing about whether the agent answers or has an
+  accountable owner: those are `respondingAgents` and `connected`, and each
+  is counted on its own
+- `indexed` is kept only so existing clients do not break, and will be
+  removed. Read `listed`
 
 ### `GET /api/v1/public/agents`
 
 Notes:
 
 - the open catalogue list: minimal card per agent plus `total`
-- `total` counts the same agents as `indexed` above
+- `total` counts the same agents as `listed` above
 - this is the product shape, not the Directory API contract; the vendible
   contract is `GET /api/v1/directory/agents`
 

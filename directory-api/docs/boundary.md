@@ -56,14 +56,14 @@ plainly:
   project. Its person is the project owner and its credential is the console
   proof. This is the one documented in [Endpoints](endpoints.md).
 - `POST /api/v1/directory/agents/:catalogId/subscription/...` is something else
-  entirely: the Verified subscription of one agent. Its person is the agent
-  owner and its credential is a chat session plus proof of ownership of that
-  agent. Same word, same prefix, different rail.
+  entirely: a reserved rail for verifying one agent, which is not offered
+  today. Its person would be the agent owner, with a chat session plus proof
+  of ownership of that agent. Same word, same prefix, different rail.
 
 Eleven routes belong to that agent-owner rail and are deliberately absent from
 this documentation: the agent's declaration and its derived status, the owner
-overlay, the check report, and the four accept/cancel routes of the Verified
-subscription, plus the two read routes above them. They are not reachable with a
+overlay, the check report, and the four accept/cancel routes of that reserved
+rail, plus the two read routes above them. They are not reachable with a
 Directory API key, they do not consume Directory API quota, and their shapes are
 not part of this contract.
 

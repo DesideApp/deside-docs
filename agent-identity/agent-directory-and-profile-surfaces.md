@@ -190,13 +190,17 @@ They should not be derived separately by the frontend or by MCP documentation.
 
 ### Agent Token
 
-Agent token status is resolved by the backend from source-aware evidence.
+The backend resolves an agent's token from evidence that names its source.
+The public status is one of two values:
 
-Today, verified agent-token status comes from a native Metaplex binding from the
-agent identity to the token mint.
+- `declared`: a source ties a token mint to this agent. The sources are
+  named in `declaredBy`. When the tie is a native Metaplex binding from the
+  agent identity to the mint, `nativeBy` names it.
+- `none`: no source ties a token to this agent.
 
-Other sources can contribute declared token evidence only when it appears in
-allowed agent-token metadata paths.
+**A declared token is a claim, not a verification.** A native binding says
+the agent's record points to the mint. It does not say who runs the token,
+and Deside does not verify agent tokens today: `verifiedBy` is always `null`.
 
 Deside should not infer an agent token from:
 

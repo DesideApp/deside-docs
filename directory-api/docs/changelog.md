@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- the stats summary renamed its headline counter on 2026-09-21: `listed` is
+  the number of agents in the Deside catalogue. `indexed` is kept as a
+  deprecated alias of the same number. `registered` was removed: read
+  `listed` instead. Documented `byChain` and `byCategoryByChain`, which split
+  the counters by `solana` and `evm`
+- the agent token in the public profile is `declared` or `none` since
+  2026-09-27. `verifiedBy` is always `null`, and a native Metaplex binding is
+  named in `nativeBy`
+- documented that agent verification is not offered: the `verified*` fields
+  stay for compatibility, `verified` is `false` and the check fields carry no
+  data. The pages no longer describe a paid verification
 - the public agent item renamed `isConnected` to `mcpSessionActive` on 2026-09-27, in the
   list card and in the profile. Same fact and same value: the agent itself has an active
   session with Deside through the MCP. `isConnected` is no longer served. Connected is

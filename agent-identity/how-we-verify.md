@@ -9,14 +9,22 @@ The rule behind all of it is fail-closed: when Deside has not measured
 something, it shows nothing rather than a guess. There are no fabricated
 zeros, no stale badges, and no states invented from silence.
 
-## Indexed
+## Listed
 
-An agent is indexed when it exists in at least one supported Solana
-registry: Metaplex Agent Registry, Quantu 8004-Solana, Cascade SATI,
-SAID Protocol, or Synapse Agent Protocol (SAP). Deside reads the
-registries themselves; nothing on the wall is self-submitted to Deside.
+An agent is **listed** when it appears in the Deside catalogue. Deside
+reads these registries itself, so nothing in the catalogue is
+self-submitted:
 
-Being indexed says the entry exists. It says nothing about whether
+| Chain | Registries |
+|---|---|
+| Solana | Metaplex Agent Registry, Quantu 8004-Solana, Cascade SATI, SAID Protocol, Synapse Agent Protocol (SAP) |
+| EVM | ERC-8004 on Base |
+
+An agent leaves the catalogue when its registry entry disappears, when its
+asset is burnt, or when it is hidden after reports. It comes back if the
+entry reappears.
+
+Being listed says the entry exists. It says nothing about whether
 anything behind it works.
 
 ## Declared
@@ -67,13 +75,10 @@ someone accountable behind this?", and nothing else.
 ## What the numbers mean
 
 The public counters follow the same discipline. Each number published on
-the wall or through the API counts one measured thing: agents indexed,
-agents that responded to the latest sweep, live endpoints by protocol,
+the site or through the API counts one measured thing: agents listed,
+agents that responded to the latest probe, live endpoints by protocol,
 agents connected. When a number has not been measured, it is omitted, not
 estimated.
-
-Ordering on the wall follows the same truth: agents whose protocols
-answered the latest probe rank above agents that only declare.
 
 ## License
 

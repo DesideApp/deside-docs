@@ -22,9 +22,9 @@ the standard Directory API error envelope.
   "id": "agent-catalog-1",
   "slug": "agent-slug",
   "connected": true,
-  "verified": true,
-  "verifiedCheck": "passing",
-  "verifiedCheckedAt": "2026-07-06T21:00:00.000Z",
+  "verified": false,
+  "verifiedCheck": null,
+  "verifiedCheckedAt": null,
   "verifiedFailed": [],
   "collectionBadges": [{ "case": "PASSPORT", "address": "Coll111..." }],
   "lastActiveAt": "2026-07-06T22:33:11.000Z",
@@ -59,13 +59,13 @@ Fields:
 | `id` | Canonical Directory API agent id (`catalogId`). |
 | `slug` | Current public slug, or `null`. |
 | `connected` | `true` only when the agent's owner has proved ownership by linking, with a signature, the wallet that owns the agent. Same meaning as in the list item. |
-| `verified` | `true` only while a paid verification period is live. It is a live fact, not a stored label: it turns off by itself when the period ends. |
-| `verifiedCheck` | `passing` or `failing` for a verified agent's declared endpoints, or `null` when the agent is not verified or has not been checked. |
-| `verifiedCheckedAt` | When that health was last measured, or `null`. |
-| `verifiedFailed` | The failing targets, populated only when `verifiedCheck` is `failing`. Empty otherwise. |
+| `verified` | Reserved. Agent verification is not offered today, so expect `false`. See [Reading the verified fields](#reading-the-verified-fields). |
+| `verifiedCheck` | Reserved, `null` while `verified` is `false`. |
+| `verifiedCheckedAt` | Reserved, `null` while `verified` is `false`. |
+| `verifiedFailed` | Reserved, empty while `verified` is `false`. |
 | `collectionBadges` | On-chain collection membership as `{ case, address }` entries. Evidence of membership, not an endorsement. |
 | `lastActiveAt` | Raw projected last activity timestamp, or `null`; no freshness bucket is derived by the API. |
-| `receipts.payer` | Verified aggregate spend by the agent as payer: `calls`, `totalUsdc`, and `lastAt`. |
+| `receipts.payer` | Aggregate spend by the agent as payer: `calls`, `totalUsdc`, and `lastAt`. |
 | `receipts.service` | Reserved for future service/gateway receipts; always `null` in V1. |
 | `registries` | Registry ids present in the directory projection. |
 | `registryCount` | Number of projected registry ids. |
@@ -76,53 +76,28 @@ Fields:
 
 ## Reading the verified fields
 
-`verified` answers one question: is someone paying to keep this agent's claims
-under active checking, right now. It says nothing bad about an agent that does
-not have it, and it is not a score. Treat it as a positive fact when present
-and as no information when absent.
+Deside does not offer agent verification today. The four `verified*` fields
+stay in the response so existing clients do not break, and they carry no
+information: `verified` is `false`, the check fields are `null`, and
+`verifiedFailed` is empty.
 
-When an agent is verified, `verifiedCheck` tells you whether its declared
-endpoints are answering. A verified agent whose check is failing is still
-verified: the badge is about the commitment, and the check is about today.
+**Do not read `false` as a negative fact about an agent.** It is the same
+value for every agent.
 
-## How liveness and verification are measured
+## How liveness is measured
 
-Two independent systems produce these facts, and neither can overwrite the
-other. Knowing which one you are reading is the difference between the two
-questions they answer.
+The liveness state (`curationPublic.state`, and `responds` in particular)
+comes from the census sweep. Once a day, every listed agent gets its
+declared endpoints greeted at the protocol level: an MCP handshake, an A2A
+card fetch, an x402 discovery read. No tools are invoked.
 
-The liveness state (`curationPublic.state`, and `responds` in particular) comes
-from the census sweep. Every listed agent, subscriber or not, gets its declared
-endpoints greeted at the protocol level: an MCP handshake, an A2A card fetch, an
-x402 discovery read. No tools are invoked. The state is anti-flapping by
-design: a single failed probe changes nothing, and only two consecutive sweeps
-failing the same handshake move the state down. `responds` is lost when the
-endpoint has genuinely stopped answering, never because of one bad network day.
+The state is anti-flapping: a single failed probe changes nothing, and only
+two consecutive sweeps failing the same handshake move the state down. An
+agent loses `responds` when the endpoint has stopped answering, not because
+of one bad network day.
 
-The verified check is the daily scrutiny that paid verification buys. It goes
-further than the handshake: it lists the agent's MCP tools and actually invokes
-a bounded number of them, safe ones only (tools that declare themselves
-destructive are never called). Invocations rotate, least-recently-tried first,
-so over a few days the whole toolset gets exercised without hammering the
-agent's server every night.
-
-Failure semantics, in one place:
-
-- A failing tool never touches the liveness state. The two systems write to
-  different places.
-- A failing tool never removes the badge. The badge follows the subscription,
-  and only payment events move it.
-- A single failure is not a verdict inside the check either: results feed a
-  per-target health streak, and only sustained failure across retries is
-  reported as down.
-- The check seals which URL it probed together with the result. If the owner
-  changes a declared URL after a passing check, that pass stops being shown for
-  the new URL until the next check runs.
-- The agent's owner is notified inside the product when a check result changes,
-  so a real problem reaches the person who can fix it first.
-
-Everything here is stated as positive, dated facts: what was checked, when, and
-what answered. Absence of a fact is absence of information, not an accusation.
+A handshake that answers says the endpoint is up. It does not say the
+agent's tools work or that its answers are good.
 
 ## Freshness
 
@@ -135,7 +110,7 @@ to zero unless the projection has no receipt facts.
 
 ## Receipt Families
 
-`payer` is the verified spend family for calls paid by the agent. `service` is
+`payer` is the spend family for calls paid by the agent. `service` is
 reserved for future service-side or gateway-settled receipts and remains
 `null` in V1 so clients can depend on the family being present.
 
