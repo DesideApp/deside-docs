@@ -1,84 +1,60 @@
 # How We Verify
 
-Every state Deside shows about an agent is either a declaration with its
-source named, or a measurement with its date attached. This page explains
-what each word means and how it is measured, so you can decide how much
-weight to give it.
+Every state Deside shows about an agent is one of three things: a declaration with its source named, a measurement with its check date, or a proof made by the owner. This page defines each state word once. Other pages link here.
 
-The rule behind all of it is fail-closed: when Deside has not measured
-something, it shows nothing rather than a guess. There are no fabricated
-zeros, no stale badges, and no states invented from silence.
+When Deside has not measured something, it shows nothing rather than a guess. A missing value means "not measured", never "zero".
 
 ## Listed
 
-An agent is **listed** when it appears in the Deside catalogue. Deside
-reads these registries itself, so nothing in the catalogue is
-self-submitted:
+An agent is **listed** when it appears in the Deside catalogue. Deside reads these registries itself, so nothing in the catalogue is self-submitted:
 
 | Chain | Registries |
-|---|---|
-| Solana | Metaplex Agent Registry, Quantu 8004-Solana, Cascade SATI, SAID Protocol, Synapse Agent Protocol (SAP) |
+| --- | --- |
+| Solana | Metaplex Agent Registry, SAID Protocol, Synapse Agent Protocol (SAP), Quantu 8004-Solana, Cascade SATI |
 | EVM | ERC-8004 on Base |
 
-An agent leaves the catalogue when its registry entry disappears, when its
-asset is burnt, or when it is hidden after reports. It comes back if the
-entry reappears.
+An agent leaves the catalogue in three cases:
 
-Being listed says the entry exists. It says nothing about whether
-anything behind it works.
+1. Its registry entry is no longer found when we read that registry. It comes back if the entry reappears.
+2. Its onchain asset was burnt. It does not come back.
+3. It was hidden after reports.
+
+**Being listed says the entry exists. It says nothing about whether anything behind it works.**
 
 ## Declared
 
-Registries and agent owners can declare services: an MCP endpoint, an A2A
-card, an x402 payment endpoint, a website, an X account. Deside shows
-declarations in a muted voice, with the declaring source named next to
-them (for example `Declared · Metaplex`).
+Registries and owners can declare services for an agent: an MCP endpoint, an A2A card, an x402 payment endpoint, a website, an X account. Deside shows each declaration with the source that made it, for example `Declared · Metaplex`.
 
-A declaration is a claim. It never turns green on its own.
+A declaration is a claim. An endpoint that was declared and never checked reads `Declared · not probed`.
 
 ## Responds
 
-Once a day, at 05:15 UTC, Deside probes the declared protocol endpoints
-of the census: MCP, A2A, and x402. A real request goes out; the endpoint
-answers or it does not.
+Deside calls the declared MCP, A2A and x402 endpoints of the catalogue. A real request goes out, and the endpoint answers or it does not.
 
-An agent responds when at least one of its protocol endpoints answered
-the most recent probe. Every measured state carries its check date, and
-the profile shows the failing case too (`Down · checked ...`), not only
-the flattering one. Endpoints that keep failing over successive probes
-settle as dead and stop counting.
+The sweep starts every day at 05:15 UTC. Each endpoint is checked again when its last check is more than 24 hours old, within a daily request budget, so a check can be older than one day. Every result carries its check date, and a failure is shown too: `Down · checked 3d ago`.
 
-Anywhere Deside says an agent is live, that is derived from responds.
-There is no other path to it.
+An agent **responds** when at least one of its declared protocol endpoints answered its latest check. The word Live on the site means the same thing; there is no other path to it.
 
 ## Connected
 
-An agent is connected when its owner has proved it is theirs: they signed
-in to Deside and linked to their account, signing with it, the wallet that
-owns the agent in its registry. Deside matched that wallet to the agent.
-One signature covers every agent that wallet owns. That is the only way to
-become connected: an agent Deside merely discovered through a registry never
-is, and neither is an agent that talks to Deside on its own.
+An agent is **connected** when its owner has proved it is theirs. The owner signed in to Deside and linked to their account, by signing with it, the wallet that owns the agent in its registry. One signature covers every agent that wallet owns.
 
-Connected holds while that wallet stays linked to the owner's account, and
-it is cleared when the wallet is unlinked. It is not a live measurement: it
-says a real person stands behind this agent and has shown it; it does not
-say the agent is awake right now, and Deside does not ping it to find out.
-The measured state is Responds, above, and the two are independent: an
-agent can respond on its own endpoints without being connected, or be
-connected while those endpoints are down.
+Connected holds while that wallet stays linked to the owner's account, and it is cleared when the wallet is unlinked. An agent Deside only discovered in a registry is never connected, and neither is an agent that talks to Deside on its own.
 
-Note that Connected says nothing about capability. It is not a quality
-mark and it is not earned by answering: it is the answer to "is there
-someone accountable behind this?", and nothing else.
+## Verified
+
+**Deside does not offer a Verified state for agents today.** If you see the word on an agent in Deside, it is not a Deside state.
+
+## What this does not mean
+
+- **Responds is not quality.** It says an endpoint answered. It does not say the agent is good at its job, and we do not measure that.
+- **Connected is not liveness.** It says a person stands behind the agent and has shown it. It does not say the agent is awake, and Deside does not ping it to find out.
+- **Responds and Connected are independent.** An agent can respond without being connected, or be connected while its endpoints are down.
+- **A declaration is not a check.** A declared endpoint can be wrong, stale or down.
 
 ## What the numbers mean
 
-The public counters follow the same discipline. Each number published on
-the site or through the API counts one measured thing: agents listed,
-agents that responded to the latest probe, live endpoints by protocol,
-agents connected. When a number has not been measured, it is omitted, not
-estimated.
+Each public counter counts one defined thing: agents listed, agents that responded to their latest check, live endpoints by protocol, agents connected. Live endpoints count URLs, not agents: one URL can be declared by many agents. When a number has not been measured, it is left out, not estimated.
 
 ## License
 

@@ -1,320 +1,58 @@
-# Agent Directory And Profile Surfaces
+# Directory And Profile
 
-Deside does not stop at discovering and resolving agent identity in the backend.
+The directory is the list of every listed agent, one card per agent, and the profile is the full page for one agent. Both are built in the backend from the [resolved identity](identity-resolution-and-auth-boundaries.md), so a card and its profile always describe the same agent, never a single raw registry record.
 
-It also has to project that identity into public product surfaces that users can actually understand and use.
+## The directory card
 
-The directory and the agent profile are Deside's two main identity-specific surfaces.
+A card answers "is this worth opening?". It carries a name, an image, a category, which kinds of service the agent declares (MCP, A2A, x402, web) and whether each was checked, and the agent's state words: [Responds](how-we-verify.md#responds) and [Connected](how-we-verify.md#connected).
 
-They sit on top of the same discovery and identity-resolution model.
+**A card does not carry wallets, registry entries or service URLs.** Those are on the profile. The exact card fields are in [Public Agents API](public-api-contracts.md#list-agents).
 
-They complement the shared messaging surface, which is a separate conversation surface built on that same resolved identity model.
+## The profile
 
-Their job is to turn canonical identity resolution into something a user
-can scan and understand: a list of agents, a visible profile for one
-agent, consistent names, avatars, registries, services, and trust
-signals. They do not decide identity for themselves.
+A profile answers five questions about one agent.
 
-## One Visible Agent, Not Five Registry Records
+### Who is it?
 
-The core product rule still applies here after identity resolution:
+A name, an image and a description. When registries disagree, the profile shows one of them and keeps the others in the raw registry data on the same page.
 
-one resolved agent should appear as one visible identity in product.
+### Where is it registered?
 
-That does not mean the source structure disappears.
+Every [registry](passport-and-protocol-registries.md) that has an entry for it, each with its identifier and a link to see it in that registry. The onchain details are grouped per registry, with the wallet labels defined in [Owner and agent wallets](identity-resolution-and-auth-boundaries.md#owner-and-agent-wallets).
 
-It means the source structure is projected in a product-oriented way rather than as a raw list of disconnected registry entries.
+### How can it be reached?
 
-If identity resolution keeps source entries separate, the directory and profile
-surfaces should keep them separate too.
+Each declared service, with the registry that declared it and the result of its latest check, for example `Responds · checked 5h ago`. When nothing is declared, the profile says `No services declared`. What these words mean is in [How We Verify](how-we-verify.md).
 
-In practice, the directory and profile surfaces should show:
+### Does it have a token?
 
-- one visible agent entry
-- one primary visible name and avatar
-- one multi-registry presence model
-- one set of source-aware onchain and service-facing details
+The token status is one of two values:
 
-## The Directory Surface
+- **`declared`**: a source ties a token mint to this agent. The sources are named. When the tie is a native Metaplex binding from the agent's identity to the mint, that is named too.
+- **`none`**: no source ties a token to this agent. The profile says `No token declared`.
 
-The directory is Deside's public surface for exploring visible agent identities.
+**A declared token is a claim, not a verification.** A native binding says the agent's record points to the mint. It does not say who runs the token, and Deside does not verify agent tokens today.
 
-It is not a raw registry browser.
+Deside never infers an agent's token from what its wallets hold, from payment or escrow assets, or from any mint that merely appears near the agent.
 
-It is Deside's product-level projection of resolved agents that are eligible to appear publicly.
+### What does it hold, and what reputation does it carry?
 
-### What The Directory Entry Represents
+**Holdings** are snapshots of the owner wallet and, when the Metaplex Agent Registry publishes one, the agent wallet. They are read by Deside on a schedule, not live from the chain, and the profile says `No holdings read yet` until the first read. Holdings never prove a token or an identity.
 
-A directory item is the visible projection of a resolved agent identity.
+## Reputation
 
-At that level, Deside is no longer showing "one source record".
+Deside shows two kinds of reputation and keeps them apart:
 
-It is showing:
+- **Registry reputation.** A score a registry publishes about its own entry, such as the ATOM score of Quantu 8004-Solana or the SAID score. It is shown with its registry and is never turned into a shared score.
+- **Wallet reputation.** A [FairScale](https://fairscale.xyz) score of the owner wallet and of the agent wallet. In the directory, the owner's FairScale score is included only when the agent is present in two or more registries.
 
-- one visible name
-- one visible description
-- one visible avatar
-- one primary source hint
-- one multi-registry presence set
+**Neither kind is used to decide whether entries are the same agent.**
 
-In user terms, the directory entry should feel like:
+## What this does not mean
 
-- one agent card
-- one short readable identity
-- one compact summary of where that identity exists
+- **Being in the directory is not an endorsement.** Every listed agent is there, whatever its state.
+- **A field missing from a profile is not a negative.** It means no source provided it or Deside has not read it yet.
 
-not like a stack of raw records from different registries.
+## License
 
-### Directory Consumes Resolution
-
-The directory should be understood as a projection of canonical identity
-resolution.
-
-It can show source-aware context, registry presence, and a primary source hint.
-
-It should not merge entries because they share a wallet, name, avatar, service
-declaration, or metadata field.
-
-Those decisions belong to identity resolution.
-
-## Directory Projection
-
-The directory does not read raw registry records directly.
-
-It projects from the canonical agent model.
-
-In practical terms, directory projection combines:
-
-- canonical identity fields
-- resolved visible profile data
-- attached source entries
-- registry presence
-
-into one public listing record.
-
-That is why the directory can show one visible agent when that agent is backed by multiple source records already resolved into the same canonical identity.
-
-Since 2026-08-10 the public list item is deliberately minimal: a card with
-`catalogId`, `slug` and canonical path, visible name, avatar URLs, category,
-connected state, service channels as kind-plus-checked signals, and a compact
-curation summary.
-
-The richer projection — owner wallet, canonical `agentWallet`, attached
-source entries, registry presence, description, and the owner score when
-public policy allows it — lives on the per-agent detail and profile surfaces,
-and on the API-key Directory API under its own versioned contract.
-
-The important guarantee is not that every field appears for every agent.
-
-The guarantee is that these fields come from the directory projection rather
-than from a frontend reconstruction of raw registry data.
-
-## Public And Authenticated Directory Reads
-
-The backend exposes two directory read surfaces:
-
-- public directory reads for externally visible catalog and profile pages
-- authenticated directory reads for logged-in product and MCP consumers
-
-Both read from the same projected directory model.
-
-The public path is designed for cacheable product/profile access.
-
-The authenticated path is used when the consumer already has a Deside session or
-MCP OAuth context.
-
-This distinction should not be read as two directory models.
-
-It is one projected directory with different access paths.
-
-The purpose of the directory is not to expose every detail at once. It is
-to let a user discover agents, recognize multi-registry presence, and
-open the richer profile surface when deeper inspection is needed. That is
-why it stays compact even when the underlying identity model is not.
-
-## Registry Presence
-
-Registry presence is one of the most important parts of the visible projection.
-
-It answers:
-
-- which registries currently contribute to this visible agent identity?
-- which source should be treated as the primary visible source?
-
-The user should not see five disconnected identities.
-
-But the user should still be able to see that the visible agent has presence across multiple registries.
-
-That is the product purpose of the visible registry-presence model and its primary-source hint.
-
-## The Profile Surface
-
-If the directory is the list-level projection, the agent profile surface is the expanded projection.
-
-It takes the same resolved identity model and exposes more of it in a structured public form.
-
-The profile surface is where Deside can show:
-
-- visible identity
-- registry presence
-- external registry links
-- source-aware onchain details
-- service declarations
-- trust and reputation signals
-
-without dropping back into raw registry fragmentation.
-
-The profile surface is therefore not a different identity model.
-
-It is a richer projection of the same resolved identity that the directory already exposes in compact form.
-
-## What The Profile Surface Should Show
-
-The profile surface should answer these product questions:
-
-- who is this agent?
-- where is this agent present?
-- what onchain identity details are relevant?
-- what services or interfaces does this agent expose?
-- what trust or reputation signals exist?
-
-That is why the surface is structured around product sections rather than around raw source dumps.
-
-## Backend-Owned Profile Sections
-
-Some profile sections are backend-owned projections.
-
-They are not identity sources.
-
-They should not be derived separately by the frontend or by MCP documentation.
-
-### Agent Token
-
-The backend resolves an agent's token from evidence that names its source.
-The public status is one of two values:
-
-- `declared`: a source ties a token mint to this agent. The sources are
-  named in `declaredBy`. When the tie is a native Metaplex binding from the
-  agent identity to the mint, `nativeBy` names it.
-- `none`: no source ties a token to this agent.
-
-**A declared token is a claim, not a verification.** A native binding says
-the agent's record points to the mint. It does not say who runs the token,
-and Deside does not verify agent tokens today: `verifiedBy` is always `null`.
-
-Deside should not infer an agent token from:
-
-- payment assets
-- escrow assets
-- x402 assets
-- wallet holdings
-- generic mints
-
-Agent token projection does not participate in identity resolution.
-
-### Wallet Holdings
-
-Wallet holdings are backend snapshots against chain data.
-
-They can cover:
-
-- the canonical owner wallet
-- the Metaplex `agentWallet` when one exists
-
-They are not live frontend chain reads.
-
-They do not participate in identity resolution.
-
-They do not prove an agent token.
-
-## What The User Should See In The Profile Surface
-
-In practical terms, the user should be able to inspect the agent through a few clear surface areas:
-
-- a hero section for primary visible identity
-- registry presence and external registry links
-- onchain details grouped into a readable product view
-- service declarations such as web, MCP, or A2A
-- trust, payments, and reputation signals when available
-
-This structure matters because it lets the user inspect a resolved visible agent from several angles without having to understand the underlying source structure directly.
-
-## Source-Aware Onchain Details
-
-One of the most important jobs of the profile surface is to organize onchain details that may come from different source types.
-
-Behind the scenes, different registries may contribute different onchain structures for the resolved agent.
-
-Depending on the source, that can include:
-
-- a passport/Core asset
-- a source-specific PDA
-- a source-specific mint
-- owner or authority references
-- operational wallet information
-
-The profile surface should not flatten all of that into an undifferentiated dump.
-
-It should organize those details into one product-readable view of the agent's source-backed identity.
-
-Where useful, the surface can still preserve source-aware grouping behind that view.
-
-That means the profile surface can show source-aware onchain identity while still making it legible that different fields may come from different source contexts.
-
-## Service Declarations
-
-The profile surface is also where Deside can show service-facing outputs from the resolved identity model.
-
-These can include declarations such as:
-
-- web
-- MCP
-- A2A
-- other source-specific service declarations
-
-The important product point is not just that those services exist.
-
-It is that Deside can surface service-facing declarations from resolved source entries in one public profile surface.
-
-For a user, this should answer a practical question:
-
-- how can this agent actually be reached or used?
-
-## Trust And Reputation
-
-Trust and reputation signals should also be projected as product-level data rather than as raw disconnected fields.
-
-Depending on the sources available, Deside may expose:
-
-- protocol-native trust signals
-- protocol-native reputation signals
-- wallet-level reputation where the public contract includes it
-
-These should be shown as part of one resolved agent profile rather than as separate identities fighting for control of the UI.
-
-For the user, this should answer another practical question:
-
-- why should I trust this visible agent, and what signals are available across the sources Deside knows about?
-
-Deside should not present each registry's internal score as the shared product
-score.
-
-The shared product score is FairScale wallet reputation.
-
-In the directory, the owner score is exposed only when the resolved agent has
-presence in two or more registries.
-
-For the canonical owner wallet, Deside uses FairScale Human/Wallet FairScore.
-
-For a canonical Metaplex `agentWallet`, Deside can store FairScale Agent Score
-as the `agentWallet` reputation branch.
-
-## Directory Visibility Is Not Identity Resolution
-
-Identity resolution recognizes the participant; directory visibility
-decides whether it appears publicly; the profile surface is the public
-projection of that visible identity. Deside can recognize an agent
-without exposing it in the visible directory yet — the directory remains
-a product projection with its own conditions and policies. The full
-boundary ladder is defined in
-[Identity Resolution And Auth Boundaries](identity-resolution-and-auth-boundaries.md).
+[MIT](../LICENSE) (c) 2026 Deside

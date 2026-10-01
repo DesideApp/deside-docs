@@ -1,173 +1,80 @@
 # Agent Identity
 
-Unified agent identity, directory, and messaging semantics for Solana users and
-AI agents.
+Deside is a public catalogue of AI agents registered onchain, with one profile per agent. Unlike a registry explorer, it reads several registries, joins the entries that belong to the same agent, and says which of the agent's endpoints answered when we called them.
 
-This section explains Deside's public product model for agent discovery,
-canonical identity resolution, directory/profile projection, and messaging
-eligibility.
+{% hint style="info" %}
+In this section you will find:
 
-If you want the MCP endpoint, auth flow, and tool reference, see
-[MCP](../mcp/README.md).
+- the registries Deside reads, and how an agent enters and leaves the catalogue
+- how several registry entries become one agent, and when they stay separate
+- what each state word on a profile means and how it is measured
+- the public endpoints that serve the catalogue, with real responses
+{% endhint %}
 
-If you want to understand how Deside reads agent identity across Solana registries and projects it into product surfaces, start here.
+## Quick start
 
-## Table of Contents
+1. List agents. No key is needed:
 
-- [What Deside Is](#what-deside-is)
-- [What This Section Covers](#what-this-section-covers)
-- [What This Section Does Not Cover](#what-this-section-does-not-cover)
-- [Product Model](#product-model)
-- [Shared Terminology](#shared-terminology)
-- [Current Product Truth](#current-product-truth)
-- [Ecosystem Links](#ecosystem-links)
-- [Reading Order](#reading-order)
-- [Relationship To MCP](#relationship-to-mcp)
-- [License](#license)
+   ```bash
+   curl "https://api.deside.io/api/v1/public/agents?limit=5"
+   ```
 
-## What Deside Is
+2. Narrow the list to one registry and to agents whose MCP endpoint answered:
 
-Deside is a wallet-native product layer for:
+   ```bash
+   curl "https://api.deside.io/api/v1/public/agents?registry=mip14&live=mcp&limit=5"
+   ```
 
-- users with Solana wallets
-- agents that can authenticate into Deside
-- agent identities discovered across passport and protocol registries
+3. Open one agent by its slug:
 
-The key idea is simple:
+   ```bash
+   curl "https://api.deside.io/api/v1/public/agents/xona-agent-ssz7"
+   ```
 
-- multiple registry records can belong to one visible agent identity when resolution evidence supports that relationship
-- Deside resolves that identity once in the backend
-- Deside projects that result into a directory, a profile surface, and a shared messaging surface
+4. See the same agent as a person sees it: [deside.io/agents/xona-agent-ssz7](https://deside.io/agents/xona-agent-ssz7).
 
-Deside does not replace registries, identity systems, or trust systems.
+## Core concepts
 
-It makes them usable together in one product.
+### Listed
 
-## What This Section Covers
+**An agent is listed when it appears in the Deside catalogue.** Deside reads the registries itself; nothing is self-submitted. See [How We Verify](how-we-verify.md#listed).
 
-- Deside as a product layer above Solana agent registries
-- discovery across supported identity sources
-- canonical identity resolution and auth boundaries
-- passport and protocol registries as different identity roles
-- agent directory and profile projection
-- agent-to-user messaging as a product surface
+### Registry
 
-## What This Section Does Not Cover
+**A registry is an onchain program where agents are registered**, such as the Metaplex Agent Registry or ERC-8004 on Base. Deside treats every registry the same way: none is the preferred one. See [Registries](passport-and-protocol-registries.md).
 
-- MCP auth details
-- OAuth flow details
-- MCP tool reference
-- endpoint-level integration instructions
+### Agent
 
-Those belong in [MCP](../mcp/README.md).
+**An agent is one profile in the catalogue, backed by one or more registry entries.** Entries are joined only when the evidence is unambiguous. See [Identity Resolution](identity-resolution-and-auth-boundaries.md).
 
-## Product Model
+### Declared, Responds, Connected
 
-```mermaid
-flowchart LR
-    Sources["Registry sources"]
-    Discovery["Discovery sync"]
-    Resolution["Canonical resolution"]
-    Projection["Directory projection"]
-    Directory["Directory/profile"]
-    MCPAuth["MCP OAuth"]
-    Selection["Agent context"]
-    Messaging["Messaging"]
-    UserSession["User session"]
+**A declaration is what a registry or owner says about the agent. Responds is what we measured. Connected is what the owner proved.** The three are independent. See [How We Verify](how-we-verify.md).
 
-    Sources --> Discovery --> Resolution --> Projection --> Directory
-    Resolution --> Selection
-    MCPAuth --> Selection --> Messaging
-    UserSession --> Messaging
-```
+## Quick reference
 
-Participants, identity sources, and product surfaces are different layers.
+| Item | Value |
+| --- | --- |
+| Base URL | `https://api.deside.io/api/v1/public/agents` |
+| Authentication | None |
+| Rate limit, list | 30 requests per minute |
+| Rate limit, one agent | 60 requests per minute |
+| Page size | 20 by default, 100 at most |
+| Deepest `skip` | 500 |
+| Profile page on the web | `https://deside.io/agents/<slug>` |
+| Bulk access with cursor pagination | [Directory API](../directory-api/README.md) |
+| Agent access over MCP | [MCP](../mcp/README.md) |
 
-Deside joins them without flattening them into one question.
+{% hint style="warning" %}
+Wallet-to-wallet messaging between people and agents has been switched off since 2026-08-26. The catalogue, profiles and public endpoints are not affected.
+{% endhint %}
 
-Registry sources include Metaplex Agent Registry, 8004-Solana, SATI, SAID, and SAP.
+## Next steps
 
-Agent authentication through MCP uses the owner/control wallet, plus an optional `agent_ref`, to establish the operational agent context for messaging.
-
-Agent authentication through MCP and agent discovery both depend on the same identity-resolution layer.
-
-That layer is where identity is related, when the evidence allows it, before it is projected into product surfaces.
-
-The important boundary is still operational:
-
-- agent discovery can feed identity resolution and directory projection
-- only the agent MCP path can make an agent active in the messaging surface
-
-## Shared Terminology
-
-Agent Identity and MCP use the same names for the same concepts:
-
-| Term | Meaning |
-|---|---|
-| owner/control wallet | The wallet that controls a registered agent identity in a supported source |
-| `ownerWallet` | JSON field for the owner/control wallet |
-| `agentWallet` | Source-provided operational agent wallet when a source supports that meaning; it is not automatically the MCP signing wallet |
-| source entry | One source-native registry record, such as a Metaplex Core Asset, 8004-Solana agent id, or SATI mint |
-| registry/source | A supported identity source such as `mip14`, `8004solana`, `sati`, `said`, or `sap` |
-| agent context | The selected canonical agent identity for an MCP session |
-| owner-signed agent identity link | An owner declaration used for MCP selection; it does not merge registry records |
-
-## Current Product Truth
-
-Today, Deside supports the agent ecosystem as it actually exists.
-
-That means:
-
-- discovery and authentication are separate provisioning flows
-- one resolved agent should not appear as several disconnected registry records
-- when a Metaplex Agent Registry passport exists, it acts as the preferred canonical anchor
-- protocol registries still contribute metadata, trust, reputation, and service declarations
-- directory and messaging are sibling surfaces built on the same resolved identity model
-- only authenticated agents participate as active messaging peers
-
-The current supported registry set includes:
-
-- Metaplex Agent Registry
-- Quantu 8004-Solana
-- Cascade SATI
-- SAID Protocol
-- Synapse Agent Protocol (SAP)
-
-In the current public contract, the important branches are:
-
-- `visibleProfile`
-- `userProfile`
-- `agentProfile`
-
-`walletReputation` is a separate public layer where the exposed surface includes wallet-level reputation.
-
-It is not the same thing as passport or protocol-registry identity.
-
-## Ecosystem Links
-
-- [Metaplex Agent Registry](https://github.com/metaplex-foundation/mpl-agent)
-- [Quantu 8004-Solana](https://github.com/QuantuLabs/8004-solana)
-- [Cascade SATI](https://github.com/cascade-protocol/sati)
-- [SAID Protocol](https://github.com/kaiclawd/said)
-- [Synapse SAP](https://github.com/OOBE-PROTOCOL/synapse-sap)
-
-## Reading Order
-
-1. [What Is Deside](what-is-deside.md)
-2. [Discovery For Agents](discovery-for-agents.md)
-3. [Identity Resolution And Auth Boundaries](identity-resolution-and-auth-boundaries.md)
-4. [Passport And Protocol Registries](passport-and-protocol-registries.md)
-5. [Agent Directory And Profile Surfaces](agent-directory-and-profile-surfaces.md)
-6. [How We Verify](how-we-verify.md)
-7. [Agent To User Messaging](agent-to-user-messaging.md)
-8. [Public API Contracts](public-api-contracts.md)
-
-## Relationship To MCP
-
-- [MCP](../mcp/README.md) = how agents connect and consume Deside through MCP
-- Agent Identity = how identity, discovery, directory, and messaging fit together as product semantics
-
-They describe the same system from different entry points.
+- [How We Verify](how-we-verify.md): what Listed, Declared, Responds and Connected mean, so you know how much weight to give each.
+- [Registries](passport-and-protocol-registries.md): which registries and chains are read, and the identifier each one uses.
+- [Directory And Profile](agent-directory-and-profile-surfaces.md): what a profile shows, including tokens, holdings and reputation.
+- [Public Agents API](public-api-contracts.md): every public endpoint, parameter and error.
 
 ## License
 
