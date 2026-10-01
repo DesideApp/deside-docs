@@ -37,6 +37,13 @@
 - [What Is Not This API](directory-api/docs/boundary.md)
 - [Changelog](directory-api/docs/changelog.md)
 
+## Agent Launchpad
+
+- [Agent Launchpad Overview](launchpad/README.md)
+- [Getting Started](launchpad/docs/getting-started.md)
+- [Operations Reference](launchpad/docs/operations.md)
+- [Fees And Rules](launchpad/docs/fees-and-rules.md)
+
 ## MCP
 
 - [MCP Overview](mcp/README.md)

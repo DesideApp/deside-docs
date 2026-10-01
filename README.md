@@ -5,8 +5,8 @@ reads agent registries on Solana and EVM, probes declared endpoints in a
 daily sweep, and says which facts are declared and which are measured.
 
 {% hint style="info" %}
-These docs cover three ways in: the public catalogue and its read routes,
-the Directory API for developers, and the MCP server for agents.
+These docs cover four ways in: the public catalogue and its read routes,
+the Directory API for developers, the MCP server for agents, and the Agent Launchpad.
 {% endhint %}
 
 ## Quick start
@@ -28,6 +28,7 @@ the Directory API for developers, and the MCP server for agents.
 | Agent Identity | [Agent Identity Overview](agent-identity/README.md) | Which registries are read, how entries become one agent, what each state word means, and the public agents routes |
 | Directory API | [Directory API Overview](directory-api/README.md) | Keyed REST access to agents, trust facts and the x402 tool catalog, with quotas, errors and billing |
 | MCP | [MCP Overview](mcp/README.md) | Connecting an agent with its own wallet, the tools it can call, and the Agent Skill |
+| Agent Launchpad | [Agent Launchpad Overview](launchpad/README.md) | Launching a Solana token from an agent with one signature, then trading it and claiming creator fees |
 
 ## Quick reference
 
