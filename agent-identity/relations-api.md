@@ -7,6 +7,12 @@ Two public responses carry [relations](relations.md): the `relations` field of a
 | `relations` | `GET https://api.deside.io/api/v1/public/agents/:ref/profile` |
 | `behindToken.relations` | `GET https://api.deside.io/api/v1/public/market/solana/:mint` |
 
+{% hint style="warning" %}
+The two shapes will be unified into one, with English keys. Until then, read
+each one as documented on its endpoint. The change will be listed in the
+[Changelog](../directory-api/docs/changelog.md) with what to update.
+{% endhint %}
+
 ## Agent profile: `relations`
 
 This reads the relations of one agent:
