@@ -1,37 +1,8 @@
-# x402 Tool Catalog
+# x402 Tools API
 
-The x402 tool catalog is the list of paid HTTP endpoints that Deside has found
-in public x402 catalogs, one entry per endpoint. These routes need no key. They
-are the public read surface described in [Access model](access-model.md), with
-its per-IP limits and its 500-row depth limit.
+The x402 tools API serves the [x402 Tool Directory](../README.md) over HTTP without a key: a page of tools, one tool, counts, x402 indices and wallet matches. These routes are the public read surface described in [Access Model](../../directory-api/docs/access-model.md), with its per-IP limits and its 500-row depth limit. To walk the whole catalog, use [x402 data with an API key](../../directory-api/docs/x402-keyed.md).
 
-Deside reads five catalogs today (`cdp`, `payai`, `dexter`, `openfac` and
-`thirdweb`; the live list is `porBazar` in the census below).
-A tool listed by two catalogs is one tool here, with both catalogs in its
-`bazaars`.
-
-## The live check
-
-Deside calls each tool's address once, without paying, and records what it
-answered in `sonda`. The request is a plain `GET` or `POST` with
-`accept: application/json`, and redirects are not followed. `sonda.veredicto`
-is one of:
-
-| Value | Meaning |
-| --- | --- |
-| `offer` | Quotes a price: the answer carried an x402 payment offer. |
-| `no-offer` | Responds, no price: the endpoint answered, without a payment offer. |
-| `no-endpoint` | No such route: the endpoint answered `404`, `405` or `410`. |
-| `no-response` | Down: the request failed (network error, DNS failure, timeout). |
-| `blocked` | Blocked: Deside did not send the request because the address failed its outbound safety check. |
-
-`sonda.en` is when the check ran. `sonda.cotejo` compares the offer with what
-the catalog published: `mismoImporte` is `true` when the price matches,
-`mismaCartera` when the receiving wallet matches. Either is `null` when there
-was nothing to compare.
-
-**The live check never pays and never calls the tool with real input.** A tool
-that quotes a price may still fail once paid.
+What a tool is, where it comes from and what the live check means are in [How The Tool Directory Works](concepts.md). The values of `sonda.veredicto` are listed there.
 
 ## `GET /api/v1/public/x402/tools`
 
@@ -136,7 +107,7 @@ The tool has two prices; the second was cut from this example.
 | `walletCount` | integer | Number of distinct receiving wallets. `firstWallet` is the first of them, with its `family` (`evm`, `solana` or another chain family). |
 | `prices` | object[] | One entry per price a catalog published: `bazaar`, `scheme`, `network`, `asset`, `amount` in the asset's base units, `payTo` and `maxTimeoutSeconds`. |
 | `distinctAmounts` | integer | Number of different `amount` values across `prices`. |
-| `sonda` | object or `null` | The last live check (see above): `veredicto`, `en`, the HTTP status `estado`, the offer read in `oferta` (`importe`, `activo`, `red`) and the comparison in `cotejo`. `null` when the tool has not been checked. |
+| `sonda` | object or `null` | The last [live check](concepts.md#the-live-check): `veredicto`, `en`, the HTTP status `estado`, the offer read in `oferta` (`importe`, `activo`, `red`) and the comparison in `cotejo`: `mismoImporte` is `true` when the price matches the catalog, `mismaCartera` when the receiving wallet does, and either is `null` when there was nothing to compare. `sonda` is `null` when the tool has not been checked. |
 | `declaredByAgent` | boolean | `true` when an agent in the directory declares this tool's address. The profile names that agent in `agente`. |
 | `description` | string or `null` | Description from a catalog, cut to 160 characters in lists. |
 | `tipo` | string or `null` | Resource type the catalog declared, for example `http`. |
@@ -289,7 +260,7 @@ the agent runs the tool.** That is why `claim` is `coincide`.
 
 The list routes return `pagination` with `nextCursor`, `hasMore`, `limit` and
 `total`. Pass `nextCursor` back as `cursor` with the same filters. The rules
-shared by every route are on [Pagination](pagination.md).
+shared by every route are on [Pagination](../../directory-api/docs/pagination.md).
 
 ## Errors
 
@@ -302,7 +273,7 @@ These routes answer errors as `{ "error": "<code>" }`, plus `nextStep` on a
 | `400` | `invalid_request`, `nextStep: invalid filter: <name>` | A value out of range or of the wrong shape. | Fix the value. |
 | `400` | `invalid_request`, `nextStep: q cannot be combined with cursor: search returns a single page` | `q` and `cursor` together. | Drop `cursor`; refine `q` instead. |
 | `400` | `invalid_request`, `nextStep: cursor does not match the current filters` | The cursor was issued for other filters. | Restart without `cursor`. |
-| `400` | `invalid_request`, `nextStep: cursor exceeds the public depth limit` | The page would go past row 500. | Narrow the filters, or use the [keyed routes](x402-keyed.md). |
+| `400` | `invalid_request`, `nextStep: cursor exceeds the public depth limit` | The page would go past row 500. | Narrow the filters, or use the [keyed routes](../../directory-api/docs/x402-keyed.md). |
 | `404` | `not_found` | Unknown tool slug. | Check the slug. |
 | `429` | `RATE_LIMITED` | Per-IP limit reached. | Wait for the minute window, or the day. |
 | `500` | `internal_error` | Server failure. | Retry later. |
