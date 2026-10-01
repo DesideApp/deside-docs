@@ -3,6 +3,39 @@
 This page records changes to the Directory API contract, newest first, and
 corrections to these docs. A change that breaks a client says what to do.
 
+## 2026-10-01: one shape for relations
+
+The agent profile `relations` and the token `behindToken.relations` now use
+the same English keys. See [Relation Fields](../../agent-identity/relations-api.md).
+
+What changed in the agent profile `relations`:
+
+* `items[].bolsa` is now `items[].kind`.
+* `items[].escalon` is now `items[].step`, with `proven`, `matches` or
+  `declared` instead of `demostrado`, `coincide` or `declarado`.
+* `items[].via` is now `items[].vias`, each `{ how, value }`.
+  `keyType` became `how`: `wallet` is `same-wallet`, `domain` is
+  `same-domain`, and `declared` is `agent-lists-token` or
+  `agent-lists-tool`. `keyValue` became `value`. `roles` is no longer sent.
+
+What changed in the token `behindToken.relations`:
+
+* `vias[].how` is now `same-wallet`, `same-domain` or `agent-lists-token`,
+  instead of `misma-wallet`, `mismo-dominio` or `el-token-lo-nombra`.
+
+What changed in the claim:
+
+* `GET /api/v1/public/claim/{objectType}/{objectId}` and the `claim` field
+  of the agent profile answer `{ state, vias: [{ via, steps, value }] }`,
+  instead of `{ estado, vias: [{ via, pasos, valor }] }`.
+* The claim route answers `404` with `{ "error": "not_found" }` when the
+  agent or the token does not exist. Before, it answered `200` with
+  `unclaimed`. An agent asked by slug comes back with its `catalogId` in
+  `objectId`.
+
+What to update: read the new keys and values above. A client that matched
+the old Spanish values gets no match today.
+
 ## 2026-10-01: docs restructured
 
 The docs are now organized by product: [Agent Directory](../../agent-identity/README.md),
