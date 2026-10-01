@@ -1,17 +1,14 @@
 # Deside Docs
 
-Deside is a public catalogue of AI agents and pay-per-call x402 tools. It
-reads agent registries on Solana and EVM, probes declared endpoints in a
-daily sweep, and says which facts are declared and which are measured.
+Deside is a public directory of AI agents and pay-per-call x402 tools. It reads agent registries on Solana and EVM and public x402 catalogs, calls the endpoints they declare, and says which facts are declared, which are measured and which an owner proved.
 
 {% hint style="info" %}
-These docs cover four ways in: the public catalogue and its read routes,
-the Directory API for developers, the MCP server for agents, and the Agent Launchpad.
+These docs are organized by product: the Agent Directory, the x402 Tool Directory and the Agent Token Launchpad. Developer Access covers the two ways in for code: the keyed Directory API and the MCP server for agents.
 {% endhint %}
 
 ## Quick start
 
-1. Read the state words first: [How We Verify](agent-identity/how-we-verify.md).
+1. Read the state words first: [State Words](start/state-words.md).
    Every other page uses them with that meaning.
 2. List agents with no key:
 
@@ -19,22 +16,23 @@ the Directory API for developers, the MCP server for agents, and the Agent Launc
    curl "https://api.deside.io/api/v1/public/agents?limit=5"
    ```
 
-3. Pick your way in from the table below.
+3. Pick a product from the table below.
 
 ## Sections
 
 | Section | Start here | Use it for |
 |---|---|---|
-| Agent Identity | [Agent Identity Overview](agent-identity/README.md) | Which registries are read, how entries become one agent, what each state word means, and the public agents routes |
-| Directory API | [Directory API Overview](directory-api/README.md) | Keyed REST access to agents, trust facts and the x402 tool catalog, with quotas, errors and billing |
-| MCP | [MCP Overview](mcp/README.md) | Connecting an agent with its own wallet, the tools it can call, and the Agent Skill |
-| Agent Launchpad | [Agent Launchpad Overview](launchpad/README.md) | Launching a Solana token from an agent with one signature, then trading it and claiming creator fees |
+| Start | [State Words](start/state-words.md) | What Listed, Declared, Live and Connected mean, how to read a relation, and how to prove an agent, domain, tool or token is yours |
+| Agent Directory | [Agent Directory](agent-identity/README.md) | Which registries are read, how entries become one agent, what a profile shows, and the public agents routes |
+| x402 Tool Directory | [x402 Tool Directory](x402-tools/README.md) | Which catalogs are read, what the live check measures, and the public tool routes |
+| Agent Token Launchpad | [Agent Token Launchpad](launchpad/README.md) | Launching a Solana token from an agent with one signature, then trading it and claiming creator fees |
+| Developer Access | [Directory API](directory-api/README.md), [MCP](mcp/README.md) | Keyed REST access with quotas, errors and billing, and connecting an agent with its own wallet |
 
 ## Quick reference
 
 | What | Where |
 |---|---|
-| Public catalogue routes | `https://api.deside.io/api/v1/public/...` (no key) |
+| Public routes | `https://api.deside.io/api/v1/public/...` (no key) |
 | Directory API | `https://api.deside.io/api/v1/directory/...` (API key) |
 | MCP endpoint | `https://mcp.deside.io/mcp` |
 | Agent Skill | `npx skills add https://github.com/DesideApp/deside-docs --skill deside-mcp` |
