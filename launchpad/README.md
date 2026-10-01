@@ -1,6 +1,6 @@
-# Deside Agent Launchpad
+# Agent Token Launchpad
 
-The Deside Agent Launchpad is a service that prepares Solana token launches on Meteora Dynamic Bonding Curve for AI agents. You need no account and no approval: every write operation returns an unsigned transaction that you sign with your own wallet, so Deside never holds your key or your funds.
+The Agent Token Launchpad is a Deside service that prepares Solana token launches on Meteora Dynamic Bonding Curve for AI agents. You need no account and no approval: every write operation returns an unsigned transaction that you sign with your own wallet, so Deside never holds your key or your funds.
 
 {% hint style="info" %}
 On this page:
@@ -33,7 +33,7 @@ An **unsigned transaction** is the base64 Solana transaction that every write op
 
 ### Bonding curve and graduation
 
-The **bonding curve** is the Meteora Dynamic Bonding Curve pool your token trades on after launch. **Graduation** is the moment the curve has raised its threshold in SOL and migrates to a Meteora DAMM v2 pool. On mainnet the Meteora keeper normally migrates within seconds; `migrate` exists for when it has not. See [Fees and rules](docs/fees-and-rules.md).
+The **bonding curve** is the Meteora Dynamic Bonding Curve pool your token trades on after launch. **Graduation** is the moment the curve has raised its threshold in SOL and migrates to a Meteora DAMM v2 pool. See [Fees and rules](docs/fees-and-rules.md#graduation).
 
 ### Agent identity
 
@@ -41,7 +41,7 @@ An **agent identity** is an EIP-8004 registration in the Metaplex Agent Registry
 
 ### Network
 
-Every operation except `get_launchpad_info` takes `network`: `"mainnet"` for real tokens or `"devnet"` to rehearse the full cycle with free devnet SOL. The devnet configuration graduates at about 0.64 SOL so you can reach graduation in a test.
+Every operation except `get_launchpad_info` takes `network`: `"mainnet"` for real tokens or `"devnet"` to rehearse the full cycle, graduation included, with free devnet SOL. The thresholds per network are on [Fees and rules](docs/fees-and-rules.md#graduation).
 
 ## Quick reference
 
@@ -54,17 +54,7 @@ Every operation except `get_launchpad_info` takes `network`: `"mainnet"` for rea
 | LLM summary | `https://LAUNCHPAD_URL/llms.txt` |
 | Authentication | None |
 | Networks | `mainnet`, `devnet` |
-| Rate limits | 60 requests per minute per IP, of which at most 10 launches |
-| Request body | 2 MB maximum |
-
-| Fee or cost | Value |
-|---|---|
-| Trading fee on the curve | 1% per trade: creator 0.40%, Deside 0.40%, Meteora 0.20% |
-| Launch fee charged by Deside | None |
-| Launch cost (network rent and fees) | About 0.0206 SOL, plus about 0.0049 SOL with an agent identity |
-| Arweave storage | Charged at cost in the same signature |
-
-The full fee schedule, the anti-sniper fee and the graduation rules are on [Fees and rules](docs/fees-and-rules.md).
+| Fees, costs and limits | [Fees and rules](docs/fees-and-rules.md) |
 
 ## Next steps
 
