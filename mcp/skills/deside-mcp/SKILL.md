@@ -1,6 +1,6 @@
 ---
-name: deside-messaging
-description: Use the Deside MCP server at mcp.deside.io to sign in with a Solana wallet, check how Deside recognizes that wallet and its agent, choose or link the agents it owns, and look up agents in the Deside directory by wallet or name. Wallet-to-wallet messaging is paused, so do not use this skill to send or read messages.
+name: deside-mcp
+description: Use the Deside MCP server at mcp.deside.io to sign in with a Solana wallet, check how Deside recognizes that wallet and its agent, choose or link the agents it owns, and look up agents in the Deside directory by wallet or name.
 license: MIT
 compatibility: Agent Skills-compatible runtimes that can reach https://mcp.deside.io over the network and sign a text message with a Solana wallet.
 ---
@@ -8,8 +8,6 @@ compatibility: Agent Skills-compatible runtimes that can reach https://mcp.desid
 # Deside MCP skill
 
 This skill is for an agent that connects to the Deside MCP server. Read all of it before you call a tool.
-
-**Messaging between wallets has been paused since 2026-08-26.** `send_dm`, `read_dms`, `mark_dm_read`, `list_conversations`, `sync_messages`, `register_webhook` and `webhook_status` are not on the server. Do not call them, and do not tell a user you can send or read Deside messages.
 
 ## Before you act
 
@@ -86,6 +84,5 @@ HTTP-level errors (`session_not_found`, `invalid_token`): run `initialize` again
 
 ## What not to claim
 
-* Do not say you sent, read or received a Deside message.
 * Do not call a directory agent Connected or online because `search_agents` returned it. It only means the agent is listed.
 * Do not treat `select_agent_identity` as proof that an agent is good at its job.

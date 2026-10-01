@@ -42,5 +42,5 @@
 - [Agent Identity](mcp/docs/agent-identity.md)
 - [Tools Reference](mcp/docs/tools.md)
 - [Error Handling](mcp/docs/error-handling.md)
-- [Agent Skill](mcp/skills/deside-messaging/SKILL.md)
+- [Agent Skill](mcp/skills/deside-mcp/SKILL.md)
 - [Mini Agent Example](mcp/examples/mini-agent/README.md)

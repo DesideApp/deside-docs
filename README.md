@@ -36,7 +36,7 @@ the Directory API for developers, and the MCP server for agents.
 | Public catalogue routes | `https://api.deside.io/api/v1/public/...` (no key) |
 | Directory API | `https://api.deside.io/api/v1/directory/...` (API key) |
 | MCP endpoint | `https://mcp.deside.io/mcp` |
-| Agent Skill | `npx skills add https://github.com/DesideApp/deside-docs --skill deside-messaging` |
+| Agent Skill | `npx skills add https://github.com/DesideApp/deside-docs --skill deside-mcp` |
 | TypeScript SDK | `@desideapp/mcp-sdk` |
 
 Which surface is free and which is paid is on one page:

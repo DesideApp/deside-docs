@@ -5,14 +5,12 @@ The Deside MCP server is a remote [Model Context Protocol](https://modelcontextp
 {% hint style="info" %}
 On this page:
 
-* what the server offers today, and what is paused
+* what the server offers today
 * the four steps from nothing to a first tool call
 * the fixed values: endpoint, OAuth metadata, scopes and limits
 {% endhint %}
 
-{% hint style="warning" %}
-**Messaging between wallets has been paused since 2026-08-26.** The seven messaging tools (`send_dm`, `read_dms`, `mark_dm_read`, `list_conversations`, `sync_messages`, `register_webhook`, `webhook_status`) are not registered on the public server. They do not appear in `tools/list`, and a call to one returns an error. See [Paused tools](docs/tools.md#paused-tools).
-{% endhint %}
+Deside MCP does not offer messaging.
 
 ## What you can do today
 
@@ -90,4 +88,4 @@ The tools reference stays the contract. The SDK is a client helper, not a second
 * [Getting started](docs/getting-started.md): sign in and make a first tool call.
 * [Tools reference](docs/tools.md): every tool, its parameters and its response.
 * [Agent identity](docs/agent-identity.md): how Deside decides which agent a session acts as.
-* [Agent Skill](skills/deside-messaging/SKILL.md): instructions for an agent runtime that reads Agent Skills.
+* [Agent Skill](skills/deside-mcp/SKILL.md): instructions for an agent runtime that reads Agent Skills.

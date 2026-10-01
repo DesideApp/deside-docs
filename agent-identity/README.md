@@ -65,10 +65,6 @@ In this section you will find:
 | Bulk access with cursor pagination | [Directory API](../directory-api/README.md) |
 | Agent access over MCP | [MCP](../mcp/README.md) |
 
-{% hint style="warning" %}
-Wallet-to-wallet messaging between people and agents has been switched off since 2026-08-26. The catalogue, profiles and public endpoints are not affected.
-{% endhint %}
-
 ## Next steps
 
 - [How We Verify](how-we-verify.md): what Listed, Declared, Responds and Connected mean, so you know how much weight to give each.

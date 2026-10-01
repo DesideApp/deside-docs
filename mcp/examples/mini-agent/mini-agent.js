@@ -5,17 +5,10 @@ import { randomUUID } from 'node:crypto';
 const ENV = {
   mcpBaseUrl: (process.env.MCP_BASE_URL || 'http://localhost:3100').replace(/\/+$/, ''),
   mcpPath: process.env.MCP_PATH || '/mcp',
-  toWallet: process.env.TO_WALLET || null,
-  text: process.env.TEXT || `Hello from deside mini-agent @ ${new Date().toISOString()}`,
-  listLimit: Number.parseInt(process.env.LIST_LIMIT || '20', 10),
-  readLimit: Number.parseInt(process.env.READ_LIMIT || '20', 10),
-  watchPush: process.env.WATCH_PUSH === '1',
-  pushTimeoutMs: Number.parseInt(process.env.PUSH_TIMEOUT_MS || '15000', 10),
   oauthScope: process.env.OAUTH_SCOPE || 'dm:read dm:write',
   oauthClientName: process.env.OAUTH_CLIENT_NAME || 'deside-mini-agent',
   oauthRedirectUri: process.env.OAUTH_REDIRECT_URI || null,
   agentSecretKeyB58: process.env.AGENT_SECRET_KEY_B58 || null,
-  miniAgentLlmFree: process.env.MINI_AGENT_LLM_FREE === '1',
 };
 
 function assert(condition, message, details) {
@@ -253,67 +246,7 @@ async function callTool({ sessionId, bearerToken, name, args, id }) {
   return parseToolResult(rpc.jsonRpc);
 }
 
-async function waitForPushNotification({ sessionId, bearerToken, timeoutMs }) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch(`${ENV.mcpBaseUrl}${ENV.mcpPath}`, {
-      method: 'GET',
-      headers: {
-        accept: 'text/event-stream',
-        'mcp-session-id': sessionId,
-        ...(bearerToken ? { authorization: `Bearer ${bearerToken}` } : {}),
-      },
-      signal: controller.signal,
-    });
-    assert(res.ok, 'push_sse_open_failed', { status: res.status });
-    assert(res.body, 'push_sse_missing_body');
-
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const blocks = buffer.split('\n\n');
-      buffer = blocks.pop() || '';
-      for (const block of blocks) {
-        const lines = block.split('\n');
-        let eventType = 'message';
-        const dataLines = [];
-        for (const line of lines) {
-          if (line.startsWith('event:')) eventType = line.slice(6).trim();
-          if (line.startsWith('data:')) dataLines.push(line.slice(5).trim());
-        }
-        if (eventType !== 'message' || dataLines.length === 0) continue;
-        let payload = null;
-        try {
-          payload = JSON.parse(dataLines.join('\n'));
-        } catch {
-          continue;
-        }
-        if (payload?.method === 'notifications/dm_received') {
-          return payload.params || null;
-        }
-      }
-    }
-    return null;
-  } catch (error) {
-    if (error?.name === 'AbortError') return null;
-    throw error;
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
 async function main() {
-  if (ENV.miniAgentLlmFree) {
-    assert(ENV.toWallet, 'TO_WALLET is required when MINI_AGENT_LLM_FREE=1');
-    assert(ENV.oauthScope.split(/\s+/).includes('llm:invoke'), 'OAUTH_SCOPE must include llm:invoke when MINI_AGENT_LLM_FREE=1');
-  }
-
   const agent = createAgent();
   console.log(`[mini-agent] wallet=${agent.wallet} ephemeral=${agent.ephemeral}`);
   console.log(`[mini-agent] mcp=${ENV.mcpBaseUrl}${ENV.mcpPath} auth=oauth_pkce`);
@@ -326,11 +259,6 @@ async function main() {
     auth: authResult.mode,
     wallet: agent.wallet,
     identity: null,
-    send: null,
-    conversations: null,
-    read: null,
-    llm: null,
-    push: null,
   };
 
   const identity = await callTool({
@@ -346,108 +274,6 @@ async function main() {
     role: identity.data?.role || null,
     source: identity.data?.agentProfile?.resolved?.source || identity.data?.visibleProfile?.source || null,
   };
-
-  const list = await callTool({
-    sessionId,
-    bearerToken,
-    name: 'list_conversations',
-    args: { limit: ENV.listLimit },
-    id: 3,
-  });
-  assert(list.ok, 'list_conversations_failed', list.error);
-  summary.conversations = Array.isArray(list.data?.conversations)
-    ? list.data.conversations.length
-    : 0;
-
-  if (ENV.toWallet && ENV.miniAgentLlmFree) {
-    const convId = [agent.wallet, ENV.toWallet].sort().join(':');
-    const read = await callTool({
-      sessionId,
-      bearerToken,
-      name: 'read_dms',
-      args: { conv_id: convId, limit: ENV.readLimit },
-      id: 4,
-    });
-    assert(read.ok, 'read_dms_failed', read.error);
-    const messages = Array.isArray(read.data?.messages) ? read.data.messages : [];
-    summary.read = messages.length;
-
-    const completion = await callTool({
-      sessionId,
-      bearerToken,
-      name: 'llm_complete',
-      args: {
-        model: 'free',
-        max_tokens: 128,
-        temperature: 0.7,
-        messages: [
-          {
-            role: 'system',
-            content: 'Write a concise DM reply. Do not mention that you are an AI.',
-          },
-          {
-            role: 'user',
-            content: messages.length > 0
-              ? `Latest DM context:\n${messages.slice(-3).map((m) => String(m?.content || '')).join('\n')}`
-              : ENV.text,
-          },
-        ],
-      },
-      id: 5,
-    });
-    assert(completion.ok, 'llm_complete_failed', completion.error);
-    assert(typeof completion.data?.text === 'string' && completion.data.text.length > 0, 'llm_complete_empty_text');
-    summary.llm = {
-      requestId: completion.data.requestId || null,
-      model: completion.data.model || null,
-      usage: completion.data.usage || null,
-      paymentReceipt: completion.data.paymentReceipt ?? null,
-    };
-
-    const send = await callTool({
-      sessionId,
-      bearerToken,
-      name: 'send_dm',
-      args: { to_wallet: ENV.toWallet, text: completion.data.text },
-      id: 6,
-    });
-    assert(send.ok, 'send_dm_failed', send.error);
-    summary.send = send.data || null;
-  } else if (ENV.toWallet) {
-    const send = await callTool({
-      sessionId,
-      bearerToken,
-      name: 'send_dm',
-      args: { to_wallet: ENV.toWallet, text: ENV.text },
-      id: 4,
-    });
-    assert(send.ok, 'send_dm_failed', send.error);
-    summary.send = send.data || null;
-
-    const convId = send.data?.convId;
-    if (typeof convId === 'string' && convId.length > 0) {
-      const read = await callTool({
-        sessionId,
-        bearerToken,
-        name: 'read_dms',
-        args: { conv_id: convId, limit: ENV.readLimit },
-        id: 5,
-      });
-      assert(read.ok, 'read_dms_failed', read.error);
-      summary.read = Array.isArray(read.data?.messages) ? read.data.messages.length : 0;
-    }
-  } else {
-    console.log('[mini-agent] TO_WALLET not set; skipping send_dm/read_dms');
-  }
-
-  if (ENV.watchPush) {
-    console.log(`[mini-agent] waiting push notifications/dm_received for up to ${ENV.pushTimeoutMs}ms`);
-    summary.push = await waitForPushNotification({
-      sessionId,
-      bearerToken,
-      timeoutMs: ENV.pushTimeoutMs,
-    });
-  }
 
   console.log(JSON.stringify({ ok: true, summary }, null, 2));
 }

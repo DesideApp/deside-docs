@@ -1,17 +1,13 @@
 # Mini agent example
 
-The mini agent is a single JavaScript file that runs the Deside MCP sign-in by hand, with no SDK: OAuth with PKCE, the wallet signature, the MCP session and a tool call. Read it to see every request the flow makes.
-
-{% hint style="warning" %}
-**Only the first part of this example works today.** Messaging between wallets has been paused since 2026-08-26. The script signs in and calls `get_my_identity`, then calls `list_conversations`, which is not on the server, and stops with `list_conversations_failed`. Everything it does after that (`send_dm`, `read_dms`, `llm_complete` and push notifications) does not run.
-{% endhint %}
+The mini agent is a single JavaScript file that runs the Deside MCP sign-in by hand, with no SDK: OAuth with PKCE, the wallet signature, the MCP session and one tool call, `get_my_identity`. Read it to see every request the flow makes.
 
 ## What it does
 
 1. Registers an OAuth client, then runs `/oauth/authorize`, `/oauth/wallet-challenge` and `/oauth/token`.
 2. Sends `initialize` with the access token and keeps the `mcp-session-id`.
 3. Calls `get_my_identity`.
-4. Calls `list_conversations`. Today this is where it stops, before it prints its summary, so a run that reaches `list_conversations_failed` has signed in and opened a session successfully.
+4. Prints a JSON summary with the session id, the wallet and how Deside recognizes it (`recognized`, `role`, `source`).
 
 ## Run it
 
