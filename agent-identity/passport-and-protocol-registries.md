@@ -25,7 +25,7 @@ A key that is not in this table returns `400 invalid_request`.
 
 Deside reads each registry on its own schedule, without waiting for the agent or its owner to do anything. Each entry it finds is stored as observed, with its registry and identifier. Then [identity resolution](identity-resolution-and-auth-boundaries.md) decides whether that entry is a new agent or belongs to an agent already in the catalogue.
 
-How an entry stays in or leaves the catalogue is defined in [How We Verify](how-we-verify.md#listed).
+How an entry stays in or leaves the catalogue is defined in [State Words](../start/state-words.md#listed).
 
 ## What a registry contributes
 

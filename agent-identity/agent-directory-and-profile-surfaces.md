@@ -4,7 +4,7 @@ The directory is the list of every listed agent, one card per agent, and the pro
 
 ## The directory card
 
-A card answers "is this worth opening?". It carries a name, an image, a category, which kinds of service the agent declares (MCP, A2A, x402, web) and whether each was checked, and the agent's state words: [Responds](how-we-verify.md#responds) and [Connected](how-we-verify.md#connected).
+A card answers "is this worth opening?". It carries a name, an image, a category, which kinds of service the agent declares (MCP, A2A, x402, web) and whether each was checked, and the agent's state words: [Live](../start/state-words.md#live) and [Connected](../start/state-words.md#connected).
 
 **A card does not carry wallets, registry entries or service URLs.** Those are on the profile. The exact card fields are in [Public Agents API](public-api-contracts.md#list-agents).
 
@@ -22,7 +22,7 @@ Every [registry](passport-and-protocol-registries.md) that has an entry for it, 
 
 ### How can it be reached?
 
-Each declared service, with the registry that declared it and the result of its latest check, for example `Responds · checked 5h ago`. When nothing is declared, the profile says `No services declared`. What these words mean is in [How We Verify](how-we-verify.md).
+Each declared service, with the registry that declared it and the result of its latest check, for example `Responds · checked 5h ago`. When nothing is declared, the profile says `No services declared`. What these words mean is in [State Words](../start/state-words.md).
 
 ### Does it have a token?
 
@@ -31,7 +31,7 @@ The token status is one of two values:
 - **`declared`**: a source ties a token mint to this agent. The sources are named. When the tie is a native Metaplex binding from the agent's identity to the mint, that is named too.
 - **`none`**: no source ties a token to this agent. The profile says `No token declared`.
 
-**A declared token is a claim, not a verification.** A native binding says the agent's record points to the mint. It does not say who runs the token, and Deside does not verify agent tokens today.
+**A declared token is a claim, not a proof.** A native binding says the agent's record points to the mint. It does not say who runs the token, and Deside does not prove agent tokens.
 
 Deside never infers an agent's token from what its wallets hold, from payment or escrow assets, or from any mint that merely appears near the agent.
 

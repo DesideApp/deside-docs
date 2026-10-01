@@ -1,11 +1,11 @@
 # Relation Fields
 
-Two public responses carry [relations](relations.md): the `relations` field of an agent profile, and `behindToken.relations` of a token. Both need no key. The two shapes differ: the agent's lists raw keys, and the token's comes ready to display.
+Two public responses carry [relations](../start/relations.md): the `relations` field of an agent profile, and `behindToken.relations` of a token. Both need no key. The two shapes differ: the agent's lists raw keys, and the token's comes ready to display.
 
 | Field | Endpoint |
 | --- | --- |
-| `relations` | `GET https://api.deside.io/api/v1/public/agents/:ref/profile` |
-| `behindToken.relations` | `GET https://api.deside.io/api/v1/public/market/solana/:mint` |
+| `relations` | `GET https://api.deside.io/api/v1/public/agents/{catalogId}/profile` ([Public Agents API](public-api-contracts.md#read-a-profile)) |
+| `behindToken.relations` | `GET https://api.deside.io/api/v1/public/market/solana/{mint}` |
 
 {% hint style="warning" %}
 The two shapes will be unified into one, with English keys. Until then, read
@@ -65,7 +65,7 @@ The `relations` field of the response, real on 2026-10-01:
 | `items[].via[].roles` | array | What the datum is for this agent, such as `identity` for its owner wallet or `web` for its website. |
 | `items[].card` | object or null | The related object: `chain`, `address`, `name`, `symbol` for a token; `slug`, `title`, `host` for a tool. `null` when Deside has no record of it. |
 
-The words shown on deside.io for each step are in [How To Read A Relation](relations.md#the-three-steps).
+The words shown on deside.io for each step are in [How To Read A Relation](../start/relations.md#the-three-steps).
 
 ## Token: `behindToken.relations`
 
@@ -131,20 +131,20 @@ The `behindToken.relations` field of the response, real on 2026-10-01:
 | `vias[].how` | string or null | `misma-wallet` (same wallet), `mismo-dominio` (same domain) or `el-token-lo-nombra` (the token names it). `null` for a kind this version does not know. |
 | `vias[].howText` | string or null | The sentence for display, such as `Same domain example.com`. |
 | `vias[].value` | string or null | The shared wallet, shortened, or the shared domain. `null` for a token that names it. |
-| `live` | array | For an agent that Matches or is Proven: its protocols that answered their latest check, each `{ "key", "label" }` with key `mcp`, `a2a` or `x402`. Always empty for a tool or a Declared agent. See [Responds](how-we-verify.md#responds). |
+| `live` | array | For an agent that Matches or is Proven: its protocols that answered their latest check, each `{ "key", "label" }` with key `mcp`, `a2a` or `x402`. Always empty for a tool or a Declared agent. See [Live](../start/state-words.md#live). |
 
 The rest of `behindToken`, such as `summary` and `proofs`, describes what the token names outside these relations, like its X account. It is not covered here.
 
 ## What the keys do not mean
 
-- **No key is Verified.** No relation field carries a Verified state. See [How To Read A Relation](relations.md#what-this-does-not-mean).
-- **`live` is not quality.** It says an endpoint answered, as in [How We Verify](how-we-verify.md#what-this-does-not-mean).
+- **No key is Verified.** No relation field carries a Verified state. [Proven](../start/relations.md#proven) is the highest step.
+- **`live` is not quality.** It says an endpoint answered, as in [State Words](../start/state-words.md#what-this-does-not-mean).
 
 ## Errors
 
 | Code | When | What to do |
 | --- | --- | --- |
-| `404` | The agent `:ref` matches no listed agent | Check the reference. |
+| `404` | The agent `{catalogId}` matches no listed agent | Check the reference. |
 | `429` | Rate limit reached: 60 requests per minute on the agent profile, 600 on the token | Wait for the seconds in `RateLimit-Reset`. |
 
 ## License

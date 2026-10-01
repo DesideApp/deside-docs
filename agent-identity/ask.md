@@ -77,7 +77,7 @@ list. The wording of `answer` changes from one call to the next.
 | `measuredAt` | When the facts behind the answer were measured. |
 
 `verified`, `verifiedCheck` and `verifiedFailed` are reserved, as on
-[Trust facts](trust.md#reading-the-verified-fields).
+[Trust facts](../directory-api/docs/trust.md#reading-the-verified-fields).
 
 **This route never answers `500`.** When the engine cannot answer, it returns
 `200` with `answer: null`, empty lists and `degraded: true`.

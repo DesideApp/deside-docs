@@ -1,11 +1,11 @@
-# Prove An Agent Or Token Is Yours
+# Prove It Is Yours
 
 This guide shows how to prove, from your Deside account, that an agent, a web domain, an x402 tool or a token is yours. The same steps, in short, are on [deside.io/verified](https://deside.io/verified).
 
 {% hint style="info" %}
 What each proof gives you:
 
-- an agent you prove becomes [Connected](how-we-verify.md#connected)
+- an agent you prove becomes [Connected](state-words.md#connected)
 - a domain you prove makes your account [Verified](#verified)
 - a token or tool you prove can lift its relations to [Proven](relations.md#proven)
 {% endhint %}

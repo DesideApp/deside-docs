@@ -10,8 +10,8 @@ Deside keeps one record per object, in four kinds:
 
 | Kind | What it is |
 | --- | --- |
-| Agent | An agent from the catalogue. See [How We Verify](how-we-verify.md#listed). |
-| x402 tool | A paid endpoint from the x402 tool catalogue. |
+| Agent | An agent from the catalogue. See [Listed](state-words.md#listed). |
+| x402 tool | A paid endpoint from the [x402 Tool Directory](../x402-tools/README.md). |
 | Token | A token, identified by its chain and address. |
 | Domain | A web domain that an agent, tool or token points to. |
 
@@ -40,7 +40,7 @@ Example: the agent `mizuki-the-mech-cmeh` has owner wallet `638V…CmeH`, and th
 
 ### Proven
 
-**Proven means the same Deside account has proven both sides.** The owner signed in to Deside and showed, from their account, that each object is theirs. How to do that is in [Prove An Agent Or Token Is Yours](prove-ownership.md).
+**Proven means the same Deside account has proven both sides.** The owner signed in to Deside and showed, from their account, that each object is theirs. How to do that is in [Prove It Is Yours](prove-ownership.md).
 
 When two different accounts have proven the two sides, the relation is marked as a conflict instead. Deside never settles a conflict silently.
 
@@ -69,14 +69,33 @@ An X account can be named by anyone. A token's metadata can name `@solana` witho
 
 **Two records that name the same X or GitHub account stay Declared.** Only a shared wallet or a shared domain makes a match.
 
+## Who is behind a token
+
+A token is not a product of Deside: it is one of the four kinds of record, and its page answers one question, who is behind it. The answer is the list of its relations, under Behind this token, each with its step. The summary line names the strongest of them.
+
+This reads one token and who is behind it:
+
+```bash
+curl "https://api.deside.io/api/v1/public/market/solana/DwquZcs2JtPe2w9xfyqF9wDnySQXLBHTMawusJ8Uk1mi"
+```
+
+On 2026-10-01 the token MIZUKI read `Mizuki the Mech · registered agent · X declared`, with step Matches. It had two relations to agents:
+
+| Agent | Step | Vias |
+| --- | --- | --- |
+| `mizuki-the-mech-cmeh` | Matches | `Same wallet 638V…CmeH`, `This token names this agent` |
+| `mizuki-the-mech` | Declared | `This token names this agent` |
+
+Only the first agent shares a wallet with the token. The second is only named by it, so it stays Declared. The fields are in [Relation Fields](../agent-identity/relations-api.md#token-behindtokenrelations).
+
 ## What this does not mean
 
 - **Matches is not Proven.** It says two records share a wallet or a domain. It does not say who controls them.
-- **No relation is Verified.** Verified is a state of a Deside account that has proven a web domain, not a step of a relation. See [Prove An Agent Or Token Is Yours](prove-ownership.md#verified).
+- **Proven is the highest step.** No relation has a step above it.
 - **Declared is not false.** A declaration can be true. It is shown as what it is: one side's word.
 - **A missing relation is not a negative.** It means no record of the other kind shares a wallet or domain with this one, or that we have not read it yet.
 
-The fields behind relations are in [Relation Fields](relations-api.md).
+The fields behind relations are in [Relation Fields](../agent-identity/relations-api.md).
 
 ## License
 

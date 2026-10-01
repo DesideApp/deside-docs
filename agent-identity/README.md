@@ -1,14 +1,14 @@
-# Agent Identity
+# Agent Directory
 
-Deside is a public catalogue of AI agents registered onchain, with one profile per agent. Unlike a registry explorer, it reads several registries, joins the entries that belong to the same agent, and says which of the agent's endpoints answered when we called them.
+The Agent Directory is a public catalogue of AI agents registered onchain, with one profile per agent. Unlike a registry explorer, it reads several registries, joins the entries that belong to the same agent, and says which of the agent's endpoints answered when we called them.
 
 {% hint style="info" %}
 In this section you will find:
 
-- the registries Deside reads, and how an agent enters and leaves the catalogue
-- how several registry entries become one agent, and when they stay separate
-- what each state word on a profile means and how it is measured
-- the public endpoints that serve the catalogue, with real responses
+- the registries Deside reads, and how several entries become one agent
+- what a profile shows: services, tokens, holdings and reputation
+- the public routes that serve the directory, with real responses
+- Ask, which answers a question about the directory in plain language
 {% endhint %}
 
 ## Quick start
@@ -35,9 +35,7 @@ In this section you will find:
 
 ## Core concepts
 
-### Listed
-
-**An agent is listed when it appears in the Deside catalogue.** Deside reads the registries itself; nothing is self-submitted. See [How We Verify](how-we-verify.md#listed).
+The state words Listed, Declared, Live and Connected are defined once in [State Words](../start/state-words.md).
 
 ### Registry
 
@@ -45,15 +43,15 @@ In this section you will find:
 
 ### Agent
 
-**An agent is one profile in the catalogue, backed by one or more registry entries.** Entries are joined only when the evidence is unambiguous. See [Identity Resolution](identity-resolution-and-auth-boundaries.md).
+**An agent is one profile in the directory, backed by one or more registry entries.** Entries are joined only when the evidence is unambiguous. See [Identity Resolution](identity-resolution-and-auth-boundaries.md).
 
-### Declared, Responds, Connected
+### Profile
 
-**A declaration is what a registry or owner says about the agent. Responds is what we measured. Connected is what the owner proved.** The three are independent. See [How We Verify](how-we-verify.md).
+**A profile is the full page for one agent**: where it is registered, how it can be reached, its token, its holdings and its reputation. See [Directory And Profile](agent-directory-and-profile-surfaces.md).
 
 ### Relation
 
-**A relation is a link between an agent and a token or x402 tool, marked Declared, Matches or Proven.** See [How To Read A Relation](relations.md).
+**A relation is a link between an agent and a token or x402 tool, marked Declared, Matches or Proven.** See [How To Read A Relation](../start/relations.md).
 
 ## Quick reference
 
@@ -71,11 +69,10 @@ In this section you will find:
 
 ## Next steps
 
-- [How We Verify](how-we-verify.md): what Listed, Declared, Responds and Connected mean, so you know how much weight to give each.
 - [Registries](passport-and-protocol-registries.md): which registries and chains are read, and the identifier each one uses.
 - [Directory And Profile](agent-directory-and-profile-surfaces.md): what a profile shows, including tokens, holdings and reputation.
-- [Prove An Agent Or Token Is Yours](prove-ownership.md): the wallet signature, domain proof and Your token steps.
-- [Public Agents API](public-api-contracts.md): every public endpoint, parameter and error.
+- [Public Agents API](public-api-contracts.md): every public route, parameter and error.
+- [Prove It Is Yours](../start/prove-ownership.md): make your agent Connected.
 
 ## License
 
