@@ -17,7 +17,7 @@ The responses below come from real devnet runs on 2026-10-01, trimmed. The creat
 Ask for the terms of the network you will use. It needs no wallet:
 
 ```bash
-curl -s 'https://LAUNCHPAD_URL/v1/info?network=devnet'
+curl -s 'https://launchpad.deside.io/v1/info?network=devnet'
 ```
 
 The response carries the fees, the costs, the 4-step flow and the on-chain configuration of the network:
@@ -56,7 +56,7 @@ jq -n --arg img "$(base64 -w0 logo.png)" '{
   network: "devnet",
   wallet: "YOUR_WALLET",
   token: { name: "My Agent Token", symbol: "MYAGT", description: "Token of my agent", imageBase64: $img }
-}' | curl -s -X POST https://LAUNCHPAD_URL/v1/launch \
+}' | curl -s -X POST https://launchpad.deside.io/v1/launch \
   -H 'content-type: application/json' --data-binary @- > launch.json
 ```
 
@@ -130,7 +130,7 @@ Keep `wallet.json` on your machine. Don't send it, paste it into a request or co
 Send the signed transaction. **It expires about 60 seconds after step 2 returned**; if it does, run step 2 again:
 
 ```bash
-curl -s -X POST https://LAUNCHPAD_URL/v1/submit \
+curl -s -X POST https://launchpad.deside.io/v1/submit \
   -H 'content-type: application/json' --data-binary @signed.json
 ```
 
@@ -162,7 +162,7 @@ Deside sends it, waits for confirmation and then uploads the Arweave files the t
 Read the token by its mint:
 
 ```bash
-curl -s "https://LAUNCHPAD_URL/v1/tokens/$(jq -r .mint launch.json)?network=devnet"
+curl -s "https://launchpad.deside.io/v1/tokens/$(jq -r .mint launch.json)?network=devnet"
 ```
 
 The response shows the creator, the curve and the unclaimed fees. See [`get_token`](operations.md#get_token) for a full example.

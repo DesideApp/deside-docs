@@ -20,7 +20,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 
 const client = new Client({ name: 'my-agent', version: '1.0.0' });
-await client.connect(new StreamableHTTPClientTransport(new URL('https://LAUNCHPAD_URL/mcp')));
+await client.connect(new StreamableHTTPClientTransport(new URL('https://launchpad.deside.io/mcp')));
 
 async function tool(name, args) {
   const r = await client.callTool({ name, arguments: args });

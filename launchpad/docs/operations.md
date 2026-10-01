@@ -1,6 +1,6 @@
 # Operations reference
 
-The launchpad has 8 operations. Each one is an MCP tool and a REST route that take the same parameters and return the same JSON, because both are generated from one schema. The OpenAPI document at `https://LAUNCHPAD_URL/openapi.json` is generated from that schema too.
+The launchpad has 8 operations. Each one is an MCP tool and a REST route that take the same parameters and return the same JSON, because both are generated from one schema. The OpenAPI document at `https://launchpad.deside.io/openapi.json` is generated from that schema too.
 
 | MCP tool | REST route | Writes | What it does |
 |---|---|---|---|
@@ -33,7 +33,7 @@ On REST, GET parameters go in the query string and POST parameters in a JSON bod
 Over REST, call the route with `curl` or any HTTP client. Over MCP, any MCP client works; the server is stateless, so a single `POST` of a `tools/call` request also works without a session. This sends the `get_launchpad_info` call shown below:
 
 ```bash
-curl -s -X POST https://LAUNCHPAD_URL/mcp \
+curl -s -X POST https://launchpad.deside.io/mcp \
   -H 'content-type: application/json' \
   -H 'accept: application/json, text/event-stream' \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_launchpad_info","arguments":{"network":"devnet"}}}'
@@ -86,7 +86,7 @@ Returns the launchpad terms: fees, anti-sniper fee, graduation, locked liquidity
 
 #### Example
 
-MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
+MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
 
 ```json
 {
@@ -103,7 +103,7 @@ MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
 REST request:
 
 ```bash
-curl -s 'https://LAUNCHPAD_URL/v1/info?network=devnet'
+curl -s 'https://launchpad.deside.io/v1/info?network=devnet'
 ```
 
 Response:
@@ -196,7 +196,7 @@ The transaction is already signed by the new mint and, with an identity, by the 
 
 #### Example
 
-MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
+MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
 
 ```json
 {
@@ -226,7 +226,7 @@ MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
 REST request:
 
 ```bash
-curl -s -X POST https://LAUNCHPAD_URL/v1/launch \
+curl -s -X POST https://launchpad.deside.io/v1/launch \
   -H 'content-type: application/json' \
   -d '{
     "network": "devnet",
@@ -266,7 +266,7 @@ That run predates the agent NFT metadata file. A launch with identity now also r
 This `launch_token` call on mainnet fills every `agent` field and declares one service of each kind the schema describes. Each service is `{ name, endpoint }` plus the optional field that belongs to its kind: `version`, `mcpTools` (MCP), `a2aSkills` (A2A), `skills` and `domains` (OASF) or `resources` (x402-resources). Replace every `example.com` value with your own:
 
 ```bash
-curl -s -X POST https://LAUNCHPAD_URL/v1/launch \
+curl -s -X POST https://launchpad.deside.io/v1/launch \
   -H 'content-type: application/json' \
   -d '{
     "network": "mainnet",
@@ -399,7 +399,7 @@ Sends a transaction prepared by this launchpad and signed by your wallet, waits 
 
 #### Example
 
-MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
+MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
 
 ```json
 {
@@ -416,7 +416,7 @@ MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
 REST request:
 
 ```bash
-curl -s -X POST https://LAUNCHPAD_URL/v1/submit \
+curl -s -X POST https://launchpad.deside.io/v1/submit \
   -H 'content-type: application/json' \
   -d '{ "network": "devnet", "transaction": "SIGNED_TRANSACTION_BASE64" }'
 ```
@@ -473,7 +473,7 @@ Returns the name, creator, curve progress toward graduation, graduated pool and 
 
 #### Example
 
-MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
+MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
 
 ```json
 {
@@ -490,7 +490,7 @@ MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
 REST request:
 
 ```bash
-curl -s 'https://LAUNCHPAD_URL/v1/tokens/298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE?network=devnet'
+curl -s 'https://launchpad.deside.io/v1/tokens/298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE?network=devnet'
 ```
 
 Response for a curve that has raised about 0.9% of its threshold:
@@ -535,7 +535,7 @@ Response: `{ network, creator, count, launches }`, where each launch is `{ mint,
 
 #### Example
 
-MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
+MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
 
 ```json
 {
@@ -552,7 +552,7 @@ MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
 REST request:
 
 ```bash
-curl -s 'https://LAUNCHPAD_URL/v1/creators/YOUR_WALLET/launches?network=devnet'
+curl -s 'https://launchpad.deside.io/v1/creators/YOUR_WALLET/launches?network=devnet'
 ```
 
 Response for a wallet with 3 launches, one of them graduated:
@@ -606,7 +606,7 @@ A buy of 0.003 SOL on a devnet curve during the anti-sniper window returned:
 
 #### Example
 
-MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
+MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
 
 ```json
 {
@@ -623,7 +623,7 @@ MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
 REST request:
 
 ```bash
-curl -s -X POST https://LAUNCHPAD_URL/v1/swap \
+curl -s -X POST https://launchpad.deside.io/v1/swap \
   -H 'content-type: application/json' \
   -d '{ "network": "devnet", "wallet": "YOUR_WALLET", "mint": "298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE", "side": "buy", "amount": 0.001 }'
 ```
@@ -668,7 +668,7 @@ Response: `claims`, a list of `{ source }` with `source` one of `curve` (with `s
 
 #### Example
 
-MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
+MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
 
 ```json
 {
@@ -685,7 +685,7 @@ MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
 REST request:
 
 ```bash
-curl -s -X POST https://LAUNCHPAD_URL/v1/claim \
+curl -s -X POST https://launchpad.deside.io/v1/claim \
   -H 'content-type: application/json' \
   -d '{ "network": "devnet", "wallet": "YOUR_WALLET", "mint": "298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE" }'
 ```
@@ -722,7 +722,7 @@ Response: `note`, `estimatedCostSol` and the write fields.
 
 #### Example
 
-MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
+MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
 
 ```json
 {
@@ -739,7 +739,7 @@ MCP request, the JSON-RPC body you `POST` to `https://LAUNCHPAD_URL/mcp`:
 REST request:
 
 ```bash
-curl -s -X POST https://LAUNCHPAD_URL/v1/migrate \
+curl -s -X POST https://launchpad.deside.io/v1/migrate \
   -H 'content-type: application/json' \
   -d '{ "network": "devnet", "wallet": "YOUR_WALLET", "mint": "298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE" }'
 ```

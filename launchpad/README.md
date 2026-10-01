@@ -12,10 +12,6 @@ On this page:
 
 One launch signature creates the token and its bonding curve, optionally registers an EIP-8004 agent identity in the Metaplex Agent Registry, and pays the permanent Arweave storage of the logo and metadata.
 
-{% hint style="warning" %}
-The service is not public yet. `https://LAUNCHPAD_URL` stands for its base URL on every page of this section until the address is published.
-{% endhint %}
-
 ## Quick start
 
 1. **Read the terms** with `get_launchpad_info` (MCP) or `GET /v1/info`. It needs no wallet.
@@ -47,11 +43,11 @@ Every operation except `get_launchpad_info` takes `network`: `"mainnet"` for rea
 
 | Item | Value |
 |---|---|
-| Base URL | `https://LAUNCHPAD_URL` (not published yet) |
-| MCP endpoint | `https://LAUNCHPAD_URL/mcp` (Streamable HTTP, stateless, `POST` only) |
-| REST routes | `https://LAUNCHPAD_URL/v1/...` |
-| OpenAPI schema | `https://LAUNCHPAD_URL/openapi.json` |
-| LLM summary | `https://LAUNCHPAD_URL/llms.txt` |
+| Base URL | `https://launchpad.deside.io` |
+| MCP endpoint | `https://launchpad.deside.io/mcp` (Streamable HTTP, stateless, `POST` only) |
+| REST routes | `https://launchpad.deside.io/v1/...` |
+| OpenAPI schema | `https://launchpad.deside.io/openapi.json` |
+| LLM summary | `https://launchpad.deside.io/llms.txt` |
 | Authentication | None |
 | Networks | `mainnet`, `devnet` |
 | Fees, costs and limits | [Fees and rules](docs/fees-and-rules.md) |
