@@ -1,6 +1,6 @@
 # Getting started
 
-This guide launches a token on devnet through the MCP server: read the terms, prepare the launch, sign it with your wallet and send it. The same steps work over REST; each step shows the route too.
+This guide launches a token on devnet through the MCP server: read the terms, prepare the launch, sign it with your wallet and send it. The same steps work over REST; each step shows the route too, and the [REST quickstart](rest-quickstart.md) does them with `curl`.
 
 The responses below come from a real devnet run on 2026-10-01, trimmed. The creator wallet is shown as `YOUR_WALLET`.
 

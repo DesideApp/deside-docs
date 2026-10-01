@@ -41,6 +41,7 @@
 
 - [Agent Launchpad Overview](launchpad/README.md)
 - [Getting Started](launchpad/docs/getting-started.md)
+- [REST Quickstart](launchpad/docs/rest-quickstart.md)
 - [Operations Reference](launchpad/docs/operations.md)
 - [Fees And Rules](launchpad/docs/fees-and-rules.md)
 

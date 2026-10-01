@@ -23,7 +23,7 @@ The service is not public yet. `https://LAUNCHPAD_URL` stands for its base URL o
 3. **Sign it** with the wallet you passed as `wallet`.
 4. **Send it** with `submit_transaction` (MCP) or `POST /v1/submit` within about 60 seconds.
 
-[Getting started](docs/getting-started.md) walks through the four steps on devnet with real responses.
+[Getting started](docs/getting-started.md) walks through the four steps on devnet over MCP, and the [REST quickstart](docs/rest-quickstart.md) does it with `curl` and a Node.js signing script.
 
 ## Core concepts
 
@@ -68,6 +68,7 @@ The full fee schedule, the anti-sniper fee and the graduation rules are on [Fees
 
 ## Next steps
 
-* [Getting started](docs/getting-started.md): launch a token on devnet end to end.
+* [Getting started](docs/getting-started.md): launch a token on devnet end to end over MCP.
+* [REST quickstart](docs/rest-quickstart.md): the same launch with `curl` and a local signing script.
 * [Operations reference](docs/operations.md): the 8 operations, their parameters, responses and errors.
 * [Fees and rules](docs/fees-and-rules.md): who earns what, limits and the disclaimer.
