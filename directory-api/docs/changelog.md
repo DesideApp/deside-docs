@@ -3,6 +3,24 @@
 This page records changes to the Directory API contract, newest first, and
 corrections to these docs. A change that breaks a client says what to do.
 
+## Unreleased
+
+- the x402 catalogue answers in English since 2026-10-02: `GET /api/v1/public/x402/tools`,
+  `/tools/:slug`, `/census` and `/indices`, the Directory API `x402-tool-profiles`, the tool
+  cards of Ask and the x402 row of the agent profile. Same values, new names: `sonda` is
+  `probe` (`verdict`, `at`, `httpStatus`, `quote{amount,asset,network,payTo}`,
+  `comparison{sameAmount,sameWallet,undeclaredNetwork}`), `bloque` is `tier`, `completitud`
+  is `completeness`, `tipo` is `type`, `descriptorDeLlamada` is `callDescriptor`, `agente`
+  is `agent` and `indice` is `index{agents,indexes,served,wellKnown}`. In the census
+  `porBazar`, `porRed` and `porSonda` are `byBazaar`, `byNetwork` and `byVerdict`. In the
+  index groups `indices`, `agentes` and `contenido` are `indexes`, `agents` and
+  `content{state,tools,quotesPrice,respondsNoPrice,down,notChecked}`. In the agent profile
+  `x402Estado` and `x402Contenido` are `x402State` and `x402Content`. Values: `vivo`,
+  `muerto` and `sin-tools` are `live`, `down` and `no-tools`; a wallet `family` of
+  `desconocida` is `unknown`; `walletCoincidences[].claim` `coincide` is `matches`. The
+  verdicts do not change. The group filter is `?index=`; `?indice=` is a deprecated alias
+  and will be removed. The old keys are no longer served
+
 ## 2026-10-01: one shape for relations
 
 The agent profile `relations` and the token `behindToken.relations` now use
