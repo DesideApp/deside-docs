@@ -774,7 +774,7 @@ Over REST an error is an HTTP status with a JSON body `{ "error": "..." }`. Inva
 { "error": "invalid input", "issues": [{ "path": "token.name", "message": "Too big: expected string to have <=32 characters" }] }
 ```
 
-Over MCP, a parameter that breaks the schema is rejected by the MCP layer with code `-32602` and the same reason, for example `Too big: expected string to have <=32 characters at token.name`. Every other error is a tool result with `isError: true` and the `{ "error": "..." }` body as text.
+Over MCP, every error is a tool result with `isError: true`. When a parameter breaks the schema, its text starts with `MCP error -32602: Input validation error` and names the field, for example `wallet must be a base58 Solana address at wallet`. Every other error carries the `{ "error": "..." }` body as text.
 
 | Status | Error | Cause and fix |
 |---|---|---|
