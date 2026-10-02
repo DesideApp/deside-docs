@@ -127,7 +127,7 @@ const sent = await tool('submit_transaction', {
 });
 ```
 
-Deside sends the transaction, waits for confirmation and only then uploads the Arweave files the transaction paid for. Each uploaded file has the ID that was already inside the transaction:
+Deside simulates the signed transaction, uploads the Arweave files it paid for and only then sends it. Indexers read the token JSON when the mint is created and do not retry, so the files must exist before the mint does. If the simulation fails, you get a `422` with a `hint` and nothing is uploaded or sent. Each uploaded file has the ID that was already inside the transaction:
 
 ```json
 {
@@ -185,6 +185,10 @@ await tool('submit_transaction', { network: 'devnet', signature: 'YOUR_SIGNATURE
 ```
 
 Do this within 15 minutes of `launch_token`: the prepared files are held in memory for that long.
+
+{% hint style="warning" %}
+**In this mode the files are uploaded after the mint exists, so explorers and wallets may never show the logo.** They read the token JSON once, when the mint is created. Pass the signed transaction to `submit_transaction` instead whenever you can.
+{% endhint %}
 
 ## What you just did
 

@@ -6,7 +6,7 @@ The launchpad has 8 operations. Each one is an MCP tool and a REST route that ta
 |---|---|---|---|
 | [`get_launchpad_info`](#get_launchpad_info) | `GET /v1/info` | No | Fees, costs, flow and configuration per network |
 | [`launch_token`](#launch_token) | `POST /v1/launch` | Yes | Prepares one launch transaction |
-| [`submit_transaction`](#submit_transaction) | `POST /v1/submit` | Sends | Sends a signed transaction and uploads paid files |
+| [`submit_transaction`](#submit_transaction) | `POST /v1/submit` | Sends | Uploads the paid files and sends a signed transaction |
 | [`get_token`](#get_token) | `GET /v1/tokens/{mint}` | No | Status of one token |
 | [`list_my_launches`](#list_my_launches) | `GET /v1/creators/{wallet}/launches` | No | Tokens a wallet launched here |
 | [`swap`](#swap) | `POST /v1/swap` | Yes | Prepares a buy or a sell |
@@ -378,7 +378,7 @@ The on-chain name of the agent asset is `agent.name` cut to 32 characters; the r
 
 ### `submit_transaction`
 
-Sends a transaction prepared by this launchpad and signed by your wallet, waits for confirmation and, for a launch, uploads the Arweave files the transaction paid for. It only accepts transactions that call the Meteora DBC or DAMM v2 programs and no programs outside the launchpad's list.
+Sends a transaction prepared by this launchpad and signed by your wallet and waits for confirmation. For a launch, it first simulates the signed transaction and uploads the Arweave files the transaction paid for, and only then sends it: indexers read the token JSON when the mint is created and do not retry. If the simulation fails, you get a `422` with a `hint` and nothing is uploaded or sent. If the upload fails, you get a `503` and nothing is sent. It only accepts transactions that call the Meteora DBC or DAMM v2 programs and no programs outside the launchpad's list.
 
 **MCP:** `submit_transaction` · **REST:** `POST /v1/submit`
 
@@ -386,7 +386,7 @@ Sends a transaction prepared by this launchpad and signed by your wallet, waits 
 |---|---|---|---|
 | `network` | string | Yes | `mainnet` or `devnet`. |
 | `transaction` | string | One of the two | The signed transaction, base64. |
-| `signature` | string | One of the two | The signature of a launch you sent yourself. Deside checks the Arweave payment on chain and uploads the files. |
+| `signature` | string | One of the two | The signature of a launch you sent yourself. Deside checks the Arweave payment on chain and uploads the files. They arrive after the mint exists, so explorers and wallets may not show the logo: prefer `transaction`. |
 
 **Response fields**
 
@@ -395,7 +395,7 @@ Sends a transaction prepared by this launchpad and signed by your wallet, waits 
 | `signature` | The transaction signature. |
 | `links` | Explorer links for the transaction and, for a launch, the token. On mainnet, also a Jupiter link. |
 | `mint`, `pool`, `agentAsset` | Only for a launch. |
-| `uploads` | Only for a launch: `{ ok, files: [{ id, url, matchesPrepared, role }] }`. If the upload fails, `{ ok: false, error, retry }`: call `submit_transaction` again with `{ network, signature }` within 15 minutes. |
+| `uploads` | Only for a launch: `{ ok, files: [{ id, url, matchesPrepared, role }] }`. With `transaction`, a failed upload is a `503` and nothing is sent. With `signature`, a failed upload returns `{ ok: false, error, retry }`: call `submit_transaction` again with `{ network, signature }` within 15 minutes. |
 
 #### Example
 
@@ -443,7 +443,7 @@ The launch with identity above returned:
 }
 ```
 
-If you sent the transaction yourself, pass `{ "network": "devnet", "signature": "YOUR_SIGNATURE" }` instead, within 15 minutes of `launch_token`.
+If you sent the transaction yourself, pass `{ "network": "devnet", "signature": "YOUR_SIGNATURE" }` instead, within 15 minutes of `launch_token`. In that mode the files are uploaded after the mint exists, so explorers and wallets may not show the logo.
 
 ---
 
@@ -786,6 +786,8 @@ Over MCP, a parameter that breaks the schema is rejected by the MCP layer with c
 | `409` | `not ready: X of Y SOL raised` / `already graduated` | `migrate` only works once the threshold is reached and before graduation. |
 | `413` | `request body too large (max 2 MB)` | Use a smaller logo. |
 | `422` | `transaction is N bytes (limit 1232); use a shorter name, symbol or image URL` | Shorten the inputs. |
+| `422` | `transaction would fail: ...` | The simulation of the signed launch failed before anything was uploaded or sent. The body carries `hint` and `logs`. |
 | `422` | `transaction rejected: ...` | The RPC refused the transaction. The body carries `hint` and `logs`; an expired blockhash means prepare it again. |
 | `429` | `too many requests, slow down` / `too many launches from this address, wait a minute` | Wait for the per-minute window to reset. |
+| `503` | `could not store the token files on Arweave, nothing was sent; call launch_token again` | Prepare the launch again and sign the new transaction. |
 | `503` | `uploads are not available on <network> right now` | Arweave uploads are not available on that network at the moment; try later. |

@@ -9,8 +9,30 @@ The responses below come from real devnet runs on 2026-10-01, trimmed. The creat
 * `curl`, `jq` and Node.js 18 or later.
 * `@solana/web3.js` installed in the folder where you run the script (`npm install @solana/web3.js`).
 * A Solana keypair file you control, as the JSON array of 64 numbers that `solana-keygen` writes. Its address is `YOUR_WALLET`.
+
+{% hint style="info" %}
+A wallet created with `solana-keygen new` derives its key from the seed phrase without a derivation path. Phantom derives `m/44'/501'/0'/0'` from the same phrase, so importing the phrase into Phantom shows a different address. To see this wallet in Phantom, import its private key instead.
+{% endhint %}
 * About 0.03 SOL on devnet in that wallet.
 * A square logo file, PNG, JPG, WebP or GIF, of at most 1 MB.
+
+## 0. Find the entry point
+
+The root of the service lists where everything is:
+
+```bash
+curl -s https://launchpad.deside.io/
+```
+
+```json
+{
+  "name": "Deside Agent Launchpad",
+  "mcp": "https://launchpad.deside.io/mcp",
+  "openapi": "https://launchpad.deside.io/openapi.json",
+  "llms": "https://launchpad.deside.io/llms.txt",
+  "start": "Connect an MCP client to `mcp` (no auth) and call get_launchpad_info, or GET /v1/info?network=mainnet."
+}
+```
 
 ## 1. Read the terms
 
@@ -134,7 +156,7 @@ curl -s -X POST https://launchpad.deside.io/v1/submit \
   -H 'content-type: application/json' --data-binary @signed.json
 ```
 
-Deside sends it, waits for confirmation and then uploads the Arweave files the transaction paid for. The launch above returned:
+Deside simulates it, uploads the Arweave files the transaction paid for and only then sends it and waits for confirmation. The files go first because indexers read the token JSON when the mint is created and do not retry. If the simulation fails, the response is a `422` with a `hint`, and nothing is uploaded or sent. If the upload fails, the response is a `503` and nothing is sent. The launch above returned:
 
 ```json
 {
@@ -166,6 +188,121 @@ curl -s "https://launchpad.deside.io/v1/tokens/$(jq -r .mint launch.json)?networ
 ```
 
 The response shows the creator, the curve and the unclaimed fees. See [`get_token`](operations.md#get_token) for a full example.
+
+## Launch on mainnet with one script
+
+This script runs the whole launch in one command: it prepares the launch, stops if the simulation fails or the transaction is not paid by your keypair, shows the summary, asks you to type `yes`, signs locally, sends it and saves the result. Save it as `launch.mjs`:
+
+```javascript
+import fs from 'node:fs';
+import readline from 'node:readline/promises';
+import { Keypair, Transaction } from '@solana/web3.js';
+
+const [requestFile, keypairFile, base = 'https://launchpad.deside.io'] = process.argv.slice(2);
+const wallet = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(fs.readFileSync(keypairFile, 'utf8'))));
+const request = JSON.parse(fs.readFileSync(requestFile, 'utf8'));
+request.wallet = wallet.publicKey.toBase58();
+if (request.token.imageFrom) {
+  const r = await fetch(request.token.imageFrom);
+  if (!r.ok) throw new Error(`could not download the logo: ${r.status}`);
+  request.token.imageBase64 = Buffer.from(await r.arrayBuffer()).toString('base64');
+  delete request.token.imageFrom;
+}
+
+const post = async (path, body) => {
+  const r = await fetch(`${base}${path}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  const j = await r.json();
+  if (!r.ok) throw new Error(`${path} ${r.status}: ${JSON.stringify(j)}`);
+  return j;
+};
+
+const prepared = await post('/v1/launch', request);
+if (!prepared.simulation?.ok) { console.error('Simulation fails, not signing:', JSON.stringify(prepared.simulation, null, 2)); process.exit(1); }
+const tx = Transaction.from(Buffer.from(prepared.transaction, 'base64'));
+if (!tx.feePayer?.equals(wallet.publicKey)) throw new Error('the transaction is not paid by your wallet; not signing');
+
+console.log(JSON.stringify({ network: prepared.network, wallet: prepared.creator, mint: prepared.mint, pool: prepared.pool, files: prepared.files, cost: prepared.cost,
+  programs: tx.instructions.map((i) => i.programId.toBase58()) }, null, 2));
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+const ok = (await rl.question('Sign and launch? (type "yes"): ')).trim().toLowerCase() === 'yes';
+rl.close();
+if (!ok) { console.log('Cancelled, nothing was sent.'); process.exit(0); }
+
+tx.partialSign(wallet);
+const sent = await post('/v1/submit', { network: prepared.network, transaction: tx.serialize().toString('base64') });
+const out = requestFile.replace(/\.json$/, '') + `-result-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+fs.writeFileSync(out, JSON.stringify({ prepared: { ...prepared, transaction: undefined }, sent }, null, 2));
+console.log(JSON.stringify(sent, null, 2));
+console.log(`Saved to ${out}`);
+```
+
+Write the body of `launch_token` to `request.json`, without `wallet` (the script takes it from the keypair). `token.imageFrom` is an optional logo URL the script downloads and sends as `imageBase64`:
+
+```json
+{
+  "network": "mainnet",
+  "token": {
+    "name": "Deside",
+    "symbol": "DESIDE",
+    "description": "Let your agent launch a token and trade knowing who is behind it.",
+    "website": "https://deside.io",
+    "x": "https://x.com/deside_app",
+    "imageFrom": "https://example.com/logo.png"
+  },
+  "registerAgentIdentity": false
+}
+```
+
+Run it with your keypair file:
+
+```bash
+node launch.mjs request.json wallet.json
+```
+
+The first token launched through this launchpad, DESIDE, on mainnet on 2026-10-02, was launched this way. The prepare call returned, trimmed:
+
+```json
+{
+  "network": "mainnet",
+  "mint": "Ec9FVEahXUhQRkPneCmDYzXc3jFZWX4URcLfyPwHaRE1",
+  "pool": "D4x5pLnvD1PuX8RwcHQWCzsvzJeiTdsHiMifYWkL4pZp",
+  "agentAsset": null,
+  "creator": "YOUR_WALLET",
+  "files": {
+    "image": "https://gateway.irys.xyz/G3ymNAGETZUrU18XadeFN5gtUs25K5TgeFZLqCUD3T1u",
+    "tokenMetadata": "https://gateway.irys.xyz/2pJgy1jA1Yr6KKWGyWaZ4LUZTcruyaJQm8cayRhN22RX"
+  },
+  "cost": { "arweaveSol": 0.000007087, "estimatedTotalSol": 0.020607 },
+  "bytes": 783,
+  "simulation": { "ok": true, "computeUnits": 104244 },
+  "expiresInSeconds": 60
+}
+```
+
+After `yes`, the submit call returned:
+
+```json
+{
+  "signature": "3DoZFYKeUCWt25cPE8dVjf9MAbUihTEuxv1siTxzk6mVZVCc97xHKFjJpaarP8VddRB8JnZFj7xoZR5QPRF9L6Tr",
+  "mint": "Ec9FVEahXUhQRkPneCmDYzXc3jFZWX4URcLfyPwHaRE1",
+  "pool": "D4x5pLnvD1PuX8RwcHQWCzsvzJeiTdsHiMifYWkL4pZp",
+  "agentAsset": null,
+  "links": {
+    "transaction": "https://solscan.io/tx/3DoZFYKeUCWt25cPE8dVjf9MAbUihTEuxv1siTxzk6mVZVCc97xHKFjJpaarP8VddRB8JnZFj7xoZR5QPRF9L6Tr",
+    "token": "https://solscan.io/token/Ec9FVEahXUhQRkPneCmDYzXc3jFZWX4URcLfyPwHaRE1",
+    "jupiter": "https://jup.ag/tokens/Ec9FVEahXUhQRkPneCmDYzXc3jFZWX4URcLfyPwHaRE1"
+  },
+  "uploads": {
+    "ok": true,
+    "files": [
+      { "id": "G3ymNAGETZUrU18XadeFN5gtUs25K5TgeFZLqCUD3T1u", "url": "https://gateway.irys.xyz/G3ymNAGETZUrU18XadeFN5gtUs25K5TgeFZLqCUD3T1u", "matchesPrepared": true, "role": "image" },
+      { "id": "2pJgy1jA1Yr6KKWGyWaZ4LUZTcruyaJQm8cayRhN22RX", "url": "https://gateway.irys.xyz/2pJgy1jA1Yr6KKWGyWaZ4LUZTcruyaJQm8cayRhN22RX", "matchesPrepared": true, "role": "token-metadata" }
+    ]
+  }
+}
+```
+
+The launch cost about 0.0206 SOL, with no agent identity.
 
 ## What you just did
 

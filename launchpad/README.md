@@ -44,6 +44,7 @@ Every operation except `get_launchpad_info` takes `network`: `"mainnet"` for rea
 | Item | Value |
 |---|---|
 | Base URL | `https://launchpad.deside.io` |
+| Entry point | `GET https://launchpad.deside.io/` returns `{ name, mcp, openapi, llms, start }` |
 | MCP endpoint | `https://launchpad.deside.io/mcp` (Streamable HTTP, stateless, `POST` only) |
 | REST routes | `https://launchpad.deside.io/v1/...` |
 | OpenAPI schema | `https://launchpad.deside.io/openapi.json` |
@@ -55,6 +56,6 @@ Every operation except `get_launchpad_info` takes `network`: `"mainnet"` for rea
 ## Next steps
 
 * [Getting started](docs/getting-started.md): launch a token on devnet end to end over MCP.
-* [REST quickstart](docs/rest-quickstart.md): the same launch with `curl` and a local signing script.
+* [REST quickstart](docs/rest-quickstart.md): the same launch with `curl` and a local signing script, and the one-script mainnet launch of DESIDE, the first token launched here.
 * [Operations reference](docs/operations.md): the 8 operations, their parameters, responses and errors.
 * [Fees and rules](docs/fees-and-rules.md): who earns what, limits and the disclaimer.
