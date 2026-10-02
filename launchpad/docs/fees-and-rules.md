@@ -69,6 +69,16 @@ A devnet launch with an agent identity and an 8.8 KB PNG logo cost the launching
 
 Deside holds no user keys and sends nothing you have not signed. `submit_transaction` only forwards transactions that call the Meteora DBC or DAMM v2 programs and no program outside the launchpad's list, so it is not a general relay.
 
+## Creator terms
+
+**`launch_token` requires `acceptTerms: true`.** By sending it you accept the creator terms. In short:
+
+* You are the only one responsible for your token and for everything you or your agent say or do about it.
+* A token launched here raises no capital and gives its holders no rights: no ownership, profit share, dividend or vote.
+* You must not promise or suggest returns, misrepresent the fees, or manipulate the market of any token.
+
+This summary does not replace the terms. The full text, with its version, is at [launchpad.deside.io/terms](https://launchpad.deside.io/terms) and in the `creatorTerms` field of `get_launchpad_info`.
+
 ## Disclaimer
 
 The service returns this text in `get_launchpad_info` and in every `launch_token` response:

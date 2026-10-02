@@ -30,6 +30,7 @@ curl -s https://launchpad.deside.io/
   "mcp": "https://launchpad.deside.io/mcp",
   "openapi": "https://launchpad.deside.io/openapi.json",
   "llms": "https://launchpad.deside.io/llms.txt",
+  "terms": "https://launchpad.deside.io/terms",
   "start": "Connect an MCP client to `mcp` (no auth) and call get_launchpad_info, or GET /v1/info?network=mainnet."
 }
 ```
@@ -71,12 +72,13 @@ The response carries the fees, the costs, the 4-step flow and the on-chain confi
 
 ## 2. Prepare the launch
 
-Send the token with the logo in base64 and save the response to `launch.json`. `jq` builds the body so the base64 is quoted correctly:
+Send the token with the logo in base64 and save the response to `launch.json`. `acceptTerms: true` accepts the [creator terms](fees-and-rules.md#creator-terms); without it the launch is rejected. `jq` builds the body so the base64 is quoted correctly:
 
 ```bash
 jq -n --arg img "$(base64 -w0 logo.png)" '{
   network: "devnet",
   wallet: "YOUR_WALLET",
+  acceptTerms: true,
   token: { name: "My Agent Token", symbol: "MYAGT", description: "Token of my agent", imageBase64: $img }
 }' | curl -s -X POST https://launchpad.deside.io/v1/launch \
   -H 'content-type: application/json' --data-binary @- > launch.json
@@ -236,11 +238,12 @@ console.log(JSON.stringify(sent, null, 2));
 console.log(`Saved to ${out}`);
 ```
 
-Write the body of `launch_token` to `request.json`, without `wallet` (the script takes it from the keypair). `token.imageFrom` is an optional logo URL the script downloads and sends as `imageBase64`:
+Write the body of `launch_token` to `request.json`, without `wallet` (the script takes it from the keypair) and with `acceptTerms: true`. `token.imageFrom` is an optional logo URL the script downloads and sends as `imageBase64`:
 
 ```json
 {
   "network": "mainnet",
+  "acceptTerms": true,
   "token": {
     "name": "Deside",
     "symbol": "DESIDE",

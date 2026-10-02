@@ -79,6 +79,7 @@ Returns the launchpad terms: fees, anti-sniper fee, graduation, locked liquidity
 | Field | Description |
 |---|---|
 | `name`, `description`, `disclaimer` | What the service is and the disclaimer text. |
+| `creatorTerms` | `version`, `url` (`/terms`), `text` (the full creator terms) and `accept` (`launch_token requires acceptTerms: true`). |
 | `preset` | The launch preset: `id`, `supply`, `curveFee`, `antiSniper`, `graduation`, `migratedPool`, `liquidity`, `startMarketCapUsd`, `graduationMarketCapUsd`. |
 | `costs` | `launchSol`, `agentIdentitySol`, `arweaveSol`, `typicalTotalSol`, `note`. |
 | `flow` | The 4 steps, in words. |
@@ -151,6 +152,7 @@ Prepares one unsigned transaction that creates your token and its Meteora bondin
 |---|---|---|---|
 | `network` | string | Yes | `mainnet` or `devnet`. |
 | `wallet` | string | Yes | Signs and pays the launch, becomes the token creator and the identity owner. Needs about 0.03 SOL. |
+| `acceptTerms` | boolean | Yes | Must be `true`: you accept the [creator terms](fees-and-rules.md#creator-terms). Any other value is rejected. |
 | `token` | object | Yes | The token. Give `image` or `imageBase64`. |
 | `token.name` | string | Yes | 1 to 32 characters. |
 | `token.symbol` | string | Yes | 1 to 10 characters. |
@@ -208,6 +210,7 @@ MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
     "arguments": {
       "network": "devnet",
       "wallet": "YOUR_WALLET",
+      "acceptTerms": true,
       "token": {
         "name": "My Agent Token",
         "symbol": "MYAGT",
@@ -231,6 +234,7 @@ curl -s -X POST https://launchpad.deside.io/v1/launch \
   -d '{
     "network": "devnet",
     "wallet": "YOUR_WALLET",
+    "acceptTerms": true,
     "token": { "name": "My Agent Token", "symbol": "MYAGT", "description": "Token of my agent", "image": "https://example.com/logo.png" },
     "registerAgentIdentity": true,
     "agent": { "services": [{ "name": "MCP", "endpoint": "https://example.com/mcp" }] }
@@ -271,6 +275,7 @@ curl -s -X POST https://launchpad.deside.io/v1/launch \
   -d '{
     "network": "mainnet",
     "wallet": "YOUR_WALLET",
+    "acceptTerms": true,
     "token": {
       "name": "My Agent Token",
       "symbol": "MYAGT",
@@ -773,6 +778,7 @@ Over MCP, a parameter that breaks the schema is rejected by the MCP layer with c
 
 | Status | Error | Cause and fix |
 |---|---|---|
+| `400` | `acceptTerms must be true: read the creator terms at /terms (also in get_launchpad_info) before launching` (path `acceptTerms`) | Read the [creator terms](fees-and-rules.md#creator-terms) and send `acceptTerms: true` in `launch_token`. |
 | `400` | `token.image (https URL) or token.imageBase64 is required` | Add a logo. |
 | `400` | `agent fields were sent but registerAgentIdentity is not true` | Set `registerAgentIdentity: true` or drop `agent`. |
 | `400` | `image must be PNG, JPG, WebP or GIF` / `image is N bytes; max 1 MB` | Send a supported file under 1 MB. |

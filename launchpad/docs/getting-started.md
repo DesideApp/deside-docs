@@ -60,7 +60,7 @@ The response carries the fees, the costs, the flow and the on-chain configuratio
 
 ## Prepare the launch
 
-Call `launch_token` with your wallet and the token (REST: `POST /v1/launch`). This example also registers an agent identity and sends the logo as base64, so it is stored on Arweave:
+Call `launch_token` with your wallet, the token and `acceptTerms: true`, which accepts the [creator terms](fees-and-rules.md#creator-terms) (REST: `POST /v1/launch`). This example also registers an agent identity and sends the logo as base64, so it is stored on Arweave:
 
 ```javascript
 import fs from 'node:fs';
@@ -68,6 +68,7 @@ import fs from 'node:fs';
 const prepared = await tool('launch_token', {
   network: 'devnet',
   wallet: 'YOUR_WALLET',
+  acceptTerms: true,
   token: {
     name: 'Deside Test A',
     symbol: 'DTEST',

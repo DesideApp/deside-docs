@@ -44,7 +44,8 @@ Every operation except `get_launchpad_info` takes `network`: `"mainnet"` for rea
 | Item | Value |
 |---|---|
 | Base URL | `https://launchpad.deside.io` |
-| Entry point | `GET https://launchpad.deside.io/` returns `{ name, mcp, openapi, llms, start }` |
+| Entry point | `GET https://launchpad.deside.io/` returns `{ name, mcp, openapi, llms, terms, start }` |
+| Creator terms | `https://launchpad.deside.io/terms`, summarized in [Fees and rules](docs/fees-and-rules.md#creator-terms) |
 | MCP endpoint | `https://launchpad.deside.io/mcp` (Streamable HTTP, stateless, `POST` only) |
 | REST routes | `https://launchpad.deside.io/v1/...` |
 | OpenAPI schema | `https://launchpad.deside.io/openapi.json` |
