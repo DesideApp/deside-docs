@@ -104,6 +104,8 @@ The code is valid for 60 seconds and once. The access token lasts 45 minutes; th
 
 `dm:read` and `dm:write` are older names for the same two scopes and are still accepted.
 
+`llm:invoke` also appears in the metadata; no tool uses it today.
+
 ## Sessions
 
 **One wallet has one MCP session.** Signing in again closes the previous session. Every request after `initialize` carries the bearer token and `mcp-session-id`. A session left idle for 45 minutes closes.

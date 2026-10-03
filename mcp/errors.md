@@ -18,9 +18,10 @@ A tool that fails returns `isError: true` and, in `content[0].text`, a JSON obje
 | `NOT_FOUND` | 404 | Nothing matches: no agent, no pool for that mint, or a transaction not found yet. | Check the id; retry a transaction a few seconds later. |
 | `CONFLICT` | 409 | The state does not allow it: nothing to claim, already graduated, not ready to migrate. | |
 | `transaction_failed` | 422 | Launchpad: the transaction is too big, its simulation failed, or it failed on chain. `data` carries `hint` and `logs`. | Prepare it again. |
-| `RATE_LIMIT` | 429 | Directory and identity tools: over the limit. | Wait and retry. |
-| `RATE_LIMITED` | 429 | Launchpad tools: over the limit. | Wait and retry. |
-| `launchpad_unavailable` | 503 | The Launchpad is down or busy. | Retry later. |
+| `RATE_LIMIT` | 429 | Backend 429 on directory and identity tools. | Wait and retry. |
+| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP's own limit on the 4 public read tools. | Wait and retry. |
+| `launchpad_unavailable` | 503 | The Launchpad is unreachable or failing. | Retry later. |
+| `public_read_limit_unavailable` | 503 | The limiter for public read tools is unavailable. | Retry later. |
 | `UNKNOWN` | 500 or the original | Anything else. | Retry later. |
 
 ## Session errors
@@ -32,9 +33,10 @@ These come as an HTTP response on `/mcp`, before any tool runs:
 | 400 | `session_required` | A request after `initialize` without `mcp-session-id`. |
 | 400 | `invalid_request` | `initialize` sent with `mcp-session-id`. |
 | 401 | `AUTH_REQUIRED` | `initialize` without a valid bearer token. |
-| 401 | `auth_required` | Any other request without a bearer token. |
+| 401 | `auth_required` | A request to an existing session without a bearer token. |
 | 401 | `invalid_token` | An expired or unknown bearer token. Refresh it. |
 | 403 | `session_wallet_mismatch` | The bearer token belongs to another wallet than this session. |
+| 403 | `session_mismatch` | The bearer token belongs to another wallet than this session. |
 | 404 | `session_not_found` | Unknown or closed session. Run `initialize` again. |
 | 409 | `session_conflict` | Two `initialize` for the same wallet at the same moment. Retry one. |
 | 413 | `payload_too_large` | Body over 1 MB. |
@@ -47,11 +49,12 @@ These come as an HTTP response on `/mcp`, before any tool runs:
 
 | What | Limit |
 |---|---|
+| `search_agents`, `agent_trust_card`, `get_directory_stats`, `token_card` | 20 a minute and 100 a day per OAuth client |
+| `ask_directory` | 10 a minute per signed-in account |
 | Launchpad, per wallet | 60 requests and 2 launches a minute |
 | Launchpad, whole | 600 requests and 30 launches a minute |
 | `/oauth/register` | 30 a minute per IP |
 | Other `/oauth/*` | 60 a minute per IP |
 | Sign link | 2 minutes, once |
 | Prepared transaction | About 60 seconds |
-| `ask_directory` | Shared by every MCP user: one Ask window for the whole server |
 

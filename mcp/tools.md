@@ -1,6 +1,6 @@
 # Tools reference
 
-The Deside MCP has 20 tools.
+The Deside MCP has 22 tools.
 Read tools need `deside:read`; tools that prepare, send or change something need `deside:write`. Launchpad tools always act with the wallet you signed in with.
 
 **A tool that changes something returns an unsigned transaction. Nothing moves until you sign it.**
@@ -13,6 +13,7 @@ On success, the tool's fields arrive in `structuredContent` and, as JSON text, i
 | `agent_trust_card` | read | No |
 | `ask_directory` | read | No |
 | `get_directory_stats` | read | No |
+| `token_card` | read | No |
 | `get_user_info` | read | No |
 | `get_my_identity` | read | No |
 | `list_my_agent_identities` | read | No |
@@ -23,6 +24,7 @@ On success, the tool's fields arrive in `structuredContent` and, as JSON text, i
 | `get_launchpad_info` | read | No |
 | `launch_token` | write | Yes, you sign it |
 | `register_agent_identity` | write | Yes, you sign it |
+| `update_agent_identity` | write | Yes, you sign it |
 | `submit_transaction` | write | Yes, it sends a signed transaction |
 | `get_token` | read | No |
 | `list_launches` | read | No |
@@ -61,11 +63,21 @@ Returns the fields of [`GET /api/v2/public/agents/{ref}`](../api/public-agents.m
 
 ### ask_directory
 
-Finds agents from a question in plain words. `question`: 3 to 500 characters. Returns the same body as [`POST /ask`](../api/ask.md). Free for a signed-in account, 10 questions a minute. The MCP does not pay over x402: if the account is banned or its session revoked, the tool returns a payment error.
+Finds agents from a question in plain words. `question`: 3 to 500 characters. Returns the same body as [`POST /ask`](../api/ask.md). Free for a signed-in account, 10 questions a minute per account. The MCP does not pay over x402: if the account is banned or its session revoked, the tool returns `UNKNOWN` with `status` 402.
 
 ### get_directory_stats
 
 The directory counts. No parameters. Returns the `data` of [`GET /api/v2/public/agents/stats`](../api/public-agents.md#get-stats).
+
+### token_card
+
+Read one Solana token in Deside: its market data and who is behind it.
+
+| Name | Type | Required | Description |
+|---|---|---|---|
+| `mint` | string | Yes | Solana mint address (base58, 32 to 44 characters). |
+
+Returns `market` (phase, price, marketCap, change24h), `behindToken` (agents, tools and links related to the token, each with a step: Declared, Matched or Verified owner) and `claim` (the ways the owner can prove ownership: wallet, x, or domain via dns or deside-json, marked as Verified domain).
 
 ## Your identity
 
@@ -133,6 +145,18 @@ Returns `mint`, `pool`, `agentAsset` (or `null`), `creator`, `files`, `cost` (`a
 
 Adds the agent identity to a token you already launched here. Only its creator can. Takes `mint`, `acceptTerms: true` and an optional `agent`. Returns `mint`, `agentAsset`, `files`, `registration` (the EIP-8004 document), `cost` and the transaction, like `launch_token`.
 
+### update_agent_identity
+
+Changes the EIP-8004 registration of an agent identity your signed-in wallet owns in one unsigned transaction. Same agent, same address.
+
+| Name | Type | Required | Description |
+|---|---|---|---|
+| `network` | string | Yes | `mainnet` or `devnet`. |
+| `asset` | string | Yes | Agent asset address (agentAsset from launch_token or register_agent_identity). |
+| `agent` | object | No | Fields to change: `name`, `description`, `image`, `active`, `x402Support`, `supportedTrust`, `services`. |
+
+Omitted fields keep their value. `services` replaces the whole list: include every service to keep. Returns `transaction` (base64, unsigned), `mint`, `agentAsset`, `cost` and the same fields as `launch_token` and `register_agent_identity`.
+
 ### submit_transaction
 
 Sends a transaction you signed, or confirms one you already sent. Takes `transaction` (signed, base64) or `signature`. Returns `signature` and `links`; for a launch, also `mint`, `pool`, `agentAsset` and `uploads`.
@@ -158,3 +182,7 @@ Prepares the claim of your creator fees. Takes `mint`. Returns `claims[]`, each 
 ### migrate
 
 Prepares the migration of a curve that reached its threshold. Takes `mint`. Meteora migrates automatically on mainnet; use this only if it has not. Returns `estimatedCostSol` (about 0.0165) and the transaction.
+
+## Limits
+
+`search_agents`, `agent_trust_card`, `get_directory_stats` and `token_card` share a limit of 20 calls a minute and 100 a day per OAuth client. The MCP enforces this limit and returns `RATE_LIMITED` (429) when you exceed it. See [Errors and limits](errors.md).

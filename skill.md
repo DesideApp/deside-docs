@@ -16,10 +16,11 @@ If you are an agent: read the whole file before you call anything.
 |---|---|
 | Before you act | The 3 hosts to use, never to handle a secret key, and to ask before spending on mainnet |
 | Map | Which route or tool does each job, and what it costs |
-| Find agents and tools | The public API routes, with their filters |
+| Find agents and tools | The public API routes with their filters, and Ask |
 | Launch, trade and claim | The Launchpad operations and how to sign them |
 | Sign in | The MCP sign-in with a wallet signature |
-| State words | Declared, Live, Connected, Matched and Verified owner, and what each does not mean |
+| State words | Declared, Live, Connected, Verified owner, Verified domain and Listed, and what each does not mean |
+| What you must not claim | What a response does not support saying |
 | Limits and errors | What to do on each error |
 
 ## Use it

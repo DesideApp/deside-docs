@@ -2,27 +2,32 @@
 
 This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
-## Unreleased
+## 2026-10-03
 
-- `search_agents`, `agent_trust_card` and `get_directory_stats` on the MCP answer with the v2 agent shape since 2026-10-03, with `catalogId` in place of `id`. `wallet`, `primarySource`, `primarySourceEntryId`, `sourceEntries`, `registryPresence`, `registry` and `publicReceipts` are gone: read `sources`, `registries`, `wallets`, `status`, `endpoints` and `services`. See [Tools Reference](mcp/tools.md#directory).
-- the agent routes moved to `/api/v2/public/agents` on 2026-10-03: `GET /`, `/stats`, `/{ref}` and `/{ref}/profile`, with no key and no quota. Answers come in `{data}` and errors in `{error:{code,message}}`. Field names changed: `catalogId` is `id`, `canonicalPath` is `path`, `curationPublic.state` is `status`. `stats-summary` is `/stats`. The profile no longer carries raw registry data, `receipts`, `registryStatus`, `collectionBadges` or the retired Verified badge. `/api/v1/public/agents` and all its routes, `receipts` included, are retired and answer `404` since 2026-10-03: move to v2. Each agent carries `team` and `handles` (`x`, `github`). See [Public agents](api/public-agents.md).
-- the paid Directory API with keys is closed since 2026-10-03: `/api/v1/directory/agents`, `/directory/x402-tool-profiles`, `/directory/x402-resources` and the key console answer `404`. Use the [public routes](api/README.md#routes), which need no key.
-- `POST /api/v1/ask` is paid over x402 since 2026-10-03: 0.01 USDC per answered question on Solana, for callers without a Deside session. Without a payment it answers `402` with the offer, and `GET https://api.deside.io/.well-known/x402` lists it. deside.io and signed-in users stay free. See [Ask](api/ask.md#pay-with-x402).
-- `topHosts` is no longer in `GET /api/v1/public/x402/census` since 2026-10-03. `GET /api/v1/public/x402/wallet-edges`, `/public/x402/wallet-revenue`, `/directory/x402-wallet-edges` and `/directory/x402-wallet-revenue` are closed and answer `404`.
-- the Launchpad tools of the MCP name their errors since 2026-10-03: `PAYMENT_REQUIRED` (402), `forbidden` (403), `NOT_FOUND` (404), `CONFLICT` (409) and `transaction_failed` (422). Before, all of them came as `INVALID_INPUT`. If you matched on `INVALID_INPUT` plus `status`, match on the new codes.
-- `POST /oauth/register` answers `201` instead of `200` since 2026-10-03, and a `401` from `/mcp` carries `WWW-Authenticate` with `resource_metadata`.
-- `search_agents` takes only integers in `limit` and `offset` since 2026-10-03. `launch_token` over the MCP takes `imageBase64` up to 950,000 characters.
-- the protected resource metadata of the MCP names it `deside` since 2026-10-03, instead of `deside-dm`.
-- the docs are organized in six parts since 2026-10-02: Start, Agent Token Launchpad, API, MCP, Skill and Changelog. The old pages of Agent Identity, Directory API and x402 Tool Directory are now under API and Start; old links redirect.
-- one Deside MCP since 2026-10-02: the Launchpad tools moved to `https://mcp.deside.io/mcp`, where you sign in with your Solana wallet and the tools use that wallet. `https://launchpad.deside.io/mcp` answers `410` with the new address. Connect to `mcp.deside.io` instead. The REST routes of the Launchpad do not change.
-- `list_my_launches` is `list_launches` since 2026-10-02. On the MCP, `wallet` is optional and defaults to your session wallet. Call the new name.
-- added `register_agent_identity` and `POST /v1/agent-identity` on 2026-10-02: add the agent identity to a token already launched here, by its creator.
+- `search_agents`, `agent_trust_card` and `get_directory_stats` on the MCP answer with the v2 agent shape with `catalogId` in place of `id`. `wallet`, `primarySource`, `primarySourceEntryId`, `sourceEntries`, `registryPresence`, `registry` and `publicReceipts` are gone: read `sources`, `registries`, `wallets`, `status`, `endpoints` and `services`. See [Tools Reference](mcp/tools.md#directory).
+- the agent routes moved to `/api/v2/public/agents`: `GET /`, `/stats`, `/{ref}` and `/{ref}/profile` with no key. Answers come in `{data}` and errors in `{error:{code,message}}`. Field names changed: `catalogId` is `id`, `canonicalPath` is `path`, `curationPublic.state` is `status`. `stats-summary` is `/stats`. The profile no longer carries raw registry data, `receipts`, `registryStatus`, `collectionBadges` or the retired Verified badge. `/api/v1/public/agents` and all its routes, `receipts` included, are retired and answer `404`: move to v2. Each agent carries `team` and `handles` (`x`, `github`). See [Public agents](api/public-agents.md).
+- the paid Directory API with keys is closed: `/api/v1/directory/agents`, `/directory/x402-tool-profiles`, `/directory/x402-resources` and the key console answer `404`. Use the [public routes](api/README.md#routes), which need no key.
+- `POST /api/v1/ask` is paid over x402: 0.01 USDC per answered question on Solana, for callers without a Deside session. Without a payment it answers `402` with the offer, and `GET https://api.deside.io/.well-known/x402` lists it. deside.io and users signed in with a wallet stay free. See [Ask](api/ask.md#pay-with-x402).
+- `topHosts` is no longer in `GET /api/v1/public/x402/census`. `GET /api/v1/public/x402/wallet-edges`, `/public/x402/wallet-revenue`, `/directory/x402-wallet-edges` and `/directory/x402-wallet-revenue` are closed and answer `404`.
+- the Launchpad tools of the MCP name their errors: `PAYMENT_REQUIRED` (402), `forbidden` (403), `NOT_FOUND` (404), `CONFLICT` (409) and `transaction_failed` (422). Before, all of them came as `INVALID_INPUT`. If you matched on `INVALID_INPUT` plus `status`, match on the new codes.
+- `POST /oauth/register` answers `201` instead of `200`, and a `401` from `/mcp` carries `WWW-Authenticate` with `resource_metadata`.
+- `search_agents` takes only integers in `limit` and `offset`. `launch_token` over the MCP takes `imageBase64` up to 950,000 characters.
+- the protected resource metadata of the MCP names it `deside` instead of `deside-dm`.
+- `token_card` added to the MCP: read one Solana token, its market data and who is behind it.
+- `search_agents`, `agent_trust_card`, `get_directory_stats` and `token_card` share a limit of 20 calls a minute and 100 a day per OAuth client, answered with `RATE_LIMITED` (429).
+
+## 2026-10-02
+
+- the docs are organized in six parts: Start, Agent Token Launchpad, API, MCP, Skill and Changelog. The old pages of Agent Identity, Directory API and x402 Tool Directory are now under API and Start; old links redirect.
+- one Deside MCP: the Launchpad tools moved to `https://mcp.deside.io/mcp`, where you sign in with your Solana wallet and the tools use that wallet. `https://launchpad.deside.io/mcp` answers `410` with the new address. Connect to `mcp.deside.io` instead. The REST routes of the Launchpad do not change.
+- `list_my_launches` is `list_launches`. On the MCP, `wallet` is optional and defaults to your session wallet. Call the new name.
+- `update_agent_identity` and `POST /v1/agent-identity/update` added to the Launchpad: change the EIP-8004 registration of an agent identity your wallet owns in one unsigned transaction.
+- `register_agent_identity` and `POST /v1/agent-identity` added: add the agent identity to a token already launched here, by its creator.
 - `acceptTerms: true` is required on `launch_token` and `register_agent_identity`. Without it the Launchpad answers `400`.
 - the TypeScript SDK `@desideapp/mcp-sdk` and the mini-agent example are no longer documented. Use any MCP client against `https://mcp.deside.io/mcp`.
 - the MCP scopes are `deside:read` and `deside:write`. `dm:read` and `dm:write` are older names for the same scopes and are still accepted.
-- the step `proven` of a relation is shown as "Verified owner" on deside.io since 2026-10-02. The key does not change.
-
-- the x402 catalogue answers in English since 2026-10-02: `GET /api/v1/public/x402/tools`,
+- the step `proven` of a relation is shown as "Verified owner" on deside.io. The key does not change.
+- the x402 catalogue answers in English: `GET /api/v1/public/x402/tools`,
   `/tools/:slug`, `/census` and `/indices`, the Directory API `x402-tool-profiles`, the tool
   cards of Ask and the x402 row of the agent profile. Same values, new names: `sonda` is
   `probe` (`verdict`, `at`, `httpStatus`, `quote{amount,asset,network,payTo}`,
@@ -36,7 +41,7 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
   `muerto` and `sin-tools` are `live`, `down` and `no-tools`; a wallet `family` of
   `desconocida` is `unknown`; `walletCoincidences[].claim` `coincide` is `matches`. The
   verdicts do not change. The group filter is `?index=`; `?indice=` is a deprecated alias
-  and will be removed. The old keys are no longer served
+  and will be removed. The old keys are no longer served.
 
 ## 2026-10-01: one shape for relations
 
@@ -73,7 +78,7 @@ the Directory API and MCP under Developer Access. The public agents routes
 are on one page, [Public Agents API](api/public-agents.md).
 The public x402 routes moved to [x402 Tools API](api/x402-tools.md).
 [Ask](api/ask.md) moved to the Agent Directory. New page:
-[x402 data with an API key](api/x402-keyed.md).
+x402 data with an API key (retired on 2026-10-03; see [x402 Tools API](api/x402-tools.md)).
 
 Corrections to what the docs said before:
 
@@ -251,4 +256,4 @@ Corrections to what the docs said before:
 
 ## Notes
 
-This changelog records public Directory API documentation changes.
+This changelog records changes to the public contracts of the API, the MCP and the Launchpad, and corrections to these docs.

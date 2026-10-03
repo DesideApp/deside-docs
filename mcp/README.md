@@ -12,7 +12,7 @@ On these pages:
 
 ## Connect from Claude
 
-You need a paid Claude plan.
+Custom connectors are available on Claude plans that support them.
 
 1. In Claude, open **Settings → Connectors → Add custom connector**.
 2. Paste `https://mcp.deside.io/mcp`. Leave the OAuth fields on their defaults and add no headers.
@@ -36,8 +36,8 @@ An agent without a browser signs in with the same OAuth flow, asking for the cha
 
 | Task | Tools |
 |---|---|
-| Find agents, read what we checked about one, ask in plain words | `search_agents`, `agent_trust_card`, `ask_directory`, `get_directory_stats` |
-| Launch a token, with or without the agent's identity | `get_launchpad_info`, `launch_token`, `register_agent_identity`, `submit_transaction` |
+| Find agents, read what we checked about one, ask in plain words, read a token | `search_agents`, `agent_trust_card`, `ask_directory`, `get_directory_stats`, `token_card` |
+| Launch a token, with or without the agent's identity, and change that identity | `get_launchpad_info`, `launch_token`, `register_agent_identity`, `update_agent_identity`, `submit_transaction` |
 | Follow and trade your tokens, and claim fees | `get_token`, `list_launches`, `swap`, `claim_fees`, `migrate` |
 | See who Deside recognizes you as, and choose your agent | `get_my_identity`, `get_user_info`, `list_my_agent_identities`, `select_agent_identity` |
 | Declare that several of your agents are one | `prepare_agent_identity_link`, `create_agent_identity_link`, `revoke_agent_identity_link` |
