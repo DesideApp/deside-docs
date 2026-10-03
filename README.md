@@ -1,51 +1,58 @@
 # Deside Docs
 
-Deside is a public directory of AI agents and pay-per-call x402 tools. It reads agent registries on Solana and EVM and public x402 catalogs, calls the endpoints they declare, and says which facts are declared, which are measured and which an owner proved.
+Deside is a Solana trading app that shows which agent, tools and website stand behind each token. It also runs two public directories, of AI agents and of x402 pay-per-call tools, and a launchpad where an agent launches its own token with its identity.
 
 {% hint style="info" %}
-These docs are organized by product: the Agent Directory, the x402 Tool Directory and the Agent Token Launchpad. Developer Access covers the two ways in for code: the keyed Directory API and the MCP server for agents.
+These docs cover the three ways to use Deside from code:
+- **API**: read the directories over HTTP. Free; some routes need a free key.
+- **MCP**: everything Deside does, from Claude or your own agent, signed in with a Solana wallet.
+- **Agent Token Launchpad**: launch a token for an agent, with its identity, in one signature.
 {% endhint %}
 
 ## Quick start
 
-1. Read the state words first: [State Words](start/state-words.md).
-   Every other page uses them with that meaning.
-2. List agents with no key:
+Read the first page of the Agent Directory. No key needed:
 
-   ```bash
-   curl "https://api.deside.io/api/v1/public/agents?limit=5"
-   ```
+```bash
+curl "https://api.deside.io/api/v1/public/agents?limit=1"
+```
 
-3. Pick a product from the table below.
+To act (launch a token, trade, claim fees), connect the MCP instead. See [MCP](mcp/README.md).
 
-## Sections
+## Which one you want
 
-| Section | Start here | Use it for |
+| You want to | Use | Sign-in |
 |---|---|---|
-| Start | [State Words](start/state-words.md) | What Listed, Declared, Live and Connected mean, how to read a relation, and how to prove an agent, domain, tool or token is yours |
-| Agent Directory | [Agent Directory](agent-identity/README.md) | Which registries are read, how entries become one agent, what a profile shows, and the public agents routes |
-| x402 Tool Directory | [x402 Tool Directory](x402-tools/README.md) | Which catalogs are read, what the live check measures, and the public tool routes |
-| Agent Token Launchpad | [Agent Token Launchpad](launchpad/README.md) | Launching a Solana token from an agent with one signature, then trading it and claiming creator fees |
-| Developer Access | [Directory API](directory-api/README.md), [MCP](mcp/README.md) | Keyed REST access with quotas, errors and billing, and connecting an agent with its own wallet |
+| Read agents, x402 tools and their checks | [API](api/README.md) | None, or a free API key |
+| Search, ask and launch from Claude or an agent | [MCP](mcp/README.md) | Your Solana wallet |
+| Launch a token for an agent | [Agent Token Launchpad](launchpad/README.md) | Your Solana wallet |
+| Give an agent the whole guide in one file | [Skill](skill.md) | None |
+
+**The API only reads. Anything that changes state goes through the MCP, signed by your own wallet.** Deside never holds your key.
 
 ## Quick reference
 
 | What | Where |
 |---|---|
-| Public routes | `https://api.deside.io/api/v1/public/...` (no key) |
-| Directory API | `https://api.deside.io/api/v1/directory/...` (API key) |
+| API base | `https://api.deside.io` |
+| API OpenAPI | `https://api.deside.io/openapi.json` |
 | MCP endpoint | `https://mcp.deside.io/mcp` |
-| Agent Skill | `npx skills add https://github.com/DesideApp/deside-docs --skill deside-mcp` |
-| TypeScript SDK | `@desideapp/mcp-sdk` |
+| Launchpad terms and fees | `https://launchpad.deside.io/v1/info` |
+| Launchpad OpenAPI | `https://launchpad.deside.io/openapi.json` |
+| Agent skill | `https://deside.io/skill.md` |
+| llms.txt | `https://deside.io/llms.txt` |
 
-Which surface is free and which is paid is on one page:
-[Access Model](directory-api/docs/access-model.md).
+## Official domains
 
-## Repository
+Deside runs only on deside.io and its subdomains api.deside.io, mcp.deside.io, launchpad.deside.io and docs.deside.io.
 
-This repository is the GitBook source of docs.deside.io. Changes to a
-contract are listed in the [Changelog](directory-api/docs/changelog.md).
+{% hint style="danger" %}
+Deside never asks for your secret key or seed phrase. Don't paste them anywhere that claims to be Deside.
+{% endhint %}
 
-## License
+## Next steps
 
-[MIT](LICENSE) (c) 2026 Deside
+- [API](api/README.md): every public route, with real responses.
+- [MCP](mcp/README.md): sign-in, the tools and their errors.
+- [Agent Token Launchpad](launchpad/README.md): how a launch works, fees and a real example.
+- [Changelog](changelog.md): what changed in the contracts and what to do about it.

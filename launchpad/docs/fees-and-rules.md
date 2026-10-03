@@ -56,13 +56,15 @@ A devnet launch with an agent identity and an 8.8 KB PNG logo cost the launching
 
 | Limit | Value |
 |---|---|
-| Requests per IP | 60 per minute |
-| Launches per IP | 10 per minute |
+| Requests | 60 per minute, per wallet on the Deside MCP and per IP over HTTP |
+| Launches | 2 per minute, per wallet on the Deside MCP and per IP over HTTP |
+| Whole Launchpad | 600 requests and 30 launches per minute |
 | Request body | 2 MB |
 | Logo file (`imageBase64`) | 1 MB, PNG, JPG, WebP or GIF |
 | Token name, symbol, description | 32, 10 and 500 characters |
 | Transaction size | 1232 bytes |
 | Time to sign and submit | About 60 seconds |
+| Sign link | 2 minutes, once |
 | Time to report a self-sent launch | 15 minutes |
 
 ## Custody

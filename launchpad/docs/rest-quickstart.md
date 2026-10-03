@@ -1,6 +1,6 @@
 # REST quickstart
 
-This guide launches a token on devnet with `curl` and one Node.js script: read the terms, prepare the launch, sign it locally and send it. It uses only the REST routes; [Getting started](getting-started.md) does the same over MCP.
+This guide launches a token on devnet with `curl` and one Node.js script: read the terms, prepare the launch, sign it locally and send it. It uses only the REST routes; the [Deside MCP](../../mcp/README.md) offers the same operations as tools.
 
 The responses below come from real devnet runs on 2026-10-01, trimmed. The creator wallet is shown as `YOUR_WALLET`.
 
@@ -27,11 +27,11 @@ curl -s https://launchpad.deside.io/
 ```json
 {
   "name": "Deside Agent Launchpad",
-  "mcp": "https://launchpad.deside.io/mcp",
+  "mcp": "https://mcp.deside.io/mcp",
   "openapi": "https://launchpad.deside.io/openapi.json",
   "llms": "https://launchpad.deside.io/llms.txt",
   "terms": "https://launchpad.deside.io/terms",
-  "start": "Connect an MCP client to `mcp` (no auth) and call get_launchpad_info, or GET /v1/info?network=mainnet."
+  "start": "Connect an MCP client to `mcp` (sign in with your Solana wallet) and call get_launchpad_info, or GET /v1/info?network=mainnet."
 }
 ```
 

@@ -5,9 +5,9 @@ This guide shows how to prove, from your Deside account, that an agent, a web do
 {% hint style="info" %}
 What each proof gives you:
 
-- an agent you prove becomes [Connected](state-words.md#connected)
-- a domain you prove makes your account [Verified](#verified)
-- a token or tool you prove can lift its relations to [Proven](relations.md#proven)
+- an agent you prove becomes [Connected](checks.md#agents)
+- a domain you prove makes your account a [Verified domain](#verified-domain)
+- a token or tool you prove can lift its relations to [Verified owner](relations.md#verified-owner)
 {% endhint %}
 
 ## Prerequisites
@@ -115,11 +115,11 @@ Each list takes up to 100 items. Items cannot carry other keys, wildcards or nam
 
 **The file does not prove a domain.** Only the code file or the TXT record does. Of the three lists, only `tokens` makes an object yours today.
 
-## Verified
+## Verified domain
 
-**Verified means a Deside account has proven a web domain.** It is a state of the account, shown inside Identity. It is not a state of an agent, and no [relation](relations.md) is ever Verified.
+**Verified domain means a Deside account has proven a web domain.** It is a state of the account, shown inside Identity. It is not a state of an agent or of a [relation](relations.md).
 
-Verified is given automatically when a domain proof stands, and it falls when the proof falls. Deside can remove it from an account.
+Verified domain is given automatically when a domain proof stands, and it falls when the proof falls. Deside can remove it from an account.
 
 ## Common errors
 

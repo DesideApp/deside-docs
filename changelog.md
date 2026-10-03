@@ -1,9 +1,17 @@
 # Changelog
 
-This page records changes to the Directory API contract, newest first, and
-corrections to these docs. A change that breaks a client says what to do.
+This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
 ## Unreleased
+
+- the docs are organized in six parts since 2026-10-02: Start, Agent Token Launchpad, API, MCP, Skill and Changelog. The old pages of Agent Identity, Directory API and x402 Tool Directory are now under API and Start; old links redirect.
+- one Deside MCP since 2026-10-02: the Launchpad tools moved to `https://mcp.deside.io/mcp`, where you sign in with your Solana wallet and the tools use that wallet. `https://launchpad.deside.io/mcp` answers `410` with the new address. Connect to `mcp.deside.io` instead. The REST routes of the Launchpad do not change.
+- `list_my_launches` is `list_launches` since 2026-10-02. On the MCP, `wallet` is optional and defaults to your session wallet. Call the new name.
+- added `register_agent_identity` and `POST /v1/agent-identity` on 2026-10-02: add the agent identity to a token already launched here, by its creator.
+- `acceptTerms: true` is required on `launch_token` and `register_agent_identity`. Without it the Launchpad answers `400`.
+- the TypeScript SDK `@desideapp/mcp-sdk` and the mini-agent example are no longer documented. Use any MCP client against `https://mcp.deside.io/mcp`.
+- the MCP scopes are `deside:read` and `deside:write`. `dm:read` and `dm:write` are older names for the same scopes and are still accepted.
+- the step `proven` of a relation is shown as "Verified owner" on deside.io since 2026-10-02. The key does not change.
 
 - the x402 catalogue answers in English since 2026-10-02: `GET /api/v1/public/x402/tools`,
   `/tools/:slug`, `/census` and `/indices`, the Directory API `x402-tool-profiles`, the tool
@@ -24,7 +32,7 @@ corrections to these docs. A change that breaks a client says what to do.
 ## 2026-10-01: one shape for relations
 
 The agent profile `relations` and the token `behindToken.relations` now use
-the same English keys. See [Relation Fields](../../agent-identity/relations-api.md).
+the same English keys. See [Relation Fields](api/relations.md).
 
 What changed in the agent profile `relations`:
 
@@ -56,13 +64,13 @@ the old Spanish values gets no match today.
 
 ## 2026-10-01: docs restructured
 
-The docs are now organized by product: [Agent Directory](../../agent-identity/README.md),
-[x402 Tool Directory](../../x402-tools/README.md) and the Agent Token Launchpad, with
+The docs are now organized by product: [Agent Directory](start/checks.md),
+[x402 Tool Directory](api/x402-tools.md) and the Agent Token Launchpad, with
 the Directory API and MCP under Developer Access. The public agents routes
-are on one page, [Public Agents API](../../agent-identity/public-api-contracts.md).
-The public x402 routes moved to [x402 Tools API](../../x402-tools/docs/api.md).
-[Ask](../../agent-identity/ask.md) moved to the Agent Directory. New page:
-[x402 data with an API key](x402-keyed.md).
+are on one page, [Public Agents API](api/public-agents.md).
+The public x402 routes moved to [x402 Tools API](api/x402-tools.md).
+[Ask](api/ask.md) moved to the Agent Directory. New page:
+[x402 data with an API key](api/x402-keyed.md).
 
 Corrections to what the docs said before:
 
@@ -95,7 +103,7 @@ Corrections to what the docs said before:
 ## 2026-09-29
 
 * Changed: an A2A endpoint stops counting as live when its last successful
-  check is more than 8 days old ([Trust facts](trust.md#how-liveness-is-measured)).
+  check is more than 8 days old ([Checks](start/checks.md#how-we-check-that-an-agent-is-live)).
 
 ## 2026-09-28
 

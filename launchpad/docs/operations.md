@@ -1,14 +1,17 @@
 # Operations reference
 
-The launchpad has 8 operations. Each one is an MCP tool and a REST route that take the same parameters and return the same JSON, because both are generated from one schema. The OpenAPI document at `https://launchpad.deside.io/openapi.json` is generated from that schema too.
+The launchpad has 9 operations. Each one is a tool of the [Deside MCP](../../mcp/README.md) and a REST route on `https://launchpad.deside.io`, with the same parameters and the same JSON, because both come from one schema. The OpenAPI document at `https://launchpad.deside.io/openapi.json` comes from that schema too.
+
+**On the MCP, `wallet` is always the wallet you signed in with: you do not pass it.**
 
 | MCP tool | REST route | Writes | What it does |
 |---|---|---|---|
 | [`get_launchpad_info`](#get_launchpad_info) | `GET /v1/info` | No | Fees, costs, flow and configuration per network |
 | [`launch_token`](#launch_token) | `POST /v1/launch` | Yes | Prepares one launch transaction |
+| [`register_agent_identity`](#register_agent_identity) | `POST /v1/agent-identity` | Yes | Prepares the identity of a token already launched here |
 | [`submit_transaction`](#submit_transaction) | `POST /v1/submit` | Sends | Uploads the paid files and sends a signed transaction |
 | [`get_token`](#get_token) | `GET /v1/tokens/{mint}` | No | Status of one token |
-| [`list_my_launches`](#list_my_launches) | `GET /v1/creators/{wallet}/launches` | No | Tokens a wallet launched here |
+| [`list_launches`](#list_launches) | `GET /v1/creators/{wallet}/launches` | No | Tokens a wallet launched here |
 | [`swap`](#swap) | `POST /v1/swap` | Yes | Prepares a buy or a sell |
 | [`claim_fees`](#claim_fees) | `POST /v1/claim` | Yes | Prepares the creator fee claim |
 | [`migrate`](#migrate) | `POST /v1/migrate` | Yes | Prepares graduation to the pool |
@@ -30,27 +33,9 @@ On REST, GET parameters go in the query string and POST parameters in a JSON bod
 
 ## How to send a request
 
-Over REST, call the route with `curl` or any HTTP client. Over MCP, any MCP client works; the server is stateless, so a single `POST` of a `tools/call` request also works without a session. This sends the `get_launchpad_info` call shown below:
+Over REST, call the route with `curl` or any HTTP client; it needs no key. Over MCP, connect to `https://mcp.deside.io/mcp` and sign in with your wallet (see [MCP](../../mcp/README.md)); the tool result carries the same JSON in `structuredContent`.
 
-```bash
-curl -s -X POST https://launchpad.deside.io/mcp \
-  -H 'content-type: application/json' \
-  -H 'accept: application/json, text/event-stream' \
-  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_launchpad_info","arguments":{"network":"devnet"}}}'
-```
-
-The MCP answer wraps the same JSON that REST returns. It is in `result.structuredContent`, and as text in `result.content[0].text`:
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "result": {
-    "content": [{ "type": "text", "text": "{\n  \"name\": \"Deside Agent Launchpad\", ..." }],
-    "structuredContent": { "name": "Deside Agent Launchpad" }
-  }
-}
-```
+<!-- REVISAR(modificar): el MCP propio del launchpad (launchpad.deside.io/mcp) responde 410 desde el 02-10. Los ejemplos JSON-RPC contra el se han quitado; hay que rehacerlos contra mcp.deside.io con sesion. -->
 
 Every example response below is the REST body, which is also the MCP `structuredContent`. They come from real devnet calls on 2026-10-01, trimmed. Transactions are cut with `...` and the creator wallet is shown as `YOUR_WALLET`.
 
@@ -59,7 +44,7 @@ Every example response below is the REST body, which is also the MCP `structured
 | Name | Type | Description |
 |---|---|---|
 | `network` | `"mainnet"` or `"devnet"` | `mainnet` for real tokens, `devnet` to rehearse with free devnet SOL. Required in every operation except `get_launchpad_info`. |
-| `wallet` | string | A base58 Solana address. |
+| `wallet` | string | A base58 Solana address. REST only: on the MCP it is your session wallet. |
 | `mint` | string | A token mint address, base58. |
 
 ---
@@ -86,22 +71,6 @@ Returns the launchpad terms: fees, anti-sniper fee, graduation, locked liquidity
 | `networks.<name>` | `dbcConfig`, `partner`, `graduationRaiseSol` (read from the chain, `null` if it could not be read) and `graduation`. |
 
 #### Example
-
-MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "tools/call",
-  "params": {
-    "name": "get_launchpad_info",
-    "arguments": { "network": "devnet" }
-  }
-}
-```
-
-REST request:
 
 ```bash
 curl -s 'https://launchpad.deside.io/v1/info?network=devnet'
@@ -144,7 +113,7 @@ Response:
 
 Prepares one unsigned transaction that creates your token and its Meteora bonding curve, optionally registers an EIP-8004 agent identity owned by your wallet, and pays the Arweave storage of the logo and metadata. Your wallet is creator and payer.
 
-**MCP:** `launch_token` · **REST:** `POST /v1/launch` · Limit: 10 per minute per IP.
+**MCP:** `launch_token` · **REST:** `POST /v1/launch` · Limit: 2 per minute per wallet on the MCP, per IP over REST.
 
 **Parameters**
 
@@ -194,39 +163,9 @@ With an identity, the agent asset also gets its own NFT metadata file (`name`, `
 | `transaction`, `bytes`, `simulation`, `next` | See [How write operations work](#how-write-operations-work). |
 | `expiresInSeconds` | `60`. |
 
-The transaction is already signed by the new mint and, with an identity, by the new agent asset. A full example is in [Getting started](getting-started.md#prepare-the-launch).
+The transaction is already signed by the new mint and, with an identity, by the new agent asset. A full example is in the [REST quickstart](rest-quickstart.md#2-prepare-the-launch).
 
 #### Example
-
-MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "tools/call",
-  "params": {
-    "name": "launch_token",
-    "arguments": {
-      "network": "devnet",
-      "wallet": "YOUR_WALLET",
-      "acceptTerms": true,
-      "token": {
-        "name": "My Agent Token",
-        "symbol": "MYAGT",
-        "description": "Token of my agent",
-        "image": "https://example.com/logo.png"
-      },
-      "registerAgentIdentity": true,
-      "agent": {
-        "services": [{ "name": "MCP", "endpoint": "https://example.com/mcp" }]
-      }
-    }
-  }
-}
-```
-
-REST request:
 
 ```bash
 curl -s -X POST https://launchpad.deside.io/v1/launch \
@@ -381,6 +320,26 @@ The on-chain name of the agent asset is `agent.name` cut to 32 characters; the r
 
 ---
 
+### `register_agent_identity`
+
+Prepares the agent identity of a token you already launched here without one: a Metaplex Core asset registered in the Metaplex Agent Registry, with its EIP-8004 registration. Only the token's creator can call it.
+
+**MCP:** `register_agent_identity` · **REST:** `POST /v1/agent-identity`
+
+| Name | Type | Required | Description |
+|---|---|---|---|
+| `network` | string | Yes | `mainnet` or `devnet`. |
+| `wallet` | string | REST only | The creator wallet. |
+| `mint` | string | Yes | The token, launched here. |
+| `acceptTerms` | `true` | Yes | Same terms as `launch_token`. |
+| `agent` | object | No | The same `agent` fields as [`launch_token`](#launch_token). Missing fields are taken from the token. |
+
+Response: `{ network, mint, agentAsset, creator, files: { agentRegistration, agentMetadata }, registration, cost, transaction, signUrl?, signUrlExpiresAt?, bytes, simulation, expiresInSeconds, next, disclaimer }`. `registration` is the EIP-8004 document that will be stored. It costs about 0.005 SOL. Sign it and send it with `submit_transaction`.
+
+<!-- REVISAR(modificar): sin ejemplo real; la ruta esta viva en prod (400 de validacion, OpenAPI y llms.txt del launchpad), pero aun no hay un registro real que copiar. -->
+
+---
+
 ### `submit_transaction`
 
 Sends a transaction prepared by this launchpad and signed by your wallet and waits for confirmation. For a launch, it first simulates the signed transaction and uploads the Arweave files the transaction paid for, and only then sends it: indexers read the token JSON when the mint is created and do not retry. If the simulation fails, you get a `422` with a `hint` and nothing is uploaded or sent. If the upload fails, you get a `503` and nothing is sent. It only accepts transactions that call the Meteora DBC or DAMM v2 programs and no programs outside the launchpad's list.
@@ -403,22 +362,6 @@ Sends a transaction prepared by this launchpad and signed by your wallet and wai
 | `uploads` | Only for a launch: `{ ok, files: [{ id, url, matchesPrepared, role }] }`. With `transaction`, a failed upload is a `503` and nothing is sent. With `signature`, a failed upload returns `{ ok: false, error, retry }`: call `submit_transaction` again with `{ network, signature }` within 15 minutes. |
 
 #### Example
-
-MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "tools/call",
-  "params": {
-    "name": "submit_transaction",
-    "arguments": { "network": "devnet", "transaction": "SIGNED_TRANSACTION_BASE64" }
-  }
-}
-```
-
-REST request:
 
 ```bash
 curl -s -X POST https://launchpad.deside.io/v1/submit \
@@ -478,22 +421,6 @@ Returns the name, creator, curve progress toward graduation, graduated pool and 
 
 #### Example
 
-MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "tools/call",
-  "params": {
-    "name": "get_token",
-    "arguments": { "network": "devnet", "mint": "298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE" }
-  }
-}
-```
-
-REST request:
-
 ```bash
 curl -s 'https://launchpad.deside.io/v1/tokens/298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE?network=devnet'
 ```
@@ -525,11 +452,11 @@ A graduated token returns `"graduated": true`, `"progress": 1` and its pool, for
 
 ---
 
-### `list_my_launches`
+### `list_launches`
 
 Returns the tokens a wallet launched with this launchpad's configuration, read from the chain. Deside keeps no list.
 
-**MCP:** `list_my_launches` · **REST:** `GET /v1/creators/{wallet}/launches?network=devnet`
+**MCP:** `list_launches` · **REST:** `GET /v1/creators/{wallet}/launches?network=devnet`
 
 | Name | Type | Required | Description |
 |---|---|---|---|
@@ -539,22 +466,6 @@ Returns the tokens a wallet launched with this launchpad's configuration, read f
 Response: `{ network, creator, count, launches }`, where each launch is `{ mint, pool, graduated, raisedSol, unclaimedCreatorFeesSol }`.
 
 #### Example
-
-MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "tools/call",
-  "params": {
-    "name": "list_my_launches",
-    "arguments": { "network": "devnet", "wallet": "YOUR_WALLET" }
-  }
-}
-```
-
-REST request:
 
 ```bash
 curl -s 'https://launchpad.deside.io/v1/creators/YOUR_WALLET/launches?network=devnet'
@@ -611,22 +522,6 @@ A buy of 0.003 SOL on a devnet curve during the anti-sniper window returned:
 
 #### Example
 
-MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "tools/call",
-  "params": {
-    "name": "swap",
-    "arguments": { "network": "devnet", "wallet": "YOUR_WALLET", "mint": "298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE", "side": "buy", "amount": 0.001 }
-  }
-}
-```
-
-REST request:
-
 ```bash
 curl -s -X POST https://launchpad.deside.io/v1/swap \
   -H 'content-type: application/json' \
@@ -673,22 +568,6 @@ Response: `claims`, a list of `{ source }` with `source` one of `curve` (with `s
 
 #### Example
 
-MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "tools/call",
-  "params": {
-    "name": "claim_fees",
-    "arguments": { "network": "devnet", "wallet": "YOUR_WALLET", "mint": "298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE" }
-  }
-}
-```
-
-REST request:
-
 ```bash
 curl -s -X POST https://launchpad.deside.io/v1/claim \
   -H 'content-type: application/json' \
@@ -727,22 +606,6 @@ Response: `note`, `estimatedCostSol` and the write fields.
 
 #### Example
 
-MCP request, the JSON-RPC body you `POST` to `https://launchpad.deside.io/mcp`:
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "tools/call",
-  "params": {
-    "name": "migrate",
-    "arguments": { "network": "devnet", "wallet": "YOUR_WALLET", "mint": "298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE" }
-  }
-}
-```
-
-REST request:
-
 ```bash
 curl -s -X POST https://launchpad.deside.io/v1/migrate \
   -H 'content-type: application/json' \
@@ -774,7 +637,7 @@ Over REST an error is an HTTP status with a JSON body `{ "error": "..." }`. Inva
 { "error": "invalid input", "issues": [{ "path": "token.name", "message": "Too big: expected string to have <=32 characters" }] }
 ```
 
-Over MCP, every error is a tool result with `isError: true`. When a parameter breaks the schema, its text starts with `MCP error -32602: Input validation error` and names the field, for example `wallet must be a base58 Solana address at wallet`. Every other error carries the `{ "error": "..." }` body as text.
+Over the Deside MCP, an error is a tool result with `isError: true`. The launchpad status is in `status` and this body in `data`; how the codes are named is in [MCP errors](../../mcp/errors.md).
 
 | Status | Error | Cause and fix |
 |---|---|---|
@@ -786,6 +649,8 @@ Over MCP, every error is a tool result with `isError: true`. When a parameter br
 | `400` | `only transactions prepared by this launchpad can be submitted here` | Send only transactions this service returned. |
 | `402` | `this launch transaction does not pay its Arweave upload; use the transaction returned by launch_token` | Do not edit the launch transaction. |
 | `403` | `only the creator wallet of this token can claim its creator fees` | Call `claim_fees` with the creator wallet. |
+| `403` | Not the creator of the token | Only the creator can call `register_agent_identity`. |
+| `400` | Token not launched here | `register_agent_identity` only works on tokens launched with this launchpad's configuration. |
 | `404` | `no Meteora DBC pool for this mint on this network` | Check the mint and the `network`. |
 | `404` | `transaction not found or not confirmed yet; retry in a few seconds` | Retry `submit_transaction { signature }` shortly. |
 | `409` | `nothing to claim yet` | There are no fees to claim. |
@@ -794,6 +659,6 @@ Over MCP, every error is a tool result with `isError: true`. When a parameter br
 | `422` | `transaction is N bytes (limit 1232); use a shorter name, symbol or image URL` | Shorten the inputs. |
 | `422` | `transaction would fail: ...` | The simulation of the signed launch failed before anything was uploaded or sent. The body carries `hint` and `logs`. |
 | `422` | `transaction rejected: ...` | The RPC refused the transaction. The body carries `hint` and `logs`; an expired blockhash means prepare it again. |
-| `429` | `too many requests, slow down` / `too many launches from this address, wait a minute` | Wait for the per-minute window to reset. |
+| `429` | `too many requests, slow down` / `too many launches from this wallet, wait a minute` / `the launchpad is busy, retry in a few seconds` | Wait for the per-minute window to reset. |
 | `503` | `could not store the token files on Arweave, nothing was sent; call launch_token again` | Prepare the launch again and sign the new transaction. |
 | `503` | `uploads are not available on <network> right now` | Arweave uploads are not available on that network at the moment; try later. |

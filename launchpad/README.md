@@ -1,62 +1,101 @@
 # Agent Token Launchpad
 
-The Agent Token Launchpad is a Deside service that prepares Solana token launches on Meteora Dynamic Bonding Curve for AI agents. You need no account and no approval: every write operation returns an unsigned transaction that you sign with your own wallet, so Deside never holds your key or your funds.
+The Agent Token Launchpad launches a Solana token for an AI agent, with the agent's on-chain identity, in one transaction you sign with your own wallet. It builds Meteora Dynamic Bonding Curve transactions; Deside never holds your key or your funds.
 
 {% hint style="info" %}
 On this page:
-
-* what one launch signature contains
-* the four steps from nothing to a launched token
-* the fixed values: base URL, MCP endpoint, networks and fees
+- what one launch creates, and what it costs;
+- what it costs, and where the fees are;
+- the 9 operations, over the MCP or HTTP;
+- a real launch you can check on chain.
 {% endhint %}
 
-One launch signature creates the token and its bonding curve, optionally registers an EIP-8004 agent identity in the Metaplex Agent Registry, and pays the permanent Arweave storage of the logo and metadata.
+## What one launch creates
+
+In a single signature:
+
+1. A token: 1,000,000,000 supply, 6 decimals, immutable metadata, no mint authority, no vesting, no pre-buys.
+2. Its Meteora Dynamic Bonding Curve pool.
+3. Optionally, the agent's identity: a Metaplex Core asset registered in the Metaplex Agent Registry, with an EIP-8004 registration document.
+4. The image and metadata files, stored on Arweave and paid inside the same signature.
+
+**The token is created by its signer, not by Deside.**
 
 ## Quick start
 
-1. **Read the terms** with `get_launchpad_info` (MCP) or `GET /v1/info`. It needs no wallet.
-2. **Prepare the launch** with `launch_token` (MCP) or `POST /v1/launch`. You get one unsigned transaction.
-3. **Sign it** with the wallet you passed as `wallet`.
-4. **Send it** with `submit_transaction` (MCP) or `POST /v1/submit` within about 60 seconds.
+From Claude or your agent, connected to the [Deside MCP](../mcp/README.md):
 
-[Getting started](docs/getting-started.md) walks through the four steps on devnet over MCP, and the [REST quickstart](docs/rest-quickstart.md) does it with `curl` and a Node.js signing script.
+1. Ask for the fees and terms: `get_launchpad_info`.
+2. Launch: `launch_token` with the name, symbol, image and `acceptTerms: true`.
+3. Sign. A person opens the sign link within 2 minutes; an agent signs and calls `submit_transaction`.
+4. Check it: `get_token` with the mint.
 
-## Core concepts
+## Fees and costs
 
-### Unsigned transaction
+Deside charges no launch fee. A launch costs about 0.0206 SOL in network rent and fees, 0.0049 SOL more with an agent identity, plus Arweave storage at cost. Each trade on the curve pays 1%: 0.40% to the creator, 0.40% to Deside, 0.20% to Meteora.
 
-An **unsigned transaction** is the base64 Solana transaction that every write operation returns. Deside has already added the signatures it owns (the new mint and, with an identity, the new agent asset). Your wallet adds the last one. Nothing reaches the chain until you sign and send it. See [Operations reference](docs/operations.md).
+Every fee, the anti-sniper window, graduation and the creator terms are in [Fees and rules](docs/fees-and-rules.md). Read them live with `GET https://launchpad.deside.io/v1/info?network=mainnet`.
 
-### Bonding curve and graduation
+<!-- REVISAR(modificar): tres cifras de coste total: typicalTotalSol 0.026 en /v1/info, la suma real ~0.0255, y "about 0.03 SOL" en la descripcion del campo wallet (launchpad-service/src/schemas.js:34). Unificar. -->
 
-The **bonding curve** is the Meteora Dynamic Bonding Curve pool your token trades on after launch. **Graduation** is the moment the curve has raised its threshold in SOL and migrates to a Meteora DAMM v2 pool. See [Fees and rules](docs/fees-and-rules.md#graduation).
+## On-chain addresses
 
-### Agent identity
-
-An **agent identity** is an EIP-8004 registration in the Metaplex Agent Registry, owned by the launching wallet. You ask for it with `registerAgentIdentity: true` and describe the agent in the `agent` fields. Deside fills `type` and `registrations`, adds the `agentWallet` service unless you declare one and, on mainnet, a `web` service pointing to the agent's Metaplex page unless you declare one. The registration file has exactly the EIP-8004 fields and nothing specific to Deside. See [`launch_token`](docs/operations.md#launch_token).
-
-### Network
-
-Every operation except `get_launchpad_info` takes `network`: `"mainnet"` for real tokens or `"devnet"` to rehearse the full cycle, graduation included, with free devnet SOL. The thresholds per network are on [Fees and rules](docs/fees-and-rules.md#graduation).
-
-## Quick reference
-
-| Item | Value |
+| What | Mainnet |
 |---|---|
-| Base URL | `https://launchpad.deside.io` |
-| Entry point | `GET https://launchpad.deside.io/` returns `{ name, mcp, openapi, llms, terms, start }` |
-| Creator terms | `https://launchpad.deside.io/terms`, summarized in [Fees and rules](docs/fees-and-rules.md#creator-terms) |
-| MCP endpoint | `https://launchpad.deside.io/mcp` (Streamable HTTP, stateless, `POST` only) |
-| REST routes | `https://launchpad.deside.io/v1/...` |
-| OpenAPI schema | `https://launchpad.deside.io/openapi.json` |
-| LLM summary | `https://launchpad.deside.io/llms.txt` |
-| Authentication | None |
-| Networks | `mainnet`, `devnet` |
-| Fees, costs and limits | [Fees and rules](docs/fees-and-rules.md) |
+| Meteora DBC program | `dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN` |
+| Launchpad config | `6d1TRnC8xvb43ErsUSVcHWPoTMta7zAq7s3pnihemtdn` |
+| Metaplex Agent Registry program | `1DREGFgysWYxLnRnKQnwrxnJQeSMk2HmGaC6whw2B2p` |
+
+Devnet uses the config `F9hj6wtoa7rD8FyyzH88Zygks4nCTCnno1ytKAJb4Tzv`, which graduates at about 0.64 SOL.
+
+## Operations
+
+| MCP tool | HTTP | What it does | Changes anything |
+|---|---|---|---|
+| `get_launchpad_info` | `GET /v1/info` | Fees, costs, terms and config | No |
+| `launch_token` | `POST /v1/launch` | Prepares the launch, with or without identity | Yes, you sign it |
+| `register_agent_identity` | `POST /v1/agent-identity` | Adds the identity to a token already launched here. Creator only | Yes, you sign it |
+| `submit_transaction` | `POST /v1/submit` | Sends a signed transaction, or confirms one already sent | Yes |
+| `get_token` | `GET /v1/tokens/{mint}` | Progress, graduation and unclaimed fees | No |
+| `list_launches` | `GET /v1/creators/{wallet}/launches` | Tokens a wallet launched here | No |
+| `swap` | `POST /v1/swap` | Prepares a buy or sell on the curve | Yes, you sign it |
+| `claim_fees` | `POST /v1/claim` | Prepares the claim of your creator fees | Yes, you sign it |
+| `migrate` | `POST /v1/migrate` | Prepares the migration of a curve that reached the threshold. Meteora does it automatically on mainnet | Yes, you sign it |
+
+On the MCP, the wallet is always the one you signed in with. Over HTTP you pass `wallet`. The HTTP routes need no key; their full contract is at `https://launchpad.deside.io/openapi.json`.
+
+**Every operation that changes something returns an unsigned transaction.** Nothing moves until you sign it.
+
+<!-- REVISAR(modificar): register_agent_identity esta en el OpenAPI de prod del launchpad (POST /v1/agent-identity). Confirmar con token que la tool del MCP tambien esta desplegada (fecc65236). -->
+
+Parameters, responses and real examples for each one are in the [Operations reference](docs/operations.md). To call them over HTTP step by step, see the [REST quickstart](docs/rest-quickstart.md).
+
+## A real launch
+
+DESIDE, the token of Deside, was launched here on 2026-10-02:
+
+| What | Value |
+|---|---|
+| Mint | `Ec9FVEahXUhQRkPneCmDYzXc3jFZWX4URcLfyPwHaRE1` |
+| Launch transaction | `3DoZFYKeUCWt25cPE8dVjf9MAbUihTEuxv1siTxzk6mVZVCc97xHKFjJpaarP8VddRB8JnZFj7xoZR5QPRF9L6Tr` |
+| Pool | `D4x5pLnvD1PuX8RwcHQWCzsvzJeiTdsHiMifYWkL4pZp` |
+| Creator | `5DZsMz44aH4JotKKcp58Xo6V4WCUMg4bF7CMQ9ySVZJN` |
+| Config | `6d1TRnC8xvb43ErsUSVcHWPoTMta7zAq7s3pnihemtdn` |
+| Metadata | `https://gateway.irys.xyz/2pJgy1jA1Yr6KKWGyWaZ4LUZTcruyaJQm8cayRhN22RX` |
+
+Read it yourself:
+
+```bash
+curl "https://launchpad.deside.io/v1/tokens/Ec9FVEahXUhQRkPneCmDYzXc3jFZWX4URcLfyPwHaRE1?network=mainnet"
+```
+
+It was launched without an agent identity, so `agentAsset` is `null`.
 
 ## Next steps
 
-* [Getting started](docs/getting-started.md): launch a token on devnet end to end over MCP.
-* [REST quickstart](docs/rest-quickstart.md): the same launch with `curl` and a local signing script, and the one-script mainnet launch of DESIDE, the first token launched here.
-* [Operations reference](docs/operations.md): the 8 operations, their parameters, responses and errors.
-* [Fees and rules](docs/fees-and-rules.md): who earns what, limits and the disclaimer.
+- [Fees and rules](docs/fees-and-rules.md): fees, graduation, limits and the creator terms.
+- [Operations reference](docs/operations.md): the 9 operations with real examples.
+- [REST quickstart](docs/rest-quickstart.md): a launch with `curl` and a signing script.
+- [MCP](../mcp/README.md): connect Claude or your agent.
+
+<!-- REVISAR(modificar): /v1/stats responde en publico aunque el codigo dice que no se publica hasta que el owner decida (launchpad-service/src/index.js:135). No se documenta. -->

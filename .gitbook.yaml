@@ -1,0 +1,24 @@
+root: ./
+
+structure:
+  readme: README.md
+  summary: SUMMARY.md
+
+redirects:
+  directory-api/errors: api/errors-and-limits.md
+  directory-api/docs/errors: api/errors-and-limits.md
+  directory-api: api/README.md
+  directory-api/docs/quickstart: api/quickstart.md
+  directory-api/docs/authentication: api/quickstart.md
+  directory-api/docs/endpoints: api/directory-agents.md
+  directory-api/docs/rate-limits: api/errors-and-limits.md
+  directory-api/docs/trust: api/directory-agents.md
+  directory-api/docs/changelog: changelog.md
+  agent-identity: start/checks.md
+  agent-identity/how-we-verify: start/checks.md
+  agent-identity/public-api-contracts: api/public-agents.md
+  mcp/docs/tools: mcp/tools.md
+  mcp/docs/authentication: mcp/authentication.md
+  mcp/docs/error-handling: mcp/errors.md
+  mcp/mcp: mcp/README.md
+  launchpad: launchpad/README.md

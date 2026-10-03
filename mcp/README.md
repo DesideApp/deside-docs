@@ -1,85 +1,77 @@
-# Deside MCP
+# MCP
 
-The Deside MCP server is a remote [Model Context Protocol](https://modelcontextprotocol.io/) endpoint where an agent signs in with a Solana wallet and works with its identity in the Deside directory. Authentication is a wallet signature inside a standard OAuth 2.0 + PKCE flow, so there is no API key to issue or store.
+The Deside MCP is a remote [Model Context Protocol](https://modelcontextprotocol.io/) server at `https://mcp.deside.io/mcp`. Claude, or your own agent, uses it to search the directories, ask in plain words, and launch, trade and claim with your own Solana wallet. You sign in once with that wallet; Deside never sees your key.
 
 {% hint style="info" %}
-On this page:
-
-* what the server offers today
-* the four steps from nothing to a first tool call
-* the fixed values: endpoint, OAuth metadata, scopes and limits
+On these pages:
+- how to connect from Claude, Claude Code or your own code;
+- sign-in and scopes;
+- every tool, with its parameters and response;
+- errors and limits.
 {% endhint %}
 
-Deside MCP does not offer messaging.
+## Connect from Claude
 
-## What you can do today
+You need a paid Claude plan.
+
+1. In Claude, open **Settings → Connectors → Add custom connector**.
+2. Paste `https://mcp.deside.io/mcp`. Leave the OAuth fields on their defaults and add no headers.
+3. Press **Connect**. The Deside sign-in page opens.
+4. Connect Phantom or Solflare and sign the text. It says what you sign in to, which app asked, and that it moves no funds.
+5. You are back in Claude, signed in with that wallet.
+
+## Connect from Claude Code
+
+```bash
+claude mcp add --transport http deside https://mcp.deside.io/mcp
+```
+
+Then type `/mcp`, choose **deside** and sign in. The same page opens in your browser.
+
+## Connect from your own agent
+
+An agent without a browser signs in with the same OAuth flow, asking for the challenge as JSON and signing it with its own key. See [Sign-in](authentication.md#sign-in-without-a-browser). The agent creates and keeps its wallet itself; **no Deside tool ever creates or holds a key.**
+
+## What you can do
 
 | Task | Tools |
 |---|---|
-| See how Deside recognizes your wallet | `get_my_identity` |
-| Read the public profile of any wallet | `get_user_info` |
-| Look up agents in the directory by wallet or name | `search_agents` |
-| Choose which of your agents this session acts as | `list_my_agent_identities`, `select_agent_identity` |
-| Declare that two or more of your agents belong together | `prepare_agent_identity_link`, `create_agent_identity_link`, `revoke_agent_identity_link` |
-| Choose one of several Metaplex passports | `select_passport` |
+| Find agents, read what we checked about one, ask in plain words | `search_agents`, `agent_trust_card`, `ask_directory`, `get_directory_stats` |
+| Launch a token, with or without the agent's identity | `get_launchpad_info`, `launch_token`, `register_agent_identity`, `submit_transaction` |
+| Follow and trade your tokens, and claim fees | `get_token`, `list_launches`, `swap`, `claim_fees`, `migrate` |
+| See who Deside recognizes you as, and choose your agent | `get_my_identity`, `get_user_info`, `list_my_agent_identities`, `select_agent_identity` |
+| Declare that several of your agents are one | `prepare_agent_identity_link`, `create_agent_identity_link`, `revoke_agent_identity_link` |
 
-Each tool is documented in the [Tools reference](docs/tools.md).
+Each one is in the [Tools reference](tools.md).
 
-## Quick start
+## How signing works
 
-1. **Register an OAuth client** with `POST https://mcp.deside.io/oauth/register`. See [Authentication](docs/authentication.md).
-2. **Sign the wallet challenge** with the Solana wallet that owns your agent, and exchange the code for an access token.
-3. **Open an MCP session** with `initialize`, sending the access token as `Authorization: Bearer`. Keep the `mcp-session-id` header it returns.
-4. **Call a tool.** Start with `get_my_identity`.
+Tools that change something return an unsigned transaction. If it simulates well, they also return a **sign link**:
 
-[Getting started](docs/getting-started.md) walks through the four steps with runnable code.
+1. Open the link within 2 minutes.
+2. Connect the same wallet and review the transaction.
+3. Sign. The page sends that one transaction and shows its link on the explorer.
 
-## Core concepts
-
-### MCP session
-
-An **MCP session** is the Streamable HTTP session that `initialize` opens. It is bound to one wallet, and a wallet holds one session at a time. Every request after `initialize` carries both the bearer token and the `mcp-session-id` header.
-
-### Owner wallet
-
-The **owner wallet** is the wallet that owns an agent in the registry where the agent is listed. Sign in with it if you want Deside to recognize you as that agent. Any other Solana wallet can sign in too, but Deside then recognizes no agent for it.
-
-### Agent context
-
-The **agent context** is the agent this MCP session acts as. Deside picks it on its own when your owner wallet owns exactly one agent. When it owns several, you choose. See [Agent identity](docs/agent-identity.md).
+**The page sends only the operation that was prepared, once.** Phantom may add its own priority fee and protection; nothing else is accepted. An agent signs the transaction itself and calls `submit_transaction` within about 60 seconds.
 
 ## Quick reference
 
-| Item | Value |
+| What | Value |
 |---|---|
-| MCP endpoint | `https://mcp.deside.io/mcp` |
-| Transport | Streamable HTTP |
-| Authorization server metadata | `https://mcp.deside.io/.well-known/oauth-authorization-server` |
+| Endpoint | `https://mcp.deside.io/mcp` |
+| Transport | Streamable HTTP, one session per wallet |
+| OAuth metadata | `https://mcp.deside.io/.well-known/oauth-authorization-server` |
 | Protected resource metadata | `https://mcp.deside.io/.well-known/oauth-protected-resource/mcp` |
-| Auth header | `Authorization: Bearer <access_token>` |
-| Session header | `mcp-session-id: <id returned by initialize>` |
-| OAuth | Authorization code with PKCE `S256`, public clients only (`token_endpoint_auth_method: none`) |
-| Wallet signature | Ed25519 over the challenge text, encoded in base58 |
-| Sessions per wallet | 1 |
-| `search_agents` page size | 10 by default, 50 at most |
-
-### Scopes
-
-`dm:read` and `dm:write` are granted by default; `llm:invoke` is not. What each scope opens is in [Authentication](docs/authentication.md#scopes).
-
-### TypeScript SDK
-
-`@desideapp/mcp-sdk` wraps the OAuth flow, the session and the tool calls:
-
-```bash
-npm install @desideapp/mcp-sdk
-```
-
-The tools reference stays the contract. The SDK is a client helper, not a second protocol.
+| Scopes | `deside:read`, `deside:write` |
+| Access token | 45 minutes |
+| Refresh token | 7 days, a new one on every use |
 
 ## Next steps
 
-* [Getting started](docs/getting-started.md): sign in and make a first tool call.
-* [Tools reference](docs/tools.md): every tool, its parameters and its response.
-* [Agent identity](docs/agent-identity.md): how Deside decides which agent a session acts as.
-* [Agent Skill](skills/deside-mcp/SKILL.md): instructions for an agent runtime that reads Agent Skills.
+- [Sign-in](authentication.md): the OAuth flow, step by step.
+- [Tools reference](tools.md): every tool.
+- [Errors and limits](errors.md): every code and what to do.
+- [Skill](../skill.md): the whole guide in one file for an agent.
+
+<!-- REVISAR(modificar): el MCP en prod se anuncia como "deside-dm" (resource_name) y su resource_documentation apunta a docs.deside.io/mcp/mcp, distinto de GET / (docs.deside.io/mcp). Token. -->
+<!-- REVISAR(modificar): llm:invoke se anuncia en los metadatos aunque el LLM esta apagado. Token. -->

@@ -1,11 +1,13 @@
-# Relation Fields
+# Relations
 
 Two public responses carry [relations](../start/relations.md): the `relations` field of an agent profile, and `behindToken.relations` of a token. Both need no key, and both use the same English keys for a relation: `kind`, `step` and `vias[].how`, with the same values.
 
 | Field | Endpoint |
 | --- | --- |
-| `relations` | `GET https://api.deside.io/api/v1/public/agents/{catalogId}/profile` ([Public Agents API](public-api-contracts.md#read-a-profile)) |
+| `relations` | `GET https://api.deside.io/api/v1/public/agents/{catalogId}/profile` ([Public Agents API](public-agents.md#get-public-agents-ref-profile)) |
 | `behindToken.relations` | `GET https://api.deside.io/api/v1/public/market/solana/{mint}` |
+
+<!-- REVISAR(modificar): /public/market esta clasificada como ruta INTERNA del front de trading (nivel-3/api-rutas-publicas.md:70) y no esta en el OpenAPI. O se publica (y entra en la portada de la API y en el OpenAPI) o sale esta seccion. Decision del owner. -->
 
 ## The shared keys
 
@@ -19,8 +21,8 @@ Two public responses carry [relations](../start/relations.md): the `relations` f
 What each step means:
 
 - **Declared**: one side names the other. Nothing else confirms it.
-- **Matches**: the two sides share a public datum, such as a wallet or a domain.
-- **Proven**: the same owner proved control of both sides.
+- **Matched**: the two sides share a public datum, such as a wallet or a domain.
+- **Verified owner**: the same owner proved control of both sides.
 
 The words shown on deside.io for each step are in [How To Read A Relation](../start/relations.md#the-three-steps).
 
@@ -88,7 +90,7 @@ The `behindToken.relations` field of the response, real on 2026-10-01, trimmed t
     "link": "/agents/mizuki-the-mech-cmeh",
     "image": null,
     "step": "matches",
-    "stepLabel": "Matches",
+    "stepLabel": "Matched",
     "dimmed": false,
     "help": null,
     "conflict": false,
@@ -110,7 +112,7 @@ The `behindToken.relations` field of the response, real on 2026-10-01, trimmed t
 | `name` | string or null | Name of the related agent or tool. |
 | `link` | string or null | Its page on deside.io, such as `/agents/<slug>`. |
 | `image` | string or null | Its image, HTTPS only. |
-| `step`, `stepLabel` | string | `proven`, `matches` or `declared`, and the label `Proven`, `Matches` or `Declared`. |
+| `step`, `stepLabel` | string | `proven`, `matches` or `declared`, and the label `Verified owner`, `Matched` or `Declared`. |
 | `dimmed` | boolean | `true` for a Declared relation. |
 | `help` | string or null | `Not confirmed` for a Declared relation, otherwise `null`. |
 | `conflict` | boolean | `true` when two different accounts proved the two sides. |
@@ -118,15 +120,15 @@ The `behindToken.relations` field of the response, real on 2026-10-01, trimmed t
 | `vias[].how` | string or null | One of the shared values above. `null` for a kind this version does not know. |
 | `vias[].howText` | string or null | The sentence for display, such as `Same domain example.com`. |
 | `vias[].value` | string or null | The shared wallet, shortened, or the shared domain. |
-| `live` | array | For an agent that Matches or is Proven: its protocols that answered their latest check, each `{ "key", "label" }` with key `mcp`, `a2a` or `x402`. Always empty for a tool or a Declared agent. See [Live](../start/state-words.md#live). |
-| `proof` | object or null | For a Proven relation, the proof: `kind`, `text`, `since`, `atLabel`. Otherwise `null`. |
+| `live` | array | For a Matched or Verified owner agent: its protocols that answered their latest check, each `{ "key", "label" }` with key `mcp`, `a2a` or `x402`. Always empty for a tool or a Declared agent. See [Live](../start/checks.md#agents). |
+| `proof` | object or null | For a Verified owner relation, the proof: `kind`, `text`, `since`, `atLabel`. Otherwise `null`. |
 
 The rest of `behindToken`, such as `summary` and `proofs`, describes what the token names outside these relations, like its X account. It is not covered here.
 
 ## What the keys do not mean
 
-- **No key is Verified.** No relation field carries a Verified state. [Proven](../start/relations.md#proven) is the highest step.
-- **`live` is not quality.** It says an endpoint answered, as in [State Words](../start/state-words.md#what-this-does-not-mean).
+- **No relation says Verified on its own.** [Verified owner](../start/relations.md#verified-owner) is the highest step.
+- **`live` is not quality.** It says an endpoint answered, as in [State Words](../start/checks.md#what-we-do-not-measure).
 
 ## Errors
 

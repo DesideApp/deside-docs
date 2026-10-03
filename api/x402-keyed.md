@@ -2,16 +2,16 @@
 
 These routes serve the x402 tool catalog to Directory API keys. They need
 `x-api-key: dapi_...` and count against your quota like every keyed route
-([Rate limits](rate-limits.md)). Unlike the
-[x402 Tools API](../../x402-tools/docs/api.md), their cursors have no depth limit, so
+([Rate limits](errors-and-limits.md)). Unlike the
+[x402 Tools API](x402-tools.md), their cursors have no depth limit, so
 they can walk the whole catalog.
 
 The live check, the field meanings and the public examples are on
-[x402 Tools API](../../x402-tools/docs/api.md). This page lists only what differs.
+[x402 Tools API](x402-tools.md). This page lists only what differs.
 
 {% hint style="warning" %}
 A missing or invalid key answers with the keyed error envelope (see
-[Errors](errors.md)). Once the key is accepted, a bad parameter answers like
+[Errors](errors-and-limits.md)). Once the key is accepted, a bad parameter answers like
 the public routes: `{ "error": "invalid_request", "nextStep": "..." }`.
 {% endhint %}
 
@@ -28,7 +28,7 @@ Returns a page of tools, ordered by `slug`. Retired tools are not listed.
 | `cursor` | string | no | `pagination.nextCursor` of the previous page. | |
 
 Any other parameter answers `400` with `invalid filter: <name>`. This route
-does not accept `q`, `network`, `indice` or `live`; use the public route for
+does not accept `q`, `network`, `index` or `live`; use the public route for
 those.
 
 ```bash
@@ -38,23 +38,25 @@ curl -sS -H "x-api-key: $DESIDE_DIRECTORY_API_KEY" \
 
 Each item carries `slug`, `key`, `scheme`, `host`, `hostShort`, `path`,
 `title`, `titleSource`, `tags`, `method`, `prices`, `distinctAmounts`,
-`bazaars`, `bazaarCount`, `retired`, `sonda`, `tipo`, `description` (cut to
+`bazaars`, `bazaarCount`, `retired`, `probe`, `type`, `description` (cut to
 160 characters), `hasInputSchema` and `hasOutputSchema`. Compared with the
 public list item, it adds `key` (the tool's full URL), `hostShort`, `tags`,
 `method` and `retired`, and it does not carry `walletCount`, `firstWallet`,
-`declaredByAgent`, `logo`, `bloque` or `completitud`.
+`declaredByAgent`, `logo`, `tier` or `completeness`.
 
 ## `GET /api/v1/directory/x402-tool-profiles/{slug}`
 
 Returns one tool. A retired tool still answers. The profile carries the list
 fields except `hasInputSchema` and `hasOutputSchema`, plus the full `description`, `inputSchema`, `outputSchema`,
-`descriptorDeLlamada`, `wallets`, `railMarkers`, `fieldSources`,
+`callDescriptor`, `wallets`, `railMarkers`, `fieldSources`,
 `payToSources`, `firstSeenAt`, `lastSeenAt`, `projectedAt`, `passRunId` and
 `walletCoincidences`.
 
+<!-- REVISAR(borrar): fieldSources, payToSources, projectedAt, passRunId, railMarkers, tier y completeness son internos o duplicados (ver auditoria). -->
+
 `walletCoincidences` lists the agents in the directory whose wallet is one of
 the tool's receiving wallets. Each entry has `slug`, `name`, `catalogId`,
-`address`, `field`, `relation` (`same-payout-wallet`), `claim` (`coincide`)
+`address`, `field`, `relation` (`same-payout-wallet`), `claim` (`matches`)
 and `computedAt`. **A coincidence says two records name the same wallet; it
 does not say the agent runs the tool.**
 
@@ -62,8 +64,9 @@ An unknown slug answers `404` with `{ "error": "not_found" }`.
 
 ## `GET /api/v1/directory/x402-wallet-edges`
 
-Same parameters, response and rules as the public
-[`/public/x402/wallet-edges`](../../x402-tools/docs/api.md), without the depth limit.
+Same parameters, response and rules as the public `/public/x402/wallet-edges`, without the depth limit.
+
+<!-- REVISAR(modificar): /public/x402/wallet-edges y /public/x402/wallet-revenue responden en prod pero no estan documentadas ni en el OpenAPI (se dejaron fuera a la espera de decision). O se documentan las dos, o esta seccion sale. -->
 
 ## `GET /api/v1/directory/x402-resources`
 
@@ -108,6 +111,8 @@ Returns counts over the stored catalog entries. It takes no parameters.
 | `porEsquema` | entries | `{ scheme, n }` per URL scheme. |
 | `porNumeroDeBazares` | entries | `{ bazaarCount, n }`. |
 | `porBazar` | entries | `{ bazaar, n }` per catalog. An entry in two catalogs counts in both. |
+
+<!-- REVISAR(modificar): este census sigue con claves en ESPAÑOL (conNombre, carteras, porBazar, ultimaEscritura...; x402-catalog-read.service.js:350-374). PLAN-514 no lo tradujo. Traducir o retirar la ruta. -->
 | `ultimaEscritura` | timestamp | Newest `lastSeenAt`. |
 
 The test networks are `base-sepolia`, `eip155:84532`, `eip155:80002`,
@@ -119,7 +124,7 @@ entry with no network on any price is in neither `soloTestnet` nor
 
 | Status | Body | When |
 | --- | --- | --- |
-| `401`, `403`, `429` | keyed error envelope | Key, origin, rate or quota problem. See [Errors](errors.md). |
+| `401`, `403`, `429` | keyed error envelope | Key, origin, rate or quota problem. See [Errors](errors-and-limits.md). |
 | `400` | `{ "error": "invalid_request", "nextStep": "..." }` | Unknown parameter, bad value, or a cursor issued for other filters. |
 | `404` | `{ "error": "not_found" }` | Unknown tool slug. Not counted against your quota. |
 | `500` | `{ "error": "internal_error" }` | Server failure. |
