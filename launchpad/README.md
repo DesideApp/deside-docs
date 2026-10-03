@@ -32,11 +32,11 @@ From Claude or your agent, connected to the [Deside MCP](../mcp/README.md):
 
 ## Fees and costs
 
-Deside charges no launch fee. A launch costs about 0.0206 SOL in network rent and fees, 0.0049 SOL more with an agent identity, plus Arweave storage at cost. Each trade on the curve pays 1%: 0.40% to the creator, 0.40% to Deside, 0.20% to Meteora.
+Deside charges no launch fee. A launch costs about 0.021 SOL, or about 0.026 SOL with an agent identity, Arweave storage included. Keep about 0.03 SOL in the wallet. Each trade on the curve pays 1%: 0.40% to the creator, 0.40% to Deside, 0.20% to Meteora.
 
 Every fee, the anti-sniper window, graduation and the creator terms are in [Fees and rules](docs/fees-and-rules.md). Read them live with `GET https://launchpad.deside.io/v1/info?network=mainnet`.
 
-<!-- REVISAR(modificar): tres cifras de coste total: typicalTotalSol 0.026 en /v1/info, la suma real ~0.0255, y "about 0.03 SOL" en la descripcion del campo wallet (launchpad-service/src/schemas.js:34). Unificar. -->
+<!-- token (03-10): ~0.021 SOL sin identidad, ~0.026 con ella (lo que da /v1/info); 0.03 es el saldo recomendado. Token corrige schemas.js. -->
 
 ## On-chain addresses
 
@@ -66,7 +66,6 @@ On the MCP, the wallet is always the one you signed in with. Over HTTP you pass 
 
 **Every operation that changes something returns an unsigned transaction.** Nothing moves until you sign it.
 
-<!-- REVISAR(modificar): register_agent_identity esta en el OpenAPI de prod del launchpad (POST /v1/agent-identity). Confirmar con token que la tool del MCP tambien esta desplegada (fecc65236). -->
 
 Parameters, responses and real examples for each one are in the [Operations reference](docs/operations.md). To call them over HTTP step by step, see the [REST quickstart](docs/rest-quickstart.md).
 
@@ -98,4 +97,3 @@ It was launched without an agent identity, so `agentAsset` is `null`.
 - [REST quickstart](docs/rest-quickstart.md): a launch with `curl` and a signing script.
 - [MCP](../mcp/README.md): connect Claude or your agent.
 
-<!-- REVISAR(modificar): /v1/stats responde en publico aunque el codigo dice que no se publica hasta que el owner decida (launchpad-service/src/index.js:135). No se documenta. -->

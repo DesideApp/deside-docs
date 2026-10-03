@@ -20,9 +20,7 @@ A tool that fails returns `isError: true` and, in `content[0].text`, a JSON obje
 | `launchpad_unavailable` | 503 | The Launchpad is down or busy. | Retry later. |
 | `UNKNOWN` | 500 or the original | Anything else. | Retry later. |
 
-<!-- REVISAR(modificar): RATE_LIMIT y RATE_LIMITED son la misma condicion con dos codigos. Token. -->
-<!-- REVISAR(modificar): los 402/403/404/409/422 del launchpad salen todos como INVALID_INPUT; no encontrado, no eres el creador o nada que cobrar no son errores de entrada. Token. -->
-<!-- REVISAR(modificar): prepare/create/revoke_agent_identity_link devuelven los codigos del backend tal cual; select_agent_identity tambien deja pasar agent_ref_*, agent_identity_link_*, client_id_required, invalid_selection_target. -->
+<!-- REVISAR(modificar): token lo arregla (03-10): 404 NOT_FOUND, 403 forbidden, 409 CONFLICT, 402 PAYMENT_REQUIRED, 422 transaction_failed; rehacer la tabla al desplegar. Antes: los 402/403/404/409/422 del launchpad salen todos como INVALID_INPUT; no encontrado, no eres el creador o nada que cobrar no son errores de entrada. Token. -->
 
 ## Session errors
 
@@ -40,7 +38,6 @@ These come as an HTTP response on `/mcp`, before any tool runs:
 | 409 | `session_conflict` | Two `initialize` for the same wallet at the same moment. Retry one. |
 | 413 | `payload_too_large` | Body over 1 MB. |
 
-<!-- REVISAR(modificar): AUTH_REQUIRED y auth_required son la misma condicion con dos grafias; session_mismatch existe en el codigo pero no se alcanza. Token. -->
 
 ## OAuth errors
 
@@ -56,5 +53,6 @@ These come as an HTTP response on `/mcp`, before any tool runs:
 | Other `/oauth/*` | 60 a minute per IP |
 | Sign link | 2 minutes, once |
 | Prepared transaction | About 60 seconds |
+| `ask_directory` | Shared by every MCP user: one Ask window for the whole server |
 
-<!-- REVISAR(modificar): CONFIRMADO por estrategia (03-10): el MCP llama al backend por la red interna sin X-Forwarded-For, asi que todas las llamadas de ask_directory comparten la ventana de Ask del contenedor (3/min sin cookie). Defecto pasado a Constructor. No se promete limite por usuario; cuando se arregle, volver a poner la fila. -->
+<!-- Ask por el MCP: todos los usuarios comparten una ventana (estrategia y token, 03-10). Defecto de Constructor; cuando sea por usuario, volver a poner la fila. -->

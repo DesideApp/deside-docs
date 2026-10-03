@@ -1,6 +1,8 @@
 # Tools reference
 
-The Deside MCP has 20 tools. Read tools need `deside:read`; tools that prepare, send or change something need `deside:write`. Launchpad tools always act with the wallet you signed in with.
+The Deside MCP has 20 tools.
+
+<!-- REVISAR(modificar): token tiene una 21, update_agent_identity (POST /v1/agent-identity/update, da2442b1e y f59c043e3), sin desplegar (404 en prod el 03-10). Documentarla cuando este viva. --> Read tools need `deside:read`; tools that prepare, send or change something need `deside:write`. Launchpad tools always act with the wallet you signed in with.
 
 **A tool that changes something returns an unsigned transaction. Nothing moves until you sign it.**
 
@@ -15,7 +17,7 @@ On success, the tool's fields arrive in `structuredContent` and, as JSON text, i
 | `get_user_info` | read | No |
 | `get_my_identity` | read | No |
 | `list_my_agent_identities` | read | No |
-| `select_agent_identity` | read | The agent this session acts as |
+| `select_agent_identity` | read | Only which agent this session acts as; it writes nothing outside the session |
 | `prepare_agent_identity_link` | write | No, it returns the text to sign |
 | `create_agent_identity_link` | write | Yes |
 | `revoke_agent_identity_link` | write | Yes, it removes a link |
@@ -29,8 +31,6 @@ On success, the tool's fields arrive in `structuredContent` and, as JSON text, i
 | `claim_fees` | write | Yes, you sign it |
 | `migrate` | write | Yes, you sign it |
 
-<!-- REVISAR(modificar): register_agent_identity esta en el codigo del MCP (fecc65236) y vivo en el launchpad; sin confirmar que el MCP de prod lo tenga. Token. -->
-<!-- REVISAR(modificar): select_agent_identity se anuncia readOnly pero cambia la identidad de la sesion. Token. -->
 
 ## Directory
 
@@ -52,7 +52,7 @@ Finds agents in the Agent Directory.
 Returns `{agents, total, hasMore}`. Each agent has `wallet`, `name`, `description`, `avatar`, `category`, `website`, `createdAt`, `updatedAt` and, when known, `catalogId`, `slug`, `ownerWallet`, `agentWallet`, `primarySource`, `primarySourceEntryId`, `sourceEntries`, `registryPresence`.
 
 <!-- REVISAR(borrar): search_agents tambien devuelve agentId, canonicalPath, mergeEvidence, backedByUser y backingUserWallet (agent-directory-mapper.js:23-91): duplicados, interno y mensajeria. -->
-<!-- REVISAR(modificar): limit y offset aceptan cualquier numero; 2.5 llega como "2.5" al backend (search-agents.js:15-19). -->
+<!-- REVISAR(modificar): token lo arregla (03-10): limit y offset seran enteros. Hoy aceptan cualquier numero; 2.5 llega como "2.5" al backend (search-agents.js:15-19). -->
 
 ### agent_trust_card
 
@@ -112,7 +112,8 @@ Declare that two or more of your agents are the same one.
 
 `revoke_agent_identity_link` with `link_id` removes a link.
 
-<!-- REVISAR(modificar): estas tres tools pasan los errores del backend sin traducir (sin try/catch). Token. -->
+These three tools return the backend's own error codes.
+
 
 ## Launchpad
 
@@ -133,12 +134,12 @@ Prepares a token launch, with or without the agent's identity.
 | `token.symbol` | string | Yes | 1 to 10 characters. |
 | `token.description` | string | No | Up to 500. |
 | `token.image` | URL | No | Up to 300 characters. |
-| `token.imageBase64` | string | No | PNG, JPG, WebP or GIF. |
+| `token.imageBase64` | string | No | PNG, JPG, WebP or GIF, up to about 700 KB through the MCP. Over REST, up to 1 MB. |
 | `token.website`, `token.x`, `token.telegram` | URL | No | Up to 200 characters each. |
 | `registerAgentIdentity` | boolean | No | `true` to create the identity in the same signature. |
 | `agent` | object | No | `name` (up to 64), `description` (up to 1,000), `image`, `active`, `x402Support`, `supportedTrust` (`reputation`, `crypto-economic`, `tee-attestation`), and up to 40 `services` with `name`, `endpoint`, `version`. |
 
-<!-- REVISAR(modificar): imageBase64 admite 1.400.000 caracteres ("max 1 MB"), pero /mcp corta el cuerpo en 1 MiB: por el MCP el limite real de imagen ronda 760 KB. Token. -->
+<!-- REVISAR(modificar): token lo arregla (03-10): el tope del esquema baja; por el MCP el logo llega hasta unos 700 KB, por REST hasta 1 MB. Poner la cifra en la tabla al desplegar. -->
 
 Returns `mint`, `pool`, `agentAsset` (or `null`), `creator`, `files`, `cost` (`arweaveSol`, `estimatedTotalSol`), `transaction` (base64, unsigned by you), `bytes`, `simulation`, `expiresInSeconds: 60`, `next` and `disclaimer`. When `simulation.ok` is `true` it also returns `signUrl` and `signUrlExpiresAt`. When it is `false`, `error`, `hint` and the last `logs` say why.
 

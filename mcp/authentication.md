@@ -30,7 +30,7 @@ curl -X POST https://mcp.deside.io/oauth/register \
 
 The response carries your `client_id`.
 
-<!-- REVISAR(modificar): el registro responde 200, no 201 (RFC 7591). Token. -->
+<!-- REVISAR(modificar): token lo arregla (03-10): el registro pasara a 201. Hoy responde 200. -->
 
 ## Authorize
 
@@ -120,4 +120,4 @@ The code is valid for 60 seconds and once. The access token lasts 45 minutes; th
 | Other `/oauth/*` | 60 a minute per IP |
 | Request body | 64 KB on `/oauth/*`, 1 MB on `/mcp` |
 
-<!-- REVISAR(modificar): el 401 de /mcp no lleva cabecera WWW-Authenticate, que la especificacion de autorizacion de MCP espera (confirmado en prod). Token. -->
+<!-- REVISAR(modificar): token lo arregla (03-10): WWW-Authenticate con resource_metadata. Hoy el 401 de /mcp no lleva cabecera WWW-Authenticate, que la especificacion de autorizacion de MCP espera (confirmado en prod). Token. -->

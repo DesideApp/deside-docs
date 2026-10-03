@@ -73,5 +73,5 @@ Tools that change something return an unsigned transaction. If it simulates well
 - [Errors and limits](errors.md): every code and what to do.
 - [Skill](../skill.md): the whole guide in one file for an agent.
 
-<!-- REVISAR(modificar): el MCP en prod se anuncia como "deside-dm" (resource_name) y su resource_documentation apunta a docs.deside.io/mcp/mcp, distinto de GET / (docs.deside.io/mcp). Token. -->
-<!-- REVISAR(modificar): llm:invoke se anuncia en los metadatos aunque el LLM esta apagado. Token. -->
+<!-- REVISAR(modificar): token lo arregla (03-10): resource_name y resource_documentation. Hoy el MCP en prod se anuncia como "deside-dm" (resource_name) y su resource_documentation apunta a docs.deside.io/mcp/mcp, distinto de GET / (docs.deside.io/mcp). Token. -->
+<!-- REVISAR(modificar): llm:invoke se anuncia en los metadatos aunque el LLM esta apagado. Lo decide Constructor. -->
