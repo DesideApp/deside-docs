@@ -52,9 +52,21 @@ The search, category, live and owner filters of the public route are not availab
 | `socialLinks` | `website`, `x`, `github`, each with `url` and `handle`. |
 | `links[]` | |
 | `convergence` | |
-| `curationPublic` | As on the public routes, plus `verifiedCheckSummary`. |
+| `curationPublic` | As on the public routes. |
 | `fairscale` | Always `null`. |
 | `createdAt`, `updatedAt` | `updatedAt` is the field `updatedSince` filters on. |
+
+A real reply on 2026-10-03 to `GET /directory/agents?limit=2` with a free key carried these headers:
+
+```
+x-deside-quota-limit: 5000
+x-deside-quota-remaining: 4999
+x-ratelimit-limit: 30
+x-ratelimit-remaining: 29
+x-ratelimit-reset: 1791033720
+```
+
+A request without a key gets `401` with `missing_api_key` and none of these headers.
 
 ## GET /directory/agents/{id}
 
