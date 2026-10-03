@@ -60,7 +60,7 @@ Each family of routes answers errors in its own shape.
     "code": "missing_api_key",
     "message": "Missing API key.",
     "requestId": "req_03b560c0-...",
-    "docsUrl": "https://docs.deside.io/directory-api/errors#missing_api_key"
+    "docsUrl": "https://docs.deside.io/api/errors-and-limits#missing_api_key"
   }
 }
 ```
