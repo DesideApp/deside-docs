@@ -50,7 +50,7 @@ Each relation lists one or more vias, the facts that connect it:
 | Via | Shown as | Meaning |
 | --- | --- | --- |
 | Same wallet | `Created by this agent's owner` | Both sides carry this wallet. |
-| Same domain | `Same website as this agent` | Both sides carry this domain. |
+| Same domain | `Same website as this agent` (on a token's page) | Both sides carry this domain. |
 | Agent names it | `This agent lists this token as its own`, `This agent lists this tool as its own` | The agent's registry entry names the token or tool as its own. |
 
 A relation can have several vias. The relation in the Matched example above has two: the same wallet, and the agent's registry entry naming the token.

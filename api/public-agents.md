@@ -75,7 +75,7 @@ Categories: `trading_bots`, `token_signals`, `token_risk`, `contract_security`, 
 | `chain` | `solana` or `evm`. |
 | `category` | One of the categories above, `other`, or `null`. |
 | `ownerProven` | `true` when the owner proved the agent is theirs. Shown as connected on deside.io. |
-| `team` | `true` when the account that owns the agent is a Verified team on Deside. `null` when it could not be read, which is not `false`. |
+| `team` | `true` when the account that owns the agent is a team on Deside, shown with the gold Team badge. See [Checks](../start/checks.md#agents). `null` when it could not be read, which is not `false`. |
 | `handles` | The agent's `x` and `github` handles, or `null`. |
 | `status` | The state from our checks. See [Checks](../start/checks.md). |
 | `liveKinds` | Protocols that answered our last check: `mcp`, `a2a`, `x402`. |

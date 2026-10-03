@@ -10,9 +10,9 @@ Every agent and tool in Deside carries two kinds of fact: what it **declares**, 
 | **Declared** | `services[]` | The registry says so. We have not checked it. |
 | **Live** | `services[].live`, `status.state = "responds"` | At least one declared endpoint replied to a real call on its own protocol. |
 | **Connected** | `ownerProven` (agent routes), `connected` (Ask) | The owner signed in to Deside and proved, by signing, that the agent is theirs. |
-| **Verified team** | `team` | The Deside account that owns the agent is a verified team. `null` means it could not be read, not `false`. |
+| **Team** | `team` | The Deside account that owns the agent is a team: the account has at least one token verified by its creator wallet, its X or its domain, and a proven domain or X. Deside computes it; nobody sets it by hand. Shown as the gold Team badge, with the tooltip "Verified team". `null` means it could not be read, not `false`. |
 
-**Live does not mean good.** It tells you the agent answers, not that it does its job well. **Connected does not mean online.** It is a fact about the owner, not about the agent's uptime. **Verified team is about the owner's account**, not about the agent's quality.
+**Live does not mean good.** It tells you the agent answers, not that it does its job well. **Connected does not mean online.** It is a fact about the owner, not about the agent's uptime. **Team is about the owner's account**, not about the agent's quality.
 
 ### status.state
 
