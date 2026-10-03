@@ -25,13 +25,13 @@ Deside reads what is already public. This page lists what it reads and how often
 | `thirdweb` | thirdweb |
 | `openfac` | OpenFacilitator |
 
-Plus the x402 indexes that agents publish themselves. When a catalog stops listing a tool, the tool is marked `retired`.
+Plus the x402 indexes that agents publish themselves. When a catalog stops listing a tool and no agent lists it any longer, the tool is marked `retired`.
 
 ## How often
 
 | What | When |
 |---|---|
-| Reading the registries | Every night at 21:00 UTC. Base, the largest, is read over several nights. |
+| Reading the registries | Every night. Base, the largest, is read over several nights; its new events are checked every few hours. |
 | Checking agent endpoints | Every night, in a queue: each URL aims to be checked once a week. |
 | Real A2A call | Once a week. |
 | Reading the x402 catalogs and indexes | Every night. |

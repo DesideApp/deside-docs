@@ -4,13 +4,13 @@ The agent profile carries its [relations](../start/relations.md) in the `relatio
 
 | Field | Endpoint |
 | --- | --- |
-| `relations` | `GET https://api.deside.io/api/v2/public/agents/{id}/profile` ([Public Agents API](public-agents.md#get-ref-profile)) |
+| `data.relations` | `GET https://api.deside.io/api/v2/public/agents/{ref}/profile` ([Public Agents API](public-agents.md#get-ref-profile)) |
 
 ## The shared keys
 
 | Key | Values |
 | --- | --- |
-| `kind` | `agent`, `token` or `tool`: the kind of the related object. |
+| `kind` | `agent`, `token` or `tool`: the kind of the related object. In an agent profile it is `token` or `tool`. |
 | `step` | `proven`, `matches` or `declared`. |
 | `vias[].how` | `same-wallet`, `same-domain`, `agent-lists-token` or `agent-lists-tool`. |
 | `vias[].value` | The shared wallet or domain, or `null` when the agent lists the object. |
@@ -71,13 +71,12 @@ The `relations` field of the response, real on 2026-10-01:
 ## What the keys do not mean
 
 - **No relation says Verified on its own.** [Verified owner](../start/relations.md#verified-owner) is the highest step.
-- **`live` is not quality.** It says an endpoint answered, as in [State Words](../start/checks.md#what-we-do-not-measure).
 
 ## Errors
 
 | Code | When | What to do |
 | --- | --- | --- |
-| `404` | The agent `{id}` matches no listed agent. The body is `{ "error": { "code": "not_found" } }` | Check the reference. |
+| `404` | The agent `{ref}` matches no listed agent. The body is `{ "error": { "code": "not_found", "message": "Agent not found." } }` | Check the reference. |
 | `429` | Rate limit reached: 60 requests per minute | Wait for the seconds in `RateLimit-Reset`. |
 
 ## License
