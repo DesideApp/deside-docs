@@ -19,13 +19,12 @@ curl "https://api.deside.io/api/v1/public/x402/tools?limit=1&network=eip155:8453
 | `network` | string | | Exact network, such as `eip155:8453` or `solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp`. |
 | `agent` | string | | An agent's `catalogId` or slug: its tools. The response adds an `agent` key. |
 | `index` | string | | An index URL, up to 2,048 characters: the tools it lists. Cannot be combined with `agent`. |
-| `indice` | string | | Same as `index`. <!-- REVISAR(borrar): alias en español; la web aun lo envia (features/x402/toolsApi.js:25). --> |
+| `indice` | string | | Same as `index`. |
 | `live` | string | | Only `1`: tools whose last check got an answer. |
 | `limit` | integer | 25 | 1 to 100. Outside that: `400`. |
 | `cursor` | string | | `pagination.nextCursor`. It only works with the same filters. |
 
 **Any other parameter returns `400 unknown filter`.** Without `q`, a page cannot go past row 500: `400 cursor exceeds the public depth limit`.
-
 
 ```json
 {
@@ -81,15 +80,15 @@ curl "https://api.deside.io/api/v1/public/x402/tools?limit=1&network=eip155:8453
 | `titleSource` | Whether `title` came from the tool's name or its path. |
 | `host`, `path`, `scheme` | Where it lives. |
 | `bazaars[]` | The catalogs that list it. |
-| `bazaarCount` | <!-- REVISAR(borrar): longitud de bazaars. --> |
+| `bazaarCount` | |
 | `hasInputSchema`, `hasOutputSchema` | Whether the tool publishes its input and output format. |
 | `walletCount`, `firstWallet` | How many wallets it collects to, and the first one. |
 | `prices[]` | The price each catalog publishes: `bazaar`, `scheme`, `network`, `asset`, `amount` in the asset's smallest unit, `payTo`, `maxTimeoutSeconds`. |
-| `distinctAmounts` | <!-- REVISAR(borrar): se deriva de prices. --> |
+| `distinctAmounts` | |
 | `probe` | Our last call. See below. |
 | `declaredByAgent` | `true` when an agent in the Agent Directory lists the tool as its own. |
 | `logo` | Our cached icon, two sizes. |
-| `tier`, `completeness` | <!-- REVISAR(borrar): son las claves de orden internas (bloque, completitud). La web lee tier (ToolCard.jsx:75, X402ToolPage.jsx:152): que derive el estado de probe.verdict antes. --> |
+| `tier`, `completeness` | |
 
 ### probe
 
@@ -116,11 +115,11 @@ Returns one tool, including retired ones. Adds to the list fields:
 | `firstSeenAt`, `lastSeenAt` | When a catalog first and last listed it. |
 | `retired`, `retiredAt` | `true` when no catalog lists it any more. |
 | `agent` | The agent that lists it, or `null`. |
-| `index` | The indexes that list it: `agents`, `indexes`, `served`, `wellKnown`. <!-- REVISAR(modificar): served sin significado publico. --> |
-| `fieldSources` | <!-- REVISAR(borrar): que catalogo gano cada campo en NUESTRA fusion; ademas revela tags y serviceName, que no se sirven. --> |
-| `payToSources` | <!-- REVISAR(borrar): duplica wallets[].bazaars. --> |
-| `railMarkers[]` | <!-- REVISAR(modificar): fontaneria de fusion; definir o quitar. --> |
-| `projectedAt` | <!-- REVISAR(borrar): marca de tiempo de nuestra canalizacion. --> |
+| `index` | The indexes that list it: `agents`, `indexes`, `served`, `wellKnown`. |
+| `fieldSources` | |
+| `payToSources` | |
+| `railMarkers[]` | |
+| `projectedAt` | |
 
 `404 {"error":"not_found"}` when no tool has that slug.
 
@@ -143,8 +142,6 @@ Returns the directory counts. Accepts `host`, `payTo`, `network` and `live=1`.
 ```
 
 `byBazaar` sums more than `tools` because one tool can be in several catalogs.
-
-<!-- REVISAR(borrar): topHosts es un ranking de concentracion por host (un host con 1.400 tools es un operador); misma logica que D6. Decision del owner, recomendado quitar. -->
 
 ## GET /public/x402/indices
 
@@ -176,8 +173,6 @@ Returns the x402 indexes that agents publish, with what each lists.
 | `agents` | How many agents declare it. |
 | `content.state` | `live`, `down` or `no-tools`. |
 | `content.tools` | Tools it lists, then how many quote a price, respond with no price, are down, or are not checked yet. |
-
-<!-- REVISAR(modificar): existen tambien /public/x402/wallet-edges y /public/x402/wallet-revenue, publicas y sin documentar. -->
 
 ## Errors
 

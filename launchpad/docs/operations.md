@@ -35,8 +35,6 @@ On REST, GET parameters go in the query string and POST parameters in a JSON bod
 
 Over REST, call the route with `curl` or any HTTP client; it needs no key. Over MCP, connect to `https://mcp.deside.io/mcp` and sign in with your wallet (see [MCP](../../mcp/README.md)); the tool result carries the same JSON in `structuredContent`.
 
-<!-- REVISAR(modificar): el MCP propio del launchpad (launchpad.deside.io/mcp) responde 410 desde el 02-10. Los ejemplos JSON-RPC contra el se han quitado; hay que rehacerlos contra mcp.deside.io con sesion. -->
-
 Every example response below is the REST body, which is also the MCP `structuredContent`. They come from real devnet calls on 2026-10-01, trimmed. Transactions are cut with `...` and the creator wallet is shown as `YOUR_WALLET`.
 
 ## Shared parameters
@@ -335,8 +333,6 @@ Prepares the agent identity of a token you already launched here without one: a 
 | `agent` | object | No | The same `agent` fields as [`launch_token`](#launch_token). Missing fields are taken from the token. |
 
 Response: `{ network, mint, agentAsset, creator, files: { agentRegistration, agentMetadata }, registration, cost, transaction, signUrl?, signUrlExpiresAt?, bytes, simulation, expiresInSeconds, next, disclaimer }`. `registration` is the EIP-8004 document that will be stored. It costs about 0.005 SOL. Sign it and send it with `submit_transaction`.
-
-<!-- REVISAR(modificar): sin ejemplo real; la ruta esta viva en prod (400 de validacion, OpenAPI y llms.txt del launchpad), pero aun no hay un registro real que copiar. -->
 
 ---
 

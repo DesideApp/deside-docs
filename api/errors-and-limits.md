@@ -11,17 +11,11 @@
 | `/ask` | 10 a minute signed in on deside.io, 3 otherwise | IP |
 | Directory routes, free plan | 5,000 a month and 30 a minute | Key and project |
 
-<!-- Verificado por estrategia en el entorno de prod (03-10): Free 5000/mes puesto por env, 30/min por defecto del codigo; tope diario 500 por defecto. -->
-<!-- REVISAR(modificar): DIRECTORY_API_SUBS_ENABLED=true en prod (estrategia, 03-10): el plan Developer de pago podria contratarse ya. Los docs solo nombran Free (firmado: "gratis con clave", nunca "de pago"). Decision del owner: apagar SUBS o documentar Developer. -->
-<!-- REVISAR(modificar): el tope diario de 500 no manda cabeceras y vive en memoria (se reinicia con cada despliegue). -->
-
 ### Headers
 
 Public routes send `ratelimit-limit`, `ratelimit-remaining`, `ratelimit-reset` (seconds) and `ratelimit-policy`.
 
 Directory routes, with a valid key, also send `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset` (Unix seconds) and `X-Deside-Quota-Limit`, `X-Deside-Quota-Remaining`.
-
-<!-- REVISAR(modificar): dos juegos de cabeceras con numeros distintos en la misma respuesta (global por IP y por clave). -->
 
 ### Monthly quota
 
@@ -34,8 +28,6 @@ Directory routes, with a valid key, also send `X-RateLimit-Limit`, `X-RateLimit-
 ## Errors
 
 Each family of routes answers errors in its own shape.
-
-<!-- REVISAR(modificar): tres formas de error distintas (publica, Ask, Directory). Unificar en la de Directory. -->
 
 ### Public routes
 
@@ -91,5 +83,3 @@ Keep `requestId` when you ask for help. You can send your own in `x-request-id`,
 | 429 | `quota_exceeded` | Wait for next month. |
 | 500 | `internal_error` | Retry later. |
 
-<!-- REVISAR(modificar): docsUrl apunta a /directory-api/errors; con el arbol nuevo hace falta redireccion en GitBook (.gitbook.yaml) a api/errors-and-limits. Hecho en la rama. -->
-<!-- REVISAR(modificar): "Contact Deside" sin canal publicado; poner el canal o quitar. -->

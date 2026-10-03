@@ -52,8 +52,6 @@ fields except `hasInputSchema` and `hasOutputSchema`, plus the full `description
 `payToSources`, `firstSeenAt`, `lastSeenAt`, `projectedAt`, `passRunId` and
 `walletCoincidences`.
 
-<!-- REVISAR(borrar): fieldSources, payToSources, projectedAt, passRunId, railMarkers, tier y completeness son internos o duplicados (ver auditoria). -->
-
 `walletCoincidences` lists the agents in the directory whose wallet is one of
 the tool's receiving wallets. Each entry has `slug`, `name`, `catalogId`,
 `address`, `field`, `relation` (`same-payout-wallet`), `claim` (`matches`)
@@ -65,8 +63,6 @@ An unknown slug answers `404` with `{ "error": "not_found" }`.
 ## `GET /api/v1/directory/x402-wallet-edges`
 
 Same parameters, response and rules as the public `/public/x402/wallet-edges`, without the depth limit.
-
-<!-- REVISAR(modificar): /public/x402/wallet-edges y /public/x402/wallet-revenue responden en prod pero no estan documentadas ni en el OpenAPI (se dejaron fuera a la espera de decision). O se documentan las dos, o esta seccion sale. -->
 
 ## `GET /api/v1/directory/x402-resources`
 
@@ -112,7 +108,6 @@ Returns counts over the stored catalog entries. It takes no parameters.
 | `porNumeroDeBazares` | entries | `{ bazaarCount, n }`. |
 | `porBazar` | entries | `{ bazaar, n }` per catalog. An entry in two catalogs counts in both. |
 
-<!-- REVISAR(modificar): este census sigue con claves en ESPAÑOL (conNombre, carteras, porBazar, ultimaEscritura...; x402-catalog-read.service.js:350-374). PLAN-514 no lo tradujo. Traducir o retirar la ruta. -->
 | `ultimaEscritura` | timestamp | Newest `lastSeenAt`. |
 
 The test networks are `base-sepolia`, `eip155:84532`, `eip155:80002`,

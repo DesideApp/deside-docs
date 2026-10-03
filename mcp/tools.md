@@ -1,8 +1,7 @@
 # Tools reference
 
 The Deside MCP has 20 tools.
-
-<!-- REVISAR(modificar): token tiene una 21, update_agent_identity (POST /v1/agent-identity/update, da2442b1e y f59c043e3), sin desplegar (404 en prod el 03-10). Documentarla cuando este viva. --> Read tools need `deside:read`; tools that prepare, send or change something need `deside:write`. Launchpad tools always act with the wallet you signed in with.
+Read tools need `deside:read`; tools that prepare, send or change something need `deside:write`. Launchpad tools always act with the wallet you signed in with.
 
 **A tool that changes something returns an unsigned transaction. Nothing moves until you sign it.**
 
@@ -31,7 +30,6 @@ On success, the tool's fields arrive in `structuredContent` and, as JSON text, i
 | `claim_fees` | write | Yes, you sign it |
 | `migrate` | write | Yes, you sign it |
 
-
 ## Directory
 
 ### search_agents
@@ -51,8 +49,6 @@ Finds agents in the Agent Directory.
 
 Returns `{agents, total, hasMore}`. Each agent has `wallet`, `name`, `description`, `avatar`, `category`, `website`, `createdAt`, `updatedAt` and, when known, `catalogId`, `slug`, `ownerWallet`, `agentWallet`, `primarySource`, `primarySourceEntryId`, `sourceEntries`, `registryPresence`.
 
-<!-- REVISAR(borrar): search_agents tambien devuelve agentId, canonicalPath, mergeEvidence, backedByUser y backingUserWallet (agent-directory-mapper.js:23-91): duplicados, interno y mensajeria. -->
-
 ### agent_trust_card
 
 What we checked about one agent.
@@ -62,8 +58,6 @@ What we checked about one agent.
 | `catalogId` | string | Yes | From `search_agents`. |
 
 Returns `catalogId`, `name`, `description`, `image`, `registry` (`registered`, `source`, `coreAsset`, `readAt`), `ownerWallet`, `services[]` (`kind`, `url`, `declared`, `responds`, `checkedAt`, `version`) and `publicReceipts`. `responds` is `true`, `false`, or `null` when not checked.
-
-<!-- REVISAR(borrar): ownerReputation es FairScale (agent-trust-mapper.js:96-119). -->
 
 ### ask_directory
 
@@ -85,13 +79,9 @@ Who Deside recognizes you as. No parameters. Returns `principal` (your `wallet`)
 | `none` | Deside lists no agent owned by this wallet. |
 | `unresolved` | The wallet owns agents in different registries with no link between them. Select one or link them. |
 
-<!-- REVISAR(borrar): tambien devuelve authenticated, role, userProfile y reputation (get-my-identity.js:47-71): contrato de mensajeria y FairScale. -->
-
 ### get_user_info
 
 The public profile of any wallet. `wallet`: base58. Returns `wallet`, `visibleProfile`, `agentProfile`.
-
-<!-- REVISAR(borrar): devuelve authenticated, registered, role, userProfile y social, del contrato de mensajeria (user-identity-mapper.js:73-99). -->
 
 ### list_my_agent_identities
 
@@ -112,7 +102,6 @@ Declare that two or more of your agents are the same one.
 `revoke_agent_identity_link` with `link_id` removes a link.
 
 These three tools return the backend's own error codes.
-
 
 ## Launchpad
 

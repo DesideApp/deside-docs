@@ -39,7 +39,6 @@ These come as an HTTP response on `/mcp`, before any tool runs:
 | 409 | `session_conflict` | Two `initialize` for the same wallet at the same moment. Retry one. |
 | 413 | `payload_too_large` | Body over 1 MB. |
 
-
 ## OAuth errors
 
 `/oauth/register` and `/oauth/token` answer `400` with `{"error": "…", "error_description": "…"}`: `invalid_client_metadata`, `invalid_redirect_uri`, `invalid_scope`, `invalid_request`, `invalid_grant`, `unsupported_grant_type`. Over the limit: `429 RATE_LIMITED`.
@@ -56,4 +55,3 @@ These come as an HTTP response on `/mcp`, before any tool runs:
 | Prepared transaction | About 60 seconds |
 | `ask_directory` | Shared by every MCP user: one Ask window for the whole server |
 
-<!-- Ask por el MCP: todos los usuarios comparten una ventana (estrategia y token, 03-10). Defecto de Constructor; cuando sea por usuario, volver a poner la fila. -->

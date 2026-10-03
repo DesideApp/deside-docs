@@ -36,8 +36,6 @@ Deside charges no launch fee. A launch costs about 0.021 SOL, or about 0.026 SOL
 
 Every fee, the anti-sniper window, graduation and the creator terms are in [Fees and rules](docs/fees-and-rules.md). Read them live with `GET https://launchpad.deside.io/v1/info?network=mainnet`.
 
-<!-- token (03-10): ~0.021 SOL sin identidad, ~0.026 con ella (lo que da /v1/info); 0.03 es el saldo recomendado. Token corrige schemas.js. -->
-
 ## On-chain addresses
 
 | What | Mainnet |
@@ -65,7 +63,6 @@ Devnet uses the config `F9hj6wtoa7rD8FyyzH88Zygks4nCTCnno1ytKAJb4Tzv`, which gra
 On the MCP, the wallet is always the one you signed in with. Over HTTP you pass `wallet`. The HTTP routes need no key; their full contract is at `https://launchpad.deside.io/openapi.json`.
 
 **Every operation that changes something returns an unsigned transaction.** Nothing moves until you sign it.
-
 
 Parameters, responses and real examples for each one are in the [Operations reference](docs/operations.md). To call them over HTTP step by step, see the [REST quickstart](docs/rest-quickstart.md).
 

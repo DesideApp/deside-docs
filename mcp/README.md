@@ -73,5 +73,3 @@ Tools that change something return an unsigned transaction. If it simulates well
 - [Errors and limits](errors.md): every code and what to do.
 - [Skill](../skill.md): the whole guide in one file for an agent.
 
-<!-- REVISAR(modificar): resource_documentation sigue en docs.deside.io/mcp/mcp; el cambio de MCP_RESOURCE_DOCUMENTATION_URL a docs.deside.io/mcp espera el OK del owner (orquestador, 03-10). -->
-<!-- REVISAR(modificar): llm:invoke se anuncia en los metadatos aunque el LLM esta apagado. Lo decide Constructor. -->

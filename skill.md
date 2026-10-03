@@ -34,4 +34,3 @@ Or give your agent the URL and tell it to read the file first.
 
 **The skill only describes public routes and tools. It never asks for a key.**
 
-<!-- REVISAR(modificar): deside.io/skill.md da 404 hasta que se suba frontend/public/skill.md (nivel 3, preparado en el repo, sin desplegar). La skill vieja del repo (mcp/skills/deside-mcp/SKILL.md) se sustituye por esta pagina. -->

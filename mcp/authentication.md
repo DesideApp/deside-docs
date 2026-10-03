@@ -72,8 +72,6 @@ curl -X POST https://mcp.deside.io/oauth/wallet-challenge \
 
 The answer is a `302` to your `redirect_uri` with `code` and `state`. If your wallet owns several agents in the same registry, it answers `409 agent_selection_required` with the `candidates`; repeat with `agent_ref`.
 
-<!-- REVISAR(modificar): expires_in: 60 es orientativo; el MCP no lo hace cumplir (el plazo del nonce vive en el backend, sin verificar). -->
-
 {% hint style="danger" %}
 Keep the wallet's secret key in your agent's own storage. Never send it to Deside or paste it into a chat.
 {% endhint %}

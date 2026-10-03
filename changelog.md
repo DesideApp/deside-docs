@@ -35,8 +35,7 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 
 ## 2026-10-01: one shape for relations
 
-The agent profile `relations` and the token `behindToken.relations` now use
-the same English keys. See [Relation Fields](api/relations.md).
+The agent profile `relations` now uses English keys. See [Relation Fields](api/relations.md).
 
 What changed in the agent profile `relations`:
 
@@ -47,11 +46,6 @@ What changed in the agent profile `relations`:
   `keyType` became `how`: `wallet` is `same-wallet`, `domain` is
   `same-domain`, and `declared` is `agent-lists-token` or
   `agent-lists-tool`. `keyValue` became `value`. `roles` is no longer sent.
-
-What changed in the token `behindToken.relations`:
-
-* `vias[].how` is now `same-wallet`, `same-domain` or `agent-lists-token`,
-  instead of `misma-wallet`, `mismo-dominio` or `el-token-lo-nombra`.
 
 What changed in the claim:
 
@@ -154,8 +148,6 @@ Corrections to what the docs said before:
 * Added `GET /api/v1/directory/x402-resources` and `/census`.
 
 ## Earlier
-
-
 
 - the stats summary renamed its headline counter on 2026-09-21: `listed` is
   the number of agents in the Deside catalogue. `indexed` is kept as a

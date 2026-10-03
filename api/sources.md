@@ -15,8 +15,6 @@ Deside reads what is already public. This page lists what it reads and how often
 
 **One agent is one entry in the directory**, even when several registries list it. `registryPresence.registries` lists them all.
 
-<!-- REVISAR(modificar): el filtro registry acepta tambien kamiyo, con 0 entradas hoy; no se anuncia (nota de Tramo 1, 02-10). -->
-
 ## x402 catalogs
 
 | `bazaar` | Catalog |

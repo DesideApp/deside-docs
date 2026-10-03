@@ -45,8 +45,8 @@ curl -X POST "https://api.deside.io/api/v1/ask" \
 |---|---|
 | `answer` | The text answer. |
 | `agents[]` | Agents that fit, with `id`, `name`, `avatarUrl`, `category`, `state`, `connected`, `lastCheckedAt` and `services[]`. |
-| `agents[].connected` | The owner proved the agent is theirs. <!-- REVISAR(modificar): renombrar ownerProven. --> |
-| `agents[].verified`, `verifiedCheck`, `verifiedFailed` | <!-- REVISAR(borrar): Verified retirado. --> |
+| `agents[].connected` | The owner proved the agent is theirs. |
+| `agents[].verified`, `verifiedCheck`, `verifiedFailed` | |
 | `claimed[]` | Agents whose description matches the question but that are not live in our checks. Up to 100. |
 | `claimedTotal` | How many of those there are. |
 | `unmet` | `true` when no live agent fits the question. |
@@ -70,4 +70,3 @@ A `429` carries `Retry-After` in seconds.
 | 400 | `{"error":"INVALID_QUESTION","nextStep":"question must be a string of 3..500 chars"}` | Missing or bad `question`. |
 | 429 | `{"error":"rate_limited","scope":"ask:headless","retryAfterSec":42}` | Over the limit. |
 
-<!-- REVISAR(modificar): los codigos de Ask van en MAYUSCULAS (INVALID_QUESTION) y su 429 en minusculas; el resto de rutas publicas usa RATE_LIMITED. Unificar. -->

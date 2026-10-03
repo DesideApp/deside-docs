@@ -73,12 +73,6 @@ An X account can be named by anyone. A token's metadata can name `@solana` witho
 
 A token is not a product of Deside: it is one of the four kinds of record, and its page answers one question, who is behind it. The answer is the list of its relations, under Behind this token, each with its step. The summary line names the strongest of them.
 
-This reads one token and who is behind it:
-
-```bash
-curl "https://api.deside.io/api/v1/public/market/solana/DwquZcs2JtPe2w9xfyqF9wDnySQXLBHTMawusJ8Uk1mi"
-```
-
 On 2026-10-01 the token MIZUKI read `Mizuki the Mech · registered agent · X declared`, with step Matched. It had two relations to agents:
 
 | Agent | Step | Vias |
@@ -86,7 +80,7 @@ On 2026-10-01 the token MIZUKI read `Mizuki the Mech · registered agent · X de
 | `mizuki-the-mech-cmeh` | Matched | `Same wallet 638V…CmeH`, `This token names this agent` |
 | `mizuki-the-mech` | Declared | `This token names this agent` |
 
-Only the first agent shares a wallet with the token. The second is only named by it, so it stays Declared. The fields are in [Relation Fields](../api/relations.md#token-behindtokenrelations).
+Only the first agent shares a wallet with the token. The second is only named by it, so it stays Declared.
 
 ## What this does not mean
 

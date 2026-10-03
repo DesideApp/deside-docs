@@ -2,8 +2,6 @@
 
 These routes read the Agent Directory with no key. They are limited per IP and stop at 500 rows deep. To keep a full copy in sync, use [Directory agents](directory-agents.md).
 
-<!-- REVISAR: marcas de este fichero con REVISAR(borrar) o REVISAR(modificar). Fuente de cada campo: nivel-2/api-exposicion-auditoria.md; de cada regla: nivel-2/api-hechos-verificados.md. -->
-
 ## GET /public/agents
 
 Returns agents in the directory, filtered and paged.
@@ -19,7 +17,7 @@ curl "https://api.deside.io/api/v1/public/agents?limit=1&service=mcp"
 | `limit` | integer | 20 | 1 to 100. Out-of-range values are clamped. 24 at most with `sort=featured`. |
 | `skip` | integer | 0 | Rows to skip. 500 at most; 96 with `sort=featured`. Above that: `400`. |
 | `q` | string | | 2 to 50 characters. Matches the start of the name, the start of the owner wallet, or a full agent wallet, registry entry id or EVM address. Outside 2 to 50 it is ignored. |
-| `name` | string | | Same as `q`. <!-- REVISAR(borrar): alias duplicado de q. --> |
+| `name` | string | | Same as `q`. |
 | `skill` | string | | Up to 60 characters. Exact match on a declared skill, lowercase. |
 | `category` | string | | One of the 12 categories below. An unknown value is ignored. |
 | `service` | string | | `web`, `mcp`, `a2a`, `x402`, `api` or `contact`. Agents that declare it. |
@@ -30,11 +28,11 @@ curl "https://api.deside.io/api/v1/public/agents?limit=1&service=mcp"
 | `agentWallet` | string | | Exact agent wallet, base58. |
 | `coreAsset` | string | | Exact Metaplex Core asset, base58. |
 | `collection` | string | | Agents carrying a badge of this collection, base58. |
-| `collectionCase` | string | | `A`, `B`, `C` or `D`. <!-- REVISAR(modificar): letras internas sin definicion publica. O se publica que significa cada una o se quita. --> |
-| `connected` | boolean | | `true`: the owner proved the agent is theirs. Same fact as `ownerProven` in the response. <!-- REVISAR(modificar): mismo hecho con dos nombres (connected / ownerProven). --> |
-| `verified` | boolean | | Filters by the retired Verified badge. Always matches nothing today. <!-- REVISAR(borrar): producto retirado (Verified de pago). --> |
-| `duplicates` | string | | `show` or `hide`. <!-- REVISAR(borrar): expone el criterio interno de enjambres (D6, PUBLIC-DOCS Regla 3). La web lo usa: AgentsDiscoveryPage.jsx:147-148,330. --> |
-| `sort` | string | | `name` for A to Z. `featured` for a curated selection. Anything else keeps the default order. <!-- REVISAR(borrar): sort=featured es criterio de orden interno; la web lo usa (featuredAgents.js:3), moverlo detras de la cabecera first-party. --> |
+| `collectionCase` | string | | `A`, `B`, `C` or `D`. |
+| `connected` | boolean | | `true`: the owner proved the agent is theirs. Same fact as `ownerProven` in the response. |
+| `verified` | boolean | | Filters by the retired Verified badge. Always matches nothing today. |
+| `duplicates` | string | | `show` or `hide`. |
+| `sort` | string | | `name` for A to Z. `featured` for a curated selection. Anything else keeps the default order. |
 
 Categories: `trading_bots`, `token_signals`, `token_risk`, `contract_security`, `defi_yield`, `prediction_markets`, `market_data`, `dev_tools`, `research`, `content_marketing`, `agent_infra`, `token_launch`. Agents without a category have `other`, which is not a filter.
 
@@ -76,20 +74,20 @@ Categories: `trading_bots`, `token_signals`, `token_risk`, `contract_security`, 
 |---|---|
 | `catalogId` | Stable id of the agent in Deside. |
 | `slug` | Short name, used in URLs. |
-| `canonicalPath` | The agent's page on deside.io. <!-- REVISAR(borrar): duplica slug. --> |
+| `canonicalPath` | The agent's page on deside.io. |
 | `name` | Display name. |
 | `chain` | `solana` or `evm`. |
 | `avatarThumbUrl` | Our cached copy of the avatar, or `null`. |
 | `avatarOriginalUrl` | The avatar URL the registry gives. |
-| `avatar` | Same as `avatarOriginalUrl`. <!-- REVISAR(borrar): duplicado de avatarOriginalUrl. --> |
-| `mcpSessionActive` | The agent has a session open with the Deside MCP. <!-- REVISAR(modificar): duda del owner; si la mensajeria se retira, este campo tambien. --> |
-| `wallet` | Only when `mcpSessionActive` is `true`. <!-- REVISAR(borrar): mensajeria (buzon). --> |
+| `avatar` | Same as `avatarOriginalUrl`. |
+| `mcpSessionActive` | The agent has a session open with the Deside MCP. |
+| `wallet` | Only when `mcpSessionActive` is `true`. |
 | `ownerProven` | The owner proved, by signing, that the agent is theirs. See [Checks](../start/checks.md). |
 | `category` | One of the 12 categories, or `other`. |
 | `services[].kind` | A service the agent declares: `web`, `mcp`, `a2a`, `x402`, `api` or `contact`. |
 | `services[].checked` | `true` when our last check of that service passed. |
 | `curationPublic.state` | `responds`, `profile` or `registered`. See [Checks](../start/checks.md). |
-| `curationPublic.verified` | Always `false`. <!-- REVISAR(borrar): Verified de pago retirado. --> |
+| `curationPublic.verified` | Always `false`. |
 | `total` | Agents matching the filters. |
 | `hasMore` | `true` when `skip + items` is below `total`. |
 | `liveFacets` | How many matching agents are live on each protocol. Present when the counts are available. |
@@ -133,16 +131,16 @@ curl "https://api.deside.io/api/v1/public/agents/stats-summary"
 | Field | Description |
 |---|---|
 | `listed` | Agents in the directory. |
-| `indexed` | Same as `listed`. <!-- REVISAR(borrar): alias viejo; la web aun lo lee (AgentsDiscoveryPage.jsx:192, askApi.js:35). --> |
+| `indexed` | Same as `listed`. |
 | `byChain` | `listed`, by chain. |
-| `connected` | Agents whose owner proved they are theirs. <!-- REVISAR(modificar): renombrar a ownerProven, como en la lista. --> |
-| `byCategory` | Agents per category. <!-- REVISAR(borrar): suma de byCategoryByChain, nadie lo lee. Ojo: el servicio resources lo usa para {{categories:share}}; cambiar alli antes. --> |
+| `connected` | Agents whose owner proved they are theirs. |
+| `byCategory` | Agents per category. |
 | `byCategoryByChain` | Agents per category, by chain. |
 | `respondingAgents` | Agents with at least one endpoint live. |
 | `respondingByKind` | Agents live, per protocol. |
 | `endpoints.<kind>` | Endpoint URLs per protocol: declared by some agent, checked by us, and live in the last check. One URL can be declared by many agents. |
-| `topSkills` | The 12 most declared skills. <!-- REVISAR(borrar): la cabeza es un enjambre, expone concentracion (D6). --> |
-| `signalCounts` | Agents that declare each kind of service or an X account. <!-- REVISAR(modificar): tercera definicion de "cuantos declaran X" junto a endpoints.declared y respondingByKind; definirla o quitarla. --> |
+| `topSkills` | The 12 most declared skills. |
+| `signalCounts` | Agents that declare each kind of service or an X account. |
 | `measuredAt` | When the counts were measured. |
 
 ## GET /public/agents/{ref}
@@ -162,36 +160,36 @@ curl "https://api.deside.io/api/v1/public/agents/blinkcodes"
 | Field | Description |
 |---|---|
 | `catalogId`, `slug`, `name`, `description`, `chain`, `category` | As in the list. |
-| `agentId` | Same as `catalogId`. <!-- REVISAR(borrar): duplicado. --> |
+| `agentId` | Same as `catalogId`. |
 | `ownerWallet` | The wallet that owns the registry entry. |
 | `agentWallet` | The agent's own wallet, when the registry gives one. |
-| `wallet` | <!-- REVISAR(borrar): wallet de la cuenta de mensajeria; en la practica igual a ownerWallet. --> The wallet of the agent's Deside account. |
-| `primarySource` | The main registry. <!-- REVISAR(borrar): duplica registryPresence.primarySource. --> |
+| `wallet` | The wallet of the agent's Deside account. |
+| `primarySource` | The main registry. |
 | `primarySourceEntryId` | The agent's id in that registry. |
 | `sourceEntries[]` | Every registry entry merged into this agent: `source` and `sourceEntryId`. |
 | `registryPresence` | `registries`: every registry that lists the agent; `primarySource`: the main one. |
 | `avatarThumbUrl`, `avatarProfileUrl` | Our cached copies of the avatar, small and large. |
-| `avatarOriginalUrl`, `avatar` | The registry's avatar URL. <!-- REVISAR(borrar): avatar duplica avatarOriginalUrl. --> |
-| `website` | The declared website. <!-- REVISAR(borrar): duplica socialLinks.website. --> |
+| `avatarOriginalUrl`, `avatar` | The registry's avatar URL. |
+| `website` | The declared website. |
 | `socialLinks` | Declared links: `website`, `x`, `github`, each with `url` and `handle`. |
 | `services[]` | Each declared service, with what we checked. See below. |
-| `serviceSignals[]` | <!-- REVISAR(borrar): duplica services[].kind. --> The kinds of service declared. |
-| `channels[]` | <!-- REVISAR(borrar): duplica services[]. --> Same as `services[]`, shorter. |
-| `x402State` | <!-- REVISAR(borrar): duplica services[x402].x402Content.state. --> |
-| `capabilities[]` | Declarations per registry: `kind`, `label`, `source`, `endpoint`. <!-- REVISAR(modificar): las filas kind=service duplican services[]; bug: label "a2 a". --> |
+| `serviceSignals[]` | The kinds of service declared. |
+| `channels[]` | Same as `services[]`, shorter. |
+| `x402State` | |
+| `capabilities[]` | Declarations per registry: `kind`, `label`, `source`, `endpoint`. |
 | `skills[]` | Declared skills. |
-| `skillRepertoire` | <!-- REVISAR(modificar): solapa con skills; definir o quitar. --> Skills with the source of each. |
+| `skillRepertoire` | Skills with the source of each. |
 | `collectionBadges[]` | Collections the agent belongs to: `case` and `address`. |
 | `ownerProven` | See the list. |
 | `mcpSessionActive` | See the list. |
 | `curationPublic` | Our checks. See below. |
 | `receipts.payer` | x402 payments the agent made: `calls`, `totalUsdc`, `lastAt`. |
-| `serviceDesc`, `ownerOverlay` | <!-- REVISAR(borrar): solo existian con el Verified de pago. --> Always `null`. |
-| `ownerScore` | <!-- REVISAR(borrar): FairScale, retirado. --> Always `null`. |
-| `mergeEvidence` | <!-- REVISAR(borrar): como fusionamos registros es interno. --> |
-| `isVisible` | <!-- REVISAR(borrar): bandera interna, siempre true en lectura publica. --> |
-| `lastActiveAt` | <!-- REVISAR(borrar): actividad de mensajeria. --> |
-| `canonicalPath` | <!-- REVISAR(borrar): duplica slug. --> |
+| `serviceDesc`, `ownerOverlay` | Always `null`. |
+| `ownerScore` | Always `null`. |
+| `mergeEvidence` | |
+| `isVisible` | |
+| `lastActiveAt` | |
+| `canonicalPath` | |
 | `createdAt`, `updatedAt` | When the agent entered the directory and last changed. |
 
 #### services[]
@@ -204,11 +202,11 @@ curl "https://api.deside.io/api/v1/public/agents/blinkcodes"
 | `checked` | `true`: our last check passed. |
 | `checkedAt` | When we last checked it. |
 | `version` | The protocol version the endpoint answered with. |
-| `source` | Where the URL came from. Today always `registry`. <!-- REVISAR(borrar): los otros dos valores eran del Verified retirado. --> |
+| `source` | Where the URL came from. Today always `registry`. |
 | `x402Probe` | x402 only. Our last call: `verdict`, `at`, `reason`, `network`, `x402Version`. |
 | `x402Content` | x402 only. The tools behind this URL: `state`, `tools`, `quotesPrice`, `respondsNoPrice`, `down`, `notChecked`. |
 | `indexes[]` | x402 only. Indexes at this URL: `url`, `toolCount`, `state`. |
-| `toolsHref` | x402 only. The page that lists these tools on deside.io. <!-- REVISAR(modificar): ruta de la web dentro de la API; cambiar por el enlace de datos /api/v1/public/x402/tools?agent=. --> |
+| `toolsHref` | x402 only. The page that lists these tools on deside.io. |
 
 #### curationPublic
 
@@ -216,15 +214,15 @@ curl "https://api.deside.io/api/v1/public/agents/blinkcodes"
 |---|---|
 | `state` | `responds`, `profile` or `registered`. See [Checks](../start/checks.md). |
 | `probedAt` | When we last checked the agent. |
-| `liveEndpoints[]` | Endpoints live in the last check: `kind`, `url`, `lastCheckedAt`, `latencyMs`, `version`, `evidence`. <!-- REVISAR(modificar): duplica services[]; llevar latencyMs y evidence a services[] y quitar este. --> |
+| `liveEndpoints[]` | Endpoints live in the last check: `kind`, `url`, `lastCheckedAt`, `latencyMs`, `version`, `evidence`. |
 | `registryStatus` | When a registry stopped listing the agent: `missingSources[]` and `missingSince`. |
-| `protocol` | `mcp` or `mcp-auth`. <!-- REVISAR(modificar): solapa con services. --> |
-| `agenticPayments` | <!-- REVISAR(borrar): duplica services[x402]. --> |
-| `v` | <!-- REVISAR(borrar): marca de version interna. --> |
-| `stateSince` | <!-- REVISAR(borrar): entrada del orden de Ask, interno. --> |
-| `operatorGroup` | <!-- REVISAR(borrar): grupo de operador, interno (D6). --> |
-| `humanPayment`, `priceUsd`, `latencyMs` | Always `null` today. <!-- REVISAR(modificar): sin productor vivo; quitar o definir. --> |
-| `verified`, `verifiedCheck`, `verifiedCheckedAt`, `verifiedFailed` | <!-- REVISAR(borrar): Verified de pago retirado. --> Always `false`, `null`, `null`, `[]`. |
+| `protocol` | `mcp` or `mcp-auth`. |
+| `agenticPayments` | |
+| `v` | |
+| `stateSince` | |
+| `operatorGroup` | |
+| `humanPayment`, `priceUsd`, `latencyMs` | Always `null` today. |
+| `verified`, `verifiedCheck`, `verifiedCheckedAt`, `verifiedFailed` | Always `false`, `null`, `null`, `[]`. |
 
 ### Errors
 
@@ -248,41 +246,39 @@ curl "https://api.deside.io/api/v1/public/agents/blinkcodes/profile"
 | `agentProfile.resolved` | Everything read from the registries. |
 | `agentProfile.resolved.resolvedAt` | When we last read them. |
 | `agentProfile.resolved.overview` | The registry data, by topic: `onchainDetails`, `agentToken`, `holdings`, `declaredAgentWallets`, `socialLinks`, `serviceDeclarations`, `skills`, `domains`, `capabilities`, `reputationBySource`, `registryPresence`. |
-| `agentProfile.resolved.raws` | The raw entry of each registry, as the registry serves it. <!-- REVISAR(modificar): DECISION DEL OWNER. Dos decisiones firmadas chocan (public-user.mapper.js:1035 dice que no salen; agents.controller.js:315 los pone). Recomendado: que no salgan. --> |
-| `agentProfile.resolved.rawSourceData` | <!-- REVISAR(borrar): copia de raws. --> |
-| `agentProfile.resolved.visibleProfile`, `displayName`, `displayAvatar`, `description`, `source` | <!-- REVISAR(borrar): copias 2 y 3 de visibleProfile. --> |
-| `agentProfile.resolved.overview.visualIdentity` | <!-- REVISAR(borrar): copia 4 de nombre, descripcion e imagen. --> |
-| `agentProfile.resolved.overview.serviceInterfaces` | <!-- REVISAR(borrar): duplica serviceDeclarations; la web lee los dos (services.js:201). --> |
-| `agentProfile.resolved.overview.onchainDetails.legacy` | <!-- REVISAR(borrar): copia de onchainDetails; la web lee esta (onchain.js:223), migrar antes. Bug: explorer de un dueño EVM apunta a solscan. --> |
-| `agentProfile.resolved.overview.statusTrustPayments` | <!-- REVISAR(modificar): active sin significado definido; x402Support duplica services. --> |
-| `agentProfile.resolved.overview.agentToken.coverage`, `evidence[].rawPath`, `declaredAgentWallets[].path`, `holdings.*.provider`, `holdings.*.nextRefreshAt` | <!-- REVISAR(borrar): proceso interno (cobertura de lectura, rutas en nuestro almacen, proveedor). --> |
+| `agentProfile.resolved.raws` | The raw entry of each registry, as the registry serves it. |
+| `agentProfile.resolved.rawSourceData` | |
+| `agentProfile.resolved.visibleProfile`, `displayName`, `displayAvatar`, `description`, `source` | |
+| `agentProfile.resolved.overview.visualIdentity` | |
+| `agentProfile.resolved.overview.serviceInterfaces` | |
+| `agentProfile.resolved.overview.onchainDetails.legacy` | |
+| `agentProfile.resolved.overview.statusTrustPayments` | |
+| `agentProfile.resolved.overview.agentToken.coverage`, `evidence[].rawPath`, `declaredAgentWallets[].path`, `holdings.*.provider`, `holdings.*.nextRefreshAt` | |
 | `agentProfile.identity` | The on-chain identity: `source`, `coreAsset`, `mintAddress`, `pda`. |
-| `agentProfile.identity.passport` | <!-- REVISAR(borrar): passport retirado. --> |
-| `agentProfile.identity.protocol`, `agentProfile.identity.name/description/image/services` | <!-- REVISAR(borrar): copia 5 de la identidad y de los servicios. --> |
-| `agentProfile.identity.verifiedAt` | When the registry entry was read. <!-- REVISAR(modificar): el nombre choca con el Verified retirado; renombrar observedAt. --> |
-| `agentProfile.identity.reputation` | <!-- REVISAR(borrar): siempre null. --> |
+| `agentProfile.identity.passport` | |
+| `agentProfile.identity.protocol`, `agentProfile.identity.name/description/image/services` | |
+| `agentProfile.identity.verifiedAt` | When the registry entry was read. |
+| `agentProfile.identity.reputation` | |
 | `agentProfile.curationPublic` | As in the single agent. |
-| `agentProfile.tickets` | Our last check per protocol, with what it saw. <!-- REVISAR(modificar): las claves de acta salen en ESPAÑOL (versionNegociada, toolsNombres, contraste.casan, taskAceptada, importe...; agents.controller.js:61-108). Traducir. --> |
+| `agentProfile.tickets` | Our last check per protocol, with what it saw. |
 | `services`, `capabilities`, `category`, `collectionBadges`, `ownerProven`, `mcpSessionActive` | As in the single agent. |
 | `relations` | Tools, tokens and sites linked to this agent, and how: `total` and `items[]` with `kind`, `id`, `step`, `vias[]`, `card`. |
 | `claim` | How the owner can prove the agent is theirs. Same as [GET /public/claim](#get-public-claim-type-id). |
-| `onSolana` | Metaplex agents only: collection, update authority, delegate, frozen. <!-- REVISAR(modificar): collection.explored dice si NOSOTROS recorrimos la coleccion, interno. --> |
-| `identity` | `slug` and `canonicalPath`. <!-- REVISAR(modificar): mismo nombre que agentProfile.identity; canonicalPath duplica slug, pero el SSR lo lee. --> |
-| `identity.mergeEvidence` | <!-- REVISAR(borrar): interno. --> |
-| `ownerOverlay` | <!-- REVISAR(borrar): Verified retirado; la web lo lee (identidadServida.js:30, OwnerOverlayEditor.jsx). --> |
-| `authenticated`, `registered`, `pubkey`, `role`, `userProfile`, `social`, `contactWallet`, `wallet` | <!-- REVISAR(borrar): contrato de usuario de la mensajeria. Nadie los lee en la pagina de agente. --> |
-| `agentProfile.walletReputation` | <!-- REVISAR(borrar): FairScale retirado; la web lo lee (AgentProfileOnchainSection.jsx:213). --> |
+| `onSolana` | Metaplex agents only: collection, update authority, delegate, frozen. |
+| `identity` | `slug` and `canonicalPath`. |
+| `identity.mergeEvidence` | |
+| `ownerOverlay` | |
+| `authenticated`, `registered`, `pubkey`, `role`, `userProfile`, `social`, `contactWallet`, `wallet` | |
+| `agentProfile.walletReputation` | |
 
 ## GET /public/agents/{ref}/receipts
 
 Returns the x402 payments the agent made, newest first.
 
-<!-- REVISAR(modificar): DUDA. Son pagos del agente a Deside por el carril LLM del MCP/SDK. Si ese carril se retira con el SDK, la ruta entera sobra. -->
-
 | Name | Type | Default | Description |
 |---|---|---|---|
 | `limit` | integer | 20 | 1 to 100, clamped. |
-| `skip` | integer | 0 | 0 to 5,000, clamped. <!-- REVISAR(modificar): tope distinto del de la lista (500). --> |
+| `skip` | integer | 0 | 0 to 5,000, clamped. |
 
 ```json
 { "items": [], "total": 0, "limit": 2, "skip": 0, "hasMore": false }

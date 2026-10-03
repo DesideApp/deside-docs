@@ -48,8 +48,6 @@ An agent's profile lists the tokens and tools linked to it, in `relations.items[
 
 **Verified means the owner proved they control this domain or wallet. It says nothing about the quality or value of a token or an agent.**
 
-<!-- REVISAR(modificar): los campos verified/verifiedCheck/verifiedFailed de la API son el Verified de pago retirado, no estos. Mientras existan, un lector los confunde con Verified owner / Verified domain. Ver public-agents.md. -->
-
 ## x402 tools
 
 | `probe.verdict` | Shown as | Meaning |
