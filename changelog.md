@@ -4,6 +4,7 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 
 ## 2026-10-03
 
+- `POST /api/v1/ask` is listed in the PayAI x402 catalog, and its `402` carries `extensions.bazaar` with the input and output schema.
 - `search_agents`, `agent_trust_card` and `get_directory_stats` on the MCP answer with the v2 agent shape with `catalogId` in place of `id`. `wallet`, `primarySource`, `primarySourceEntryId`, `sourceEntries`, `registryPresence`, `registry` and `publicReceipts` are gone: read `sources`, `registries`, `wallets`, `status`, `endpoints` and `services`. See [Tools Reference](mcp/tools.md#directory).
 - the agent routes moved to `/api/v2/public/agents`: `GET /`, `/stats`, `/{ref}` and `/{ref}/profile` with no key. Answers come in `{data}` and errors in `{error:{code,message}}`. Field names changed: `catalogId` is `id`, `canonicalPath` is `path`, `curationPublic.state` is `status`. `stats-summary` is `/stats`. The profile no longer carries raw registry data, `receipts`, `registryStatus`, `collectionBadges` or the retired Verified badge. `/api/v1/public/agents` and all its routes, `receipts` included, are retired and answer `404`: move to v2. Each agent carries `team` and `handles` (`x`, `github`). See [Public agents](api/public-agents.md).
 - the paid Directory API with keys is closed: `/api/v1/directory/agents`, `/directory/x402-tool-profiles`, `/directory/x402-resources` and the key console answer `404`. Use the [public routes](api/README.md#routes), which need no key.

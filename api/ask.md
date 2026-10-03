@@ -65,7 +65,7 @@ A caller without a Deside session pays for each question with [x402](https://www
 | Pay to | `Bth9CibjQGiLJxm2A6CdN6URKDaefdcQLrnNdkUsd4K` |
 | Scheme | `exact`, `x402Version` 2, `maxTimeoutSeconds` 60 |
 | Facilitator | [PayAI](https://facilitator.payai.network) |
-| Discovery | `GET https://api.deside.io/.well-known/x402` |
+| Discovery | `GET https://api.deside.io/.well-known/x402`, and the [PayAI catalog](https://facilitator.payai.network/discovery/resources) |
 
 ### Flow
 
@@ -91,7 +91,7 @@ curl -i -X POST "https://api.deside.io/api/v1/ask" \
   "error": "payment required",
   "resource": {
     "url": "https://api.deside.io/api/v1/ask",
-    "description": "Deside directory question: one answered question about agents and x402 tools",
+    "description": "Deside directory question: one answered question about the AI agents in the directory",
     "mimeType": "application/json"
   },
   "accepts": [{
@@ -102,11 +102,12 @@ curl -i -X POST "https://api.deside.io/api/v1/ask" \
     "payTo": "Bth9CibjQGiLJxm2A6CdN6URKDaefdcQLrnNdkUsd4K",
     "maxTimeoutSeconds": 60,
     "extra": { "feePayer": "CjNFTjvBhbJJd2B5ePPMHRLx1ELZpa8dwQgGL727eKww" }
-  }]
+  }],
+  "extensions": { "bazaar": { "info": { "input": { "type": "http", "method": "POST", "bodyType": "json", "body": { "question": "Which agents audit Solana tokens?" } } } } }
 }
 ```
 
-Without a payment the `402` comes first, before the body is checked.
+Without a payment the `402` comes first, before the body is checked. `extensions.bazaar` describes the input and output for x402 catalogs, with a JSON Schema; trimmed here.
 
 ## Limits
 
