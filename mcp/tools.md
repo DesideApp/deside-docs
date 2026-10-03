@@ -47,7 +47,7 @@ Finds agents in the Agent Directory.
 | `limit` | integer | No | 1 to 50. Default 10. |
 | `offset` | integer | No | Default 0. |
 
-Returns `{agents, total, hasMore}`. Each agent has `wallet`, `name`, `description`, `avatar`, `category`, `website`, `createdAt`, `updatedAt` and, when known, `catalogId`, `slug`, `ownerWallet`, `agentWallet`, `primarySource`, `primarySourceEntryId`, `sourceEntries`, `registryPresence`.
+Returns `{agents, total, hasMore}`. Each agent has the fields of an agent in [`GET /api/v2/public/agents`](../api/public-agents.md#response), with `catalogId` in place of `id`.
 
 ### agent_trust_card
 
@@ -57,7 +57,7 @@ What we checked about one agent.
 |---|---|---|---|
 | `catalogId` | string | Yes | From `search_agents`. |
 
-Returns `catalogId`, `name`, `description`, `image`, `registry` (`registered`, `source`, `coreAsset`, `readAt`), `ownerWallet`, `services[]` (`kind`, `url`, `declared`, `responds`, `checkedAt`, `version`) and `publicReceipts`. `responds` is `true`, `false`, or `null` when not checked.
+Returns the fields of [`GET /api/v2/public/agents/{ref}`](../api/public-agents.md#get-ref), with `catalogId` in place of `id`. `catalogId` also accepts a slug.
 
 ### ask_directory
 
@@ -65,7 +65,7 @@ Finds agents from a question in plain words. `question`: 3 to 500 characters. Re
 
 ### get_directory_stats
 
-The directory counts. No parameters.
+The directory counts. No parameters. Returns the `data` of [`GET /api/v2/public/agents/stats`](../api/public-agents.md#get-stats).
 
 ## Your identity
 
