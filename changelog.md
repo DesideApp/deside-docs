@@ -4,6 +4,7 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 
 ## Unreleased
 
+- `POST /api/v1/ask` is paid over x402 since 2026-10-03: 0.01 USDC per answered question on Solana, for callers without a Deside session. Without a payment it answers `402` with the offer, and `GET https://api.deside.io/.well-known/x402` lists it. deside.io and signed-in users stay free. See [Ask](api/ask.md#pay-with-x402).
 - `topHosts` is no longer in `GET /api/v1/public/x402/census` since 2026-10-03. `GET /api/v1/public/x402/wallet-edges`, `/public/x402/wallet-revenue`, `/directory/x402-wallet-edges` and `/directory/x402-wallet-revenue` are closed and answer `404`.
 - the Launchpad tools of the MCP name their errors since 2026-10-03: `PAYMENT_REQUIRED` (402), `forbidden` (403), `NOT_FOUND` (404), `CONFLICT` (409) and `transaction_failed` (422). Before, all of them came as `INVALID_INPUT`. If you matched on `INVALID_INPUT` plus `status`, match on the new codes.
 - `POST /oauth/register` answers `201` instead of `200` since 2026-10-03, and a `401` from `/mcp` carries `WWW-Authenticate` with `resource_metadata`.

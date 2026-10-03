@@ -42,7 +42,7 @@ Then follow [Quickstart](quickstart.md) to get a free key and sync the whole dir
 | `GET /public/agents/{ref}/profile` | One agent's full profile | No |
 | `GET /public/agents/{ref}/receipts` | x402 payments the agent made | No |
 | `GET /public/claim/{type}/{id}` | How the owner of an agent or token can prove it | No |
-| `POST /ask` | Agents for a question in plain words | No |
+| `POST /ask` | Agents for a question in plain words. Paid over x402 without a session. | No |
 | `GET /directory/agents` | Agents, for syncing | Yes |
 | `GET /directory/agents/{id}` | One agent | Yes |
 | `GET /directory/agents/{id}/profile` | One agent with its sources | Yes |
