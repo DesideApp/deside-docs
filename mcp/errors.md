@@ -52,10 +52,9 @@ These come as an HTTP response on `/mcp`, before any tool runs:
 |---|---|
 | Launchpad, per wallet | 60 requests and 2 launches a minute |
 | Launchpad, whole | 600 requests and 30 launches a minute |
-| `ask_directory` | 10 questions a minute |
 | `/oauth/register` | 30 a minute per IP |
 | Other `/oauth/*` | 60 a minute per IP |
 | Sign link | 2 minutes, once |
 | Prepared transaction | About 60 seconds |
 
-<!-- REVISAR(modificar): el limite de Ask se cuenta por IP + carril (askRateLimit.js:42). Llamado desde el MCP, el backend ve la IP del servidor del MCP: es probable que todos los usuarios del MCP compartan 10/min. La nota de cierre de token dice "10/min por persona": probablemente falso. -->
+<!-- REVISAR(modificar): CONFIRMADO por estrategia (03-10): el MCP llama al backend por la red interna sin X-Forwarded-For, asi que todas las llamadas de ask_directory comparten la ventana de Ask del contenedor (3/min sin cookie). Defecto pasado a Constructor. No se promete limite por usuario; cuando se arregle, volver a poner la fila. -->

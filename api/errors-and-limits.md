@@ -11,7 +11,8 @@
 | `/ask` | 10 a minute signed in on deside.io, 3 otherwise | IP |
 | Directory routes, free plan | 5,000 a month and 30 a minute | Key and project |
 
-<!-- REVISAR(modificar): los numeros del plan Free son los defectos del codigo (tierLimits.js); no se pudieron leer en el entorno de prod. Confirmar con una peticion con clave. -->
+<!-- Verificado por estrategia en el entorno de prod (03-10): Free 5000/mes puesto por env, 30/min por defecto del codigo; tope diario 500 por defecto. -->
+<!-- REVISAR(modificar): DIRECTORY_API_SUBS_ENABLED=true en prod (estrategia, 03-10): el plan Developer de pago podria contratarse ya. Los docs solo nombran Free (firmado: "gratis con clave", nunca "de pago"). Decision del owner: apagar SUBS o documentar Developer. -->
 <!-- REVISAR(modificar): el tope diario de 500 no manda cabeceras y vive en memoria (se reinicia con cada despliegue). -->
 
 ### Headers
