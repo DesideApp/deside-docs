@@ -28,7 +28,7 @@ Every filter is in [Public agents](public-agents.md#parameters).
 
 ## Read the next page
 
-Add `skip`. The list stops at 500 rows deep: narrow the filters to reach the rest.
+Add `skip`. **`skip` goes up to 500**: narrow the filters to reach the rest.
 
 ```bash
 curl "https://api.deside.io/api/v2/public/agents?limit=100&skip=100"
@@ -44,7 +44,7 @@ curl "https://api.deside.io/api/v2/public/agents/blinkcodes/profile"
 
 ## What you just did
 
-You listed, filtered and paged the Agent Directory and read one full profile, with no key. Each IP has 30 list requests a minute, 60 single reads a minute and 500 a day.
+You listed, filtered and paged the Agent Directory and read one full profile, with no key. Each IP has 30 list requests a minute, 60 single reads a minute and 500 a day, within 500 requests per 15 minutes for the whole API.
 
 ## Next steps
 

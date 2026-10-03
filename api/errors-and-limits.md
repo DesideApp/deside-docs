@@ -8,7 +8,9 @@
 | Lists: `/v2/public/agents`, `/public/x402/tools`, `/public/x402/indices` | 30 a minute | IP |
 | Public single reads and counts | 60 a minute | IP |
 | Each public family, agents and x402 | 500 a day | IP |
-| `/ask` | 10 a minute signed in, by account. Others pay per question, 3 offers a minute. See [Ask](ask.md#limits). | Account or IP |
+| `/ask` | 10 a minute signed in with a wallet, by account. Others pay per question, 3 requests a minute. See [Ask](ask.md#limits). | Account or IP |
+
+Over the 15-minute limit, the `429` body is plain text, not JSON.
 
 ### Headers
 
@@ -52,7 +54,7 @@ Each family of routes answers errors in its own shape.
 
 | Status | `error` | What to do |
 |---|---|---|
-| 400 | `INVALID_QUESTION` | Send `question` with 3 to 500 characters. |
+| 400 | `INVALID_QUESTION` | Send `question` with 3 to 500 characters. `nextStep` says the rule. |
 | 429 | `rate_limited` | Wait `retryAfterSec`. |
 
 The payment errors (`402`, `409`, `503`) are on the [Ask](ask.md#errors) page.

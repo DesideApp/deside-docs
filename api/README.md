@@ -35,7 +35,7 @@ Then follow [Quickstart](quickstart.md) to filter, page and read one agent.
 | `GET /api/v2/public/agents/{ref}` | One agent |
 | `GET /api/v2/public/agents/{ref}/profile` | One agent's full profile |
 | `GET /api/v1/public/claim/{type}/{id}` | How the owner of an agent or token can prove it |
-| `POST /api/v1/ask` | Agents for a question in plain words. Paid over x402 without a session. |
+| `POST /api/v1/ask` | Agents for a question in plain words. Paid over x402 unless you are signed in with a wallet. |
 | `GET /api/v1/public/x402/tools` | x402 tools with their last check |
 | `GET /api/v1/public/x402/tools/{slug}` | One x402 tool |
 | `GET /api/v1/public/x402/census` | x402 Tool Directory counts |
@@ -48,7 +48,7 @@ All paths start with `https://api.deside.io`.
 | What | Value |
 |---|---|
 | Base URL | `https://api.deside.io` |
-| OpenAPI | `https://api.deside.io/openapi.json` |
+| OpenAPI | `https://api.deside.io/openapi.json` (the v1 routes: x402, Ask and claim) |
 | Response format | JSON, field names in English |
 
 ## Next steps

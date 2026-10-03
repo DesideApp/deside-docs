@@ -1,6 +1,6 @@
 # Public agents
 
-These routes read the Agent Directory with no key and no quota. They are limited per IP and stop at 500 rows deep. The base URL is `https://api.deside.io/api/v2/public/agents`.
+These routes read the Agent Directory with no key. They are limited per IP, and `skip` goes up to 500. The base URL is `https://api.deside.io/api/v2/public/agents`.
 
 Every answer comes in `{ "data": ... }`. Every error comes in `{ "error": { "code", "message" } }`.
 
@@ -17,7 +17,7 @@ curl "https://api.deside.io/api/v2/public/agents?limit=1&live=mcp"
 | Name | Type | Default | Description |
 |---|---|---|---|
 | `limit` | integer | 20 | 1 to 100. Out-of-range values are clamped. 24 at most with `sort=featured`. |
-| `skip` | integer | 0 | Rows to skip. 500 at most; 96 with `sort=featured`. Above that: `400`. |
+| `skip` | integer | 0 | Rows to skip. Negative values count as 0. 500 at most; 96 with `sort=featured`. Above that: `400`. |
 | `q` | string | | 2 to 50 characters. Matches the start of the name, the start of the owner wallet, or a full agent wallet, registry entry id or EVM address. Outside 2 to 50 it is ignored. |
 | `name` | string | | Same as `q`. |
 | `skill` | string | | Up to 60 characters. Exact match on a declared skill, lowercase. |
@@ -26,16 +26,16 @@ curl "https://api.deside.io/api/v2/public/agents?limit=1&live=mcp"
 | `live` | string | | Comma list of `mcp`, `a2a`, `x402`. Agents with at least one of these live. |
 | `registry` | string | | `mip14`, `8004solana`, `said`, `sati`, `sap`, `kamiyo` or `erc8004-base`. Aliases: `014`, `mip014`, `8004`, `8004base`, `base`. |
 | `chain` | string | | `solana` or `evm`. Any other value is ignored. |
-| `ownerWallet` | string | | Exact owner wallet, base58. |
-| `agentWallet` | string | | Exact agent wallet, base58. |
+| `ownerWallet` | string | | Exact owner wallet, base58. For an EVM address, use `q`. |
+| `agentWallet` | string | | Exact agent wallet, base58. For an EVM address, use `q`. |
 | `coreAsset` | string | | Exact Metaplex Core asset, base58. |
 | `collection` | string | | Agents carrying a badge of this collection, base58. |
 | `collectionCase` | string | | `A`, `B`, `C` or `D`. |
-| `connected` | boolean | | `true`: the owner proved the agent is theirs. Same fact as `ownerProven` in the response. |
-| `duplicates` | string | | `show` or `hide`. |
+| `connected` | boolean | | `true`: the owner proved the agent is theirs. `false`: not proven. Any other value is ignored. |
+| `duplicates` | string | | `hide` keeps one agent per group of copies; `show` lists every copy. Without it, copies are hidden only when you filter by `q`, `skill`, `category`, `service`, `live` or `registry`. Any other value: `400`. |
 | `sort` | string | | `name` for A to Z. `featured` for a curated selection. Anything else keeps the default order. |
 
-Categories: `trading_bots`, `token_signals`, `token_risk`, `contract_security`, `defi_yield`, `prediction_markets`, `market_data`, `dev_tools`, `research`, `content_marketing`, `agent_infra`, `token_launch`. Agents without a category have `other`, which is not a filter.
+Categories: `trading_bots`, `token_signals`, `token_risk`, `contract_security`, `defi_yield`, `prediction_markets`, `market_data`, `dev_tools`, `research`, `content_marketing`, `agent_infra`, `token_launch`. `other` means the agent was read and fits none; `null` means it has no category yet. Neither is a filter.
 
 ### Response
 
@@ -73,7 +73,7 @@ Categories: `trading_bots`, `token_signals`, `token_risk`, `contract_security`, 
 | `name` | Display name. |
 | `avatar` | `url` and `thumbUrl` (our cached copy), or `null`. |
 | `chain` | `solana` or `evm`. |
-| `category` | One of the categories above, or `other`. |
+| `category` | One of the categories above, `other`, or `null`. |
 | `ownerProven` | `true` when the owner proved the agent is theirs. Shown as connected on deside.io. |
 | `team` | `true` when the account that owns the agent is a Verified team on Deside. `null` when it could not be read, which is not `false`. |
 | `handles` | The agent's `x` and `github` handles, or `null`. |
@@ -86,7 +86,7 @@ Categories: `trading_bots`, `token_signals`, `token_risk`, `contract_security`, 
 
 | Status | `code` | When |
 |---|---|---|
-| 400 | `invalid_request` | A bad `service`, `live`, `registry`, wallet, `collection`, `collectionCase` or `duplicates`, or `skip` above 500. |
+| 400 | `invalid_request` | A bad `service`, `live`, `registry`, `ownerWallet`, `agentWallet`, `coreAsset`, `collection`, `collectionCase` or `duplicates`, or `skip` above 500 (96 with `sort=featured`). |
 | 429 | | More than 30 list requests a minute, or 500 a day, from your IP. Body: `{"error":"RATE_LIMITED"}`. |
 
 ## GET /stats
@@ -143,7 +143,12 @@ An old slug answers `301` to the current one. A slug shared by more than one age
   "data": {
     "id": "bbddcb0c-074f-4874-9c48-3733013db7f7",
     "slug": "blinkcodes",
+    "path": "/agents/blinkcodes",
     "name": "BlinkCodes",
+    "avatar": {
+      "url": "https://pub-9ddd9cb4402f4d04acd1f55113bf4cea.r2.dev/agent-avatar-cache/deside-main/bbddcb0c-074f-4874-9c48-3733013db7f7/a98378f311da123f-profile.webp",
+      "thumbUrl": "https://pub-9ddd9cb4402f4d04acd1f55113bf4cea.r2.dev/agent-avatar-cache/deside-main/bbddcb0c-074f-4874-9c48-3733013db7f7/a98378f311da123f-card.webp"
+    },
     "chain": "evm",
     "category": "other",
     "ownerProven": false,
@@ -151,17 +156,15 @@ An old slug answers `301` to the current one. A slug shared by more than one age
     "handles": { "x": null, "github": null },
     "status": { "state": "responds", "since": null, "probedAt": "2026-10-02T05:15:01.027Z" },
     "liveKinds": ["mcp", "a2a", "x402"],
-    "description": "Digital goods store selling gift card codes, service top-ups and travel eSIMs.",
+    "description": "Digital goods store selling gift card codes, service top-ups and travel eSIMs. Machine-buyable over x402 on Base; read-only catalog over MCP and A2A.",
     "wallets": { "owner": "0x4a2ebedb78028c05772787908ce504f221065954", "agent": null },
     "registries": ["erc8004-base"],
     "sources": [{ "registry": "erc8004-base", "entryId": "63619" }],
-    "ownerScore": null,
     "endpoints": [
-      { "kind": "mcp", "url": "https://blinkcodes.com/mcp", "evidence": "protocol", "version": "2025-06-18", "latencyMs": 4144, "checkedAt": "2026-10-02T05:15:01.027Z" }
+      { "kind": "x402", "url": "https://blinkcodes.com/api/v1/buy", "evidence": "payment-offer", "version": "2", "latencyMs": null, "checkedAt": "2026-10-02T05:15:01.027Z" }
     ],
     "services": [
-      { "kind": "mcp", "url": "https://blinkcodes.com/mcp", "live": true, "checkedAt": "2026-10-02T05:15:01.027Z", "version": "2025-06-18" },
-      { "kind": "web", "url": "https://blinkcodes.com/", "live": false, "checkedAt": null, "version": null }
+      { "kind": "x402", "url": "https://blinkcodes.com/api/v1/buy", "live": true, "checkedAt": "2026-10-02T05:15:01.027Z", "version": "2", "x402": { "state": "live", "tools": 1, "indexes": [{ "url": "https://blinkcodes.com/api/v1/buy", "state": "live", "tools": 1 }] } }
     ],
     "links": { "website": "https://blinkcodes.com/" },
     "skills": [],
@@ -193,7 +196,7 @@ It has the list fields, and these:
 | 400 | `invalid_ref` | `{ref}` empty or longer than 128 characters. |
 | 404 | `not_found` | No agent matches. |
 | 409 | `ambiguous_ref` | The slug matches more than one agent. Use an `id` from `candidates`. |
-| 429 | | More than 60 requests a minute from your IP. |
+| 429 | | More than 60 requests a minute, or 500 a day, from your IP. Body: `{"error":"RATE_LIMITED"}`. |
 
 ## GET /{ref}/profile
 
@@ -208,12 +211,12 @@ It has the fields of [GET /{ref}](#get-ref), and these:
 | Field | Description |
 |---|---|
 | `token` | The agent's token: `status`, `mint`, `name`, `symbol`, `image`, `decimals`, `supply`. `status` is `none` when there is none. |
-| `holdings.owner`, `holdings.agent` | Per wallet: `status`, `wallet`, `refreshedAt`, `totalUsd`, `assetCount`, `assets[]` and `nftCount`. |
+| `holdings.owner`, `holdings.agent` | Per wallet: `status`, `wallet`, `refreshedAt`, `totalUsd`, `assetCount`, `assets[]` and `nftCount`, or `null`. |
 | `onchain` | `identity`, `owner`, `authority`, `agentWallet` and `explorer` link. |
 | `onSolana` | Metaplex agents only: `collection` and `updateAuthority`. Otherwise `null`. |
 | `reputation.owner`, `reputation.agent` | Per wallet: `wallet`, `system`, `score`, `tier`, `badges` and `resolvedAt`, or `null`. |
 | `relations` | Tools, tokens and sites linked to this agent. See [Relations](relations.md). |
-| `claim` | How the owner can prove the agent is theirs. Same as [GET /public/claim](#get-public-claim-type-id). |
+| `claim` | How the owner can prove the agent is theirs: `state` and `vias`, as in [GET /public/claim](#get-public-claim-type-id). |
 | `capabilities`, `domains` | Declared in the registries. |
 | `mcpSessionActive` | `true` when the agent is signed in to the Deside MCP now. |
 
