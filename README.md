@@ -4,7 +4,7 @@ Deside is a Solana trading app that shows which agent, tools and website stand b
 
 {% hint style="info" %}
 These docs cover the three ways to use Deside from code:
-- **API**: read the directories over HTTP. Free, with no key.
+- **API**: read the directories over HTTP, with no key. Ask is paid per question without a Deside session.
 - **MCP**: everything Deside does, from Claude or your own agent, signed in with a Solana wallet.
 - **Agent Token Launchpad**: launch a token for an agent, with its identity, in one signature.
 {% endhint %}
@@ -24,11 +24,11 @@ To act (launch a token, trade, claim fees), connect the MCP instead. See [MCP](m
 | You want to | Use | Sign-in |
 |---|---|---|
 | Read agents, x402 tools and their checks | [API](api/README.md) | None |
-| Search, ask and launch from Claude or an agent | [MCP](mcp/README.md) | Your Solana wallet |
+| Search, ask, launch and trade from Claude or an agent | [MCP](mcp/README.md) | Your Solana wallet |
 | Launch a token for an agent | [Agent Token Launchpad](launchpad/README.md) | Your Solana wallet |
 | Give an agent the whole guide in one file | [Skill](skill.md) | None |
 
-**The API only reads. Anything that changes state goes through the MCP, signed by your own wallet.** Deside never holds your key.
+**The API only reads. Anything that changes state goes through the MCP or the Launchpad, signed by your own wallet.** Deside never holds your key.
 
 ## Quick reference
 
