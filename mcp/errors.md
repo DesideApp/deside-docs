@@ -12,15 +12,16 @@ A tool that fails returns `isError: true` and, in `content[0].text`, a JSON obje
 |---|---|---|---|
 | `AUTH_REQUIRED` | 401 | No valid session. | Sign in again. |
 | `insufficient_scope` | 403 | Your token lacks the scope; `requiredScope` says which. | Sign in again asking for that scope. |
-| `INVALID_INPUT` | 400 or the original | Bad parameters. On launchpad tools, also not found, not the creator, nothing to claim, or a transaction that would fail: the real status is in `status` and the launchpad's answer in `data`. | Read `message` and `data`. |
-| `NOT_FOUND` | 404 | Directory and identity tools: nothing matches. | |
-| `CONFLICT` | 409 | Directory and identity tools: the state does not allow it. | |
+| `INVALID_INPUT` | 400 | Bad parameters. | Read `message`; on launchpad tools, `data` holds the Launchpad's answer. |
+| `PAYMENT_REQUIRED` | 402 | Launchpad: the transaction does not pay its Arweave storage. | Use the transaction the tool returned, unchanged. |
+| `forbidden` | 403 | Launchpad: you are not the creator of the token. | Use the creator wallet. |
+| `NOT_FOUND` | 404 | Nothing matches: no agent, no pool for that mint, or a transaction not found yet. | Check the id; retry a transaction a few seconds later. |
+| `CONFLICT` | 409 | The state does not allow it: nothing to claim, already graduated, not ready to migrate. | |
+| `transaction_failed` | 422 | Launchpad: the transaction is too big, its simulation failed, or it failed on chain. `data` carries `hint` and `logs`. | Prepare it again. |
 | `RATE_LIMIT` | 429 | Directory and identity tools: over the limit. | Wait and retry. |
 | `RATE_LIMITED` | 429 | Launchpad tools: over the limit. | Wait and retry. |
 | `launchpad_unavailable` | 503 | The Launchpad is down or busy. | Retry later. |
 | `UNKNOWN` | 500 or the original | Anything else. | Retry later. |
-
-<!-- REVISAR(modificar): token lo arregla (03-10): 404 NOT_FOUND, 403 forbidden, 409 CONFLICT, 402 PAYMENT_REQUIRED, 422 transaction_failed; rehacer la tabla al desplegar. Antes: los 402/403/404/409/422 del launchpad salen todos como INVALID_INPUT; no encontrado, no eres el creador o nada que cobrar no son errores de entrada. Token. -->
 
 ## Session errors
 

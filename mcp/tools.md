@@ -46,13 +46,12 @@ Finds agents in the Agent Directory.
 | `chain` | string | No | `solana` or `evm`. |
 | `service` | string | No | `web`, `mcp`, `a2a`, `x402`, `api` or `contact`. |
 | `capability` | string | No | `trading`, `payments`, `analytics`, `defi`, `content`, `mcp_server`, `a2a_task_receiver`, `x402_acceptor` or `identity`. |
-| `limit` | number | No | 1 to 50. Default 10. |
-| `offset` | number | No | Default 0. |
+| `limit` | integer | No | 1 to 50. Default 10. |
+| `offset` | integer | No | Default 0. |
 
 Returns `{agents, total, hasMore}`. Each agent has `wallet`, `name`, `description`, `avatar`, `category`, `website`, `createdAt`, `updatedAt` and, when known, `catalogId`, `slug`, `ownerWallet`, `agentWallet`, `primarySource`, `primarySourceEntryId`, `sourceEntries`, `registryPresence`.
 
 <!-- REVISAR(borrar): search_agents tambien devuelve agentId, canonicalPath, mergeEvidence, backedByUser y backingUserWallet (agent-directory-mapper.js:23-91): duplicados, interno y mensajeria. -->
-<!-- REVISAR(modificar): token lo arregla (03-10): limit y offset seran enteros. Hoy aceptan cualquier numero; 2.5 llega como "2.5" al backend (search-agents.js:15-19). -->
 
 ### agent_trust_card
 
@@ -134,12 +133,10 @@ Prepares a token launch, with or without the agent's identity.
 | `token.symbol` | string | Yes | 1 to 10 characters. |
 | `token.description` | string | No | Up to 500. |
 | `token.image` | URL | No | Up to 300 characters. |
-| `token.imageBase64` | string | No | PNG, JPG, WebP or GIF, up to about 700 KB through the MCP. Over REST, up to 1 MB. |
+| `token.imageBase64` | string | No | PNG, JPG, WebP or GIF, up to 950,000 characters of base64 (about 700 KB) through the MCP. Over REST, up to 1 MB. |
 | `token.website`, `token.x`, `token.telegram` | URL | No | Up to 200 characters each. |
 | `registerAgentIdentity` | boolean | No | `true` to create the identity in the same signature. |
 | `agent` | object | No | `name` (up to 64), `description` (up to 1,000), `image`, `active`, `x402Support`, `supportedTrust` (`reputation`, `crypto-economic`, `tee-attestation`), and up to 40 `services` with `name`, `endpoint`, `version`. |
-
-<!-- REVISAR(modificar): token lo arregla (03-10): el tope del esquema baja; por el MCP el logo llega hasta unos 700 KB, por REST hasta 1 MB. Poner la cifra en la tabla al desplegar. -->
 
 Returns `mint`, `pool`, `agentAsset` (or `null`), `creator`, `files`, `cost` (`arweaveSol`, `estimatedTotalSol`), `transaction` (base64, unsigned by you), `bytes`, `simulation`, `expiresInSeconds: 60`, `next` and `disclaimer`. When `simulation.ok` is `true` it also returns `signUrl` and `signUrlExpiresAt`. When it is `false`, `error`, `hint` and the last `logs` say why.
 

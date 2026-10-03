@@ -4,6 +4,10 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 
 ## Unreleased
 
+- the Launchpad tools of the MCP name their errors since 2026-10-03: `PAYMENT_REQUIRED` (402), `forbidden` (403), `NOT_FOUND` (404), `CONFLICT` (409) and `transaction_failed` (422). Before, all of them came as `INVALID_INPUT`. If you matched on `INVALID_INPUT` plus `status`, match on the new codes.
+- `POST /oauth/register` answers `201` instead of `200` since 2026-10-03, and a `401` from `/mcp` carries `WWW-Authenticate` with `resource_metadata`.
+- `search_agents` takes only integers in `limit` and `offset` since 2026-10-03. `launch_token` over the MCP takes `imageBase64` up to 950,000 characters.
+- the protected resource metadata of the MCP names it `deside` since 2026-10-03, instead of `deside-dm`.
 - the docs are organized in six parts since 2026-10-02: Start, Agent Token Launchpad, API, MCP, Skill and Changelog. The old pages of Agent Identity, Directory API and x402 Tool Directory are now under API and Start; old links redirect.
 - one Deside MCP since 2026-10-02: the Launchpad tools moved to `https://mcp.deside.io/mcp`, where you sign in with your Solana wallet and the tools use that wallet. `https://launchpad.deside.io/mcp` answers `410` with the new address. Connect to `mcp.deside.io` instead. The REST routes of the Launchpad do not change.
 - `list_my_launches` is `list_launches` since 2026-10-02. On the MCP, `wallet` is optional and defaults to your session wallet. Call the new name.

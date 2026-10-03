@@ -28,9 +28,7 @@ curl -X POST https://mcp.deside.io/oauth/register \
 | `token_endpoint_auth_method` | No | Only `none`: clients are public. |
 | `scope` | No | Space-separated. Default `deside:read deside:write`. |
 
-The response carries your `client_id`.
-
-<!-- REVISAR(modificar): token lo arregla (03-10): el registro pasara a 201. Hoy responde 200. -->
+The response is `201` and carries your `client_id`.
 
 ## Authorize
 
@@ -120,4 +118,4 @@ The code is valid for 60 seconds and once. The access token lasts 45 minutes; th
 | Other `/oauth/*` | 60 a minute per IP |
 | Request body | 64 KB on `/oauth/*`, 1 MB on `/mcp` |
 
-<!-- REVISAR(modificar): token lo arregla (03-10): WWW-Authenticate con resource_metadata. Hoy el 401 de /mcp no lleva cabecera WWW-Authenticate, que la especificacion de autorizacion de MCP espera (confirmado en prod). Token. -->
+A request to `/mcp` without a valid token answers `401` with `WWW-Authenticate: Bearer resource_metadata="https://mcp.deside.io/.well-known/oauth-protected-resource/mcp"`, so an MCP client can find the sign-in on its own.
