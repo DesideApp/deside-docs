@@ -1,13 +1,15 @@
 # Public agents
 
-These routes read the Agent Directory with no key. They are limited per IP and stop at 500 rows deep. To keep a full copy in sync, use [Directory agents](directory-agents.md).
+These routes read the Agent Directory with no key and no quota. They are limited per IP and stop at 500 rows deep. The base URL is `https://api.deside.io/api/v2/public/agents`.
 
-## GET /public/agents
+Every answer comes in `{ "data": ... }`. Every error comes in `{ "error": { "code", "message" } }`.
+
+## GET /
 
 Returns agents in the directory, filtered and paged.
 
 ```bash
-curl "https://api.deside.io/api/v1/public/agents?limit=1&service=mcp"
+curl "https://api.deside.io/api/v2/public/agents?limit=1&live=mcp"
 ```
 
 ### Parameters
@@ -30,7 +32,6 @@ curl "https://api.deside.io/api/v1/public/agents?limit=1&service=mcp"
 | `collection` | string | | Agents carrying a badge of this collection, base58. |
 | `collectionCase` | string | | `A`, `B`, `C` or `D`. |
 | `connected` | boolean | | `true`: the owner proved the agent is theirs. Same fact as `ownerProven` in the response. |
-| `verified` | boolean | | Filters by the retired Verified badge. Always matches nothing today. |
 | `duplicates` | string | | `show` or `hide`. |
 | `sort` | string | | `name` for A to Z. `featured` for a curated selection. Anything else keeps the default order. |
 
@@ -40,253 +41,179 @@ Categories: `trading_bots`, `token_signals`, `token_risk`, `contract_security`, 
 
 ```json
 {
-  "items": [
+  "data": [
     {
-      "catalogId": "bbddcb0c-074f-4874-9c48-3733013db7f7",
+      "id": "bbddcb0c-074f-4874-9c48-3733013db7f7",
       "slug": "blinkcodes",
-      "canonicalPath": "/agents/blinkcodes",
+      "path": "/agents/blinkcodes",
       "name": "BlinkCodes",
+      "avatar": {
+        "url": "https://blinkcodes.com/web-app-manifest-512x512.png",
+        "thumbUrl": "https://pub-9ddd9cb4402f4d04acd1f55113bf4cea.r2.dev/agent-avatar-cache/.../card.webp"
+      },
       "chain": "evm",
-      "avatarThumbUrl": "https://pub-9ddd9cb4402f4d04acd1f55113bf4cea.r2.dev/agent-avatar-cache/.../card.webp",
-      "avatarOriginalUrl": "https://blinkcodes.com/web-app-manifest-512x512.png",
-      "avatar": "https://blinkcodes.com/web-app-manifest-512x512.png",
-      "mcpSessionActive": false,
-      "ownerProven": false,
       "category": "other",
-      "services": [
-        { "kind": "mcp", "checked": true },
-        { "kind": "a2a", "checked": true },
-        { "kind": "x402", "checked": true },
-        { "kind": "web", "checked": false }
-      ],
-      "curationPublic": { "verified": false, "state": "responds" }
+      "ownerProven": false,
+      "status": "responds",
+      "liveKinds": ["mcp", "a2a", "x402"]
     }
   ],
-  "total": 109385,
-  "limit": 1,
-  "skip": 0,
-  "hasMore": true,
-  "liveFacets": { "mcp": 766, "a2a": 33, "x402": 31 }
+  "page": { "total": 109734, "limit": 1, "skip": 0, "hasMore": true },
+  "facets": { "live": { "mcp": 766, "a2a": 33, "x402": 31 } }
 }
 ```
 
 | Field | Description |
 |---|---|
-| `catalogId` | Stable id of the agent in Deside. |
+| `id` | Stable id of the agent in Deside. |
 | `slug` | Short name, used in URLs. |
-| `canonicalPath` | The agent's page on deside.io. |
+| `path` | The agent's page on deside.io. |
 | `name` | Display name. |
+| `avatar` | `url` and `thumbUrl` (our cached copy), or `null`. |
 | `chain` | `solana` or `evm`. |
-| `avatarThumbUrl` | Our cached copy of the avatar, or `null`. |
-| `avatarOriginalUrl` | The avatar URL the registry gives. |
-| `avatar` | Same as `avatarOriginalUrl`. |
-| `mcpSessionActive` | The agent has a session open with the Deside MCP. |
-| `wallet` | Only when `mcpSessionActive` is `true`. |
-| `ownerProven` | The owner proved, by signing, that the agent is theirs. See [Checks](../start/checks.md). |
-| `category` | One of the 12 categories, or `other`. |
-| `services[].kind` | A service the agent declares: `web`, `mcp`, `a2a`, `x402`, `api` or `contact`. |
-| `services[].checked` | `true` when our last check of that service passed. |
-| `curationPublic.state` | `responds`, `profile` or `registered`. See [Checks](../start/checks.md). |
-| `curationPublic.verified` | Always `false`. |
-| `total` | Agents matching the filters. |
-| `hasMore` | `true` when `skip + items` is below `total`. |
-| `liveFacets` | How many matching agents are live on each protocol. Present when the counts are available. |
+| `category` | One of the categories above, or `other`. |
+| `ownerProven` | `true` when the owner proved the agent is theirs. Shown as connected on deside.io. |
+| `status` | The state from our checks. See [Checks](../start/checks.md). |
+| `liveKinds` | Protocols that answered our last check: `mcp`, `a2a`, `x402`. |
+| `page.total` | Agents that match the filters. |
+| `facets.live` | How many agents would match with each `live` value added to the other filters. `null` when it could not be counted. |
 
 ### Errors
 
-| Status | Body | When |
+| Status | `code` | When |
 |---|---|---|
-| 400 | `{"error":"invalid_request"}` | A bad `service`, `live`, `registry`, wallet, `collection`, `collectionCase` or `duplicates`, or `skip` above 500. |
-| 429 | `{"error":"RATE_LIMITED"}` | More than 30 list requests a minute, or 500 a day, from your IP. |
+| 400 | `invalid_request` | A bad `service`, `live`, `registry`, wallet, `collection`, `collectionCase` or `duplicates`, or `skip` above 500. |
+| 429 | | More than 30 list requests a minute, or 500 a day, from your IP. Body: `{"error":"RATE_LIMITED"}`. |
 
-## GET /public/agents/stats-summary
+## GET /stats
 
-Returns the directory counts from the last nightly measure. No parameters.
+Returns the directory counts.
 
 ```bash
-curl "https://api.deside.io/api/v1/public/agents/stats-summary"
+curl "https://api.deside.io/api/v2/public/agents/stats"
 ```
 
 ```json
 {
-  "listed": 109385,
-  "indexed": 109385,
-  "byChain": { "solana": 15168, "evm": 94217 },
-  "connected": 1,
-  "byCategory": { "trading_bots": 347, "token_risk": 88, "other": 2625 },
-  "byCategoryByChain": { "solana": { "trading_bots": 29 }, "evm": { "trading_bots": 318 } },
-  "respondingAgents": 948,
-  "respondingByKind": { "mcp": 799, "a2a": 148, "x402": 37 },
-  "endpoints": {
-    "mcp": { "declared": 1525, "checked": 1450, "alive": 209 },
-    "a2a": { "declared": 3337, "checked": 3227, "alive": 243 },
-    "x402": { "declared": 305, "checked": 91, "alive": 26 }
-  },
-  "topSkills": [{ "label": "comment", "n": 755 }],
-  "signalCounts": { "mcp": 4286, "a2a": 26773, "x402": 445, "web": 28197, "x": 5925 },
-  "measuredAt": "2026-10-02T05:15:01.027Z"
+  "data": {
+    "listed": 109734,
+    "byChain": { "evm": 94519, "solana": 15215 },
+    "byCategory": { "trading_bots": 346, "market_data": 518, "other": 2625 },
+    "byCategoryByChain": { "evm": { "trading_bots": 317 }, "solana": { "trading_bots": 29 } },
+    "respondingAgents": 948,
+    "respondingByKind": { "mcp": 799, "a2a": 148, "x402": 37 },
+    "connected": 1,
+    "endpoints": {
+      "mcp": { "declared": 1525, "checked": 1449, "alive": 209 },
+      "a2a": { "declared": 3337, "checked": 3226, "alive": 242 },
+      "x402": { "declared": 307, "checked": 91, "alive": 26 }
+    },
+    "measuredAt": "2026-10-03T05:15:00.947Z"
+  }
 }
 ```
 
 | Field | Description |
 |---|---|
 | `listed` | Agents in the directory. |
-| `indexed` | Same as `listed`. |
-| `byChain` | `listed`, by chain. |
+| `byChain` | `listed` by chain. |
+| `byCategory`, `byCategoryByChain` | Agents with a category, by category and by chain. |
+| `respondingAgents` | Agents with at least one protocol that answered our last check. |
+| `respondingByKind` | The same, by protocol. An agent with two protocols counts in both. |
 | `connected` | Agents whose owner proved they are theirs. |
-| `byCategory` | Agents per category. |
-| `byCategoryByChain` | Agents per category, by chain. |
-| `respondingAgents` | Agents with at least one endpoint live. |
-| `respondingByKind` | Agents live, per protocol. |
-| `endpoints.<kind>` | Endpoint URLs per protocol: declared by some agent, checked by us, and live in the last check. One URL can be declared by many agents. |
-| `topSkills` | The 12 most declared skills. |
-| `signalCounts` | Agents that declare each kind of service or an X account. |
+| `endpoints` | By protocol: endpoints `declared` by agents, `checked` by us, and `alive` at the last check. |
 | `measuredAt` | When the counts were measured. |
 
-## GET /public/agents/{ref}
+## GET /{ref}
 
-Returns one agent. `{ref}` can be a `catalogId`, a slug, an old slug, a registry entry id, a mint, or a wallet.
+Returns one agent. `{ref}` is the `id` or the `slug`.
 
 ```bash
-curl "https://api.deside.io/api/v1/public/agents/blinkcodes"
+curl "https://api.deside.io/api/v2/public/agents/blinkcodes"
 ```
 
-- An exact match returns `200` with `{"item": {...}}`.
-- An old slug, an on-chain id or a wallet with one agent returns `301` to `/public/agents/{slug}`.
-- A wallet with several agents returns `200` with `{"disambiguation": true, "items": [...]}`, up to 25, in the list shape.
+An old slug answers `301` to the current one. A slug shared by more than one agent answers `409` with `candidates[]`, in the list shape.
 
-### Response fields
+```json
+{
+  "data": {
+    "id": "bbddcb0c-074f-4874-9c48-3733013db7f7",
+    "slug": "blinkcodes",
+    "name": "BlinkCodes",
+    "chain": "evm",
+    "category": "other",
+    "ownerProven": false,
+    "status": { "state": "responds", "since": null, "probedAt": "2026-10-02T05:15:01.027Z" },
+    "liveKinds": ["mcp", "a2a", "x402"],
+    "description": "Digital goods store selling gift card codes, service top-ups and travel eSIMs.",
+    "wallets": { "owner": "0x4a2ebedb78028c05772787908ce504f221065954", "agent": null },
+    "registries": ["erc8004-base"],
+    "sources": [{ "registry": "erc8004-base", "entryId": "63619" }],
+    "ownerScore": null,
+    "endpoints": [
+      { "kind": "mcp", "url": "https://blinkcodes.com/mcp", "evidence": "protocol", "version": "2025-06-18", "latencyMs": 4144, "checkedAt": "2026-10-02T05:15:01.027Z" }
+    ],
+    "services": [
+      { "kind": "mcp", "url": "https://blinkcodes.com/mcp", "live": true, "checkedAt": "2026-10-02T05:15:01.027Z", "version": "2025-06-18" },
+      { "kind": "web", "url": "https://blinkcodes.com/", "live": false, "checkedAt": null, "version": null }
+    ],
+    "links": { "website": "https://blinkcodes.com/" },
+    "skills": [],
+    "updatedAt": "2026-10-03T12:08:19.254Z"
+  }
+}
+```
 
-| Field | Description |
-|---|---|
-| `catalogId`, `slug`, `name`, `description`, `chain`, `category` | As in the list. |
-| `agentId` | Same as `catalogId`. |
-| `ownerWallet` | The wallet that owns the registry entry. |
-| `agentWallet` | The agent's own wallet, when the registry gives one. |
-| `wallet` | The wallet of the agent's Deside account. |
-| `primarySource` | The main registry. |
-| `primarySourceEntryId` | The agent's id in that registry. |
-| `sourceEntries[]` | Every registry entry merged into this agent: `source` and `sourceEntryId`. |
-| `registryPresence` | `registries`: every registry that lists the agent; `primarySource`: the main one. |
-| `avatarThumbUrl`, `avatarProfileUrl` | Our cached copies of the avatar, small and large. |
-| `avatarOriginalUrl`, `avatar` | The registry's avatar URL. |
-| `website` | The declared website. |
-| `socialLinks` | Declared links: `website`, `x`, `github`, each with `url` and `handle`. |
-| `services[]` | Each declared service, with what we checked. See below. |
-| `serviceSignals[]` | The kinds of service declared. |
-| `channels[]` | Same as `services[]`, shorter. |
-| `x402State` | |
-| `capabilities[]` | Declarations per registry: `kind`, `label`, `source`, `endpoint`. |
-| `skills[]` | Declared skills. |
-| `skillRepertoire` | Skills with the source of each. |
-| `collectionBadges[]` | Collections the agent belongs to: `case` and `address`. |
-| `ownerProven` | See the list. |
-| `mcpSessionActive` | See the list. |
-| `curationPublic` | Our checks. See below. |
-| `receipts.payer` | x402 payments the agent made: `calls`, `totalUsdc`, `lastAt`. |
-| `serviceDesc`, `ownerOverlay` | Always `null`. |
-| `ownerScore` | Always `null`. |
-| `mergeEvidence` | |
-| `isVisible` | |
-| `lastActiveAt` | |
-| `canonicalPath` | |
-| `createdAt`, `updatedAt` | When the agent entered the directory and last changed. |
-
-#### services[]
+It has the list fields, and these:
 
 | Field | Description |
 |---|---|
-| `kind` | `web`, `mcp`, `a2a`, `x402`, `api` or `contact`. |
-| `url` | The declared URL. |
-| `declared` | `true`: the agent declares it. |
-| `checked` | `true`: our last check passed. |
-| `checkedAt` | When we last checked it. |
-| `version` | The protocol version the endpoint answered with. |
-| `source` | Where the URL came from. Today always `registry`. |
-| `x402Probe` | x402 only. Our last call: `verdict`, `at`, `reason`, `network`, `x402Version`. |
-| `x402Content` | x402 only. The tools behind this URL: `state`, `tools`, `quotesPrice`, `respondsNoPrice`, `down`, `notChecked`. |
-| `indexes[]` | x402 only. Indexes at this URL: `url`, `toolCount`, `state`. |
-| `toolsHref` | x402 only. The page that lists these tools on deside.io. |
-
-#### curationPublic
-
-| Field | Description |
-|---|---|
-| `state` | `responds`, `profile` or `registered`. See [Checks](../start/checks.md). |
-| `probedAt` | When we last checked the agent. |
-| `liveEndpoints[]` | Endpoints live in the last check: `kind`, `url`, `lastCheckedAt`, `latencyMs`, `version`, `evidence`. |
-| `registryStatus` | When a registry stopped listing the agent: `missingSources[]` and `missingSince`. |
-| `protocol` | `mcp` or `mcp-auth`. |
-| `agenticPayments` | |
-| `v` | |
-| `stateSince` | |
-| `operatorGroup` | |
-| `humanPayment`, `priceUsd`, `latencyMs` | Always `null` today. |
-| `verified`, `verifiedCheck`, `verifiedCheckedAt`, `verifiedFailed` | Always `false`, `null`, `null`, `[]`. |
+| `status` | `state`, `since` (when it entered that state) and `probedAt` (our last check). |
+| `description` | What the agent says it does. |
+| `wallets` | `owner` and `agent` wallets, or `null`. |
+| `registries` | Registries that list the agent. See [Sources](sources.md). |
+| `sources` | Each registry entry: `registry` and its `entryId`. |
+| `ownerScore` | The owner wallet's score: `system`, `score`, `tier`. Only when two registries list the agent; otherwise `null`. |
+| `endpoints[]` | Endpoints that answered our check: `kind`, `url`, `evidence`, `version`, `latencyMs`, `checkedAt`. |
+| `services[]` | Everything the agent declares: `kind`, `url`, `live`, `checkedAt`, `version`. An x402 service also has `x402` with `state`, `tools` and `indexes[]`. |
+| `links` | Declared links, by name. |
+| `skills` | Declared skills. |
+| `updatedAt` | When the entry last changed. |
 
 ### Errors
 
-| Status | Body | When |
+| Status | `code` | When |
 |---|---|---|
-| 400 | `{"error":"invalid_payload","code":"invalid_catalog_id"}` | `{ref}` longer than 128 characters. |
-| 404 | `{"error":"not_found"}` | No agent matches. |
-| 429 | `{"error":"RATE_LIMITED"}` | More than 60 requests a minute from your IP. |
+| 400 | `invalid_ref` | `{ref}` empty or longer than 128 characters. |
+| 404 | `not_found` | No agent matches. |
+| 409 | `ambiguous_ref` | The slug matches more than one agent. Use an `id` from `candidates`. |
+| 429 | | More than 60 requests a minute from your IP. |
 
-## GET /public/agents/{ref}/profile
+## GET /{ref}/profile
 
-Returns everything the agent page on deside.io shows: the agent, its registry data, its relations and how its owner can claim it. Same `{ref}`, redirects and errors as above.
+Returns everything the agent page on deside.io shows: the agent, and what we read about it on-chain. Same `{ref}`, redirects and errors as above. An old slug keeps `/profile` in the redirect.
 
 ```bash
-curl "https://api.deside.io/api/v1/public/agents/blinkcodes/profile"
+curl "https://api.deside.io/api/v2/public/agents/blinkcodes/profile"
 ```
+
+It has the fields of [GET /{ref}](#get-ref), and these:
 
 | Field | Description |
 |---|---|
-| `visibleProfile` | Name, avatar, description and source the page shows. |
-| `agentProfile.resolved` | Everything read from the registries. |
-| `agentProfile.resolved.resolvedAt` | When we last read them. |
-| `agentProfile.resolved.overview` | The registry data, by topic: `onchainDetails`, `agentToken`, `holdings`, `declaredAgentWallets`, `socialLinks`, `serviceDeclarations`, `skills`, `domains`, `capabilities`, `reputationBySource`, `registryPresence`. |
-| `agentProfile.resolved.raws` | The raw entry of each registry, as the registry serves it. |
-| `agentProfile.resolved.rawSourceData` | |
-| `agentProfile.resolved.visibleProfile`, `displayName`, `displayAvatar`, `description`, `source` | |
-| `agentProfile.resolved.overview.visualIdentity` | |
-| `agentProfile.resolved.overview.serviceInterfaces` | |
-| `agentProfile.resolved.overview.onchainDetails.legacy` | |
-| `agentProfile.resolved.overview.statusTrustPayments` | |
-| `agentProfile.resolved.overview.agentToken.coverage`, `evidence[].rawPath`, `declaredAgentWallets[].path`, `holdings.*.provider`, `holdings.*.nextRefreshAt` | |
-| `agentProfile.identity` | The on-chain identity: `source`, `coreAsset`, `mintAddress`, `pda`. |
-| `agentProfile.identity.passport` | |
-| `agentProfile.identity.protocol`, `agentProfile.identity.name/description/image/services` | |
-| `agentProfile.identity.verifiedAt` | When the registry entry was read. |
-| `agentProfile.identity.reputation` | |
-| `agentProfile.curationPublic` | As in the single agent. |
-| `agentProfile.tickets` | Our last check per protocol, with what it saw. |
-| `services`, `capabilities`, `category`, `collectionBadges`, `ownerProven`, `mcpSessionActive` | As in the single agent. |
-| `relations` | Tools, tokens and sites linked to this agent, and how: `total` and `items[]` with `kind`, `id`, `step`, `vias[]`, `card`. |
+| `token` | The agent's token: `status`, `mint`, `name`, `symbol`, `image`, `decimals`, `supply`. `status` is `none` when there is none. |
+| `holdings.owner`, `holdings.agent` | Per wallet: `status`, `wallet`, `refreshedAt`, `totalUsd`, `assetCount`, `assets[]` and `nftCount`. |
+| `onchain` | `identity`, `owner`, `authority`, `agentWallet` and `explorer` link. |
+| `onSolana` | Metaplex agents only: `collection` and `updateAuthority`. Otherwise `null`. |
+| `reputation.owner`, `reputation.agent` | Per wallet: `wallet`, `system`, `score`, `tier`, `badges` and `resolvedAt`, or `null`. |
+| `relations` | Tools, tokens and sites linked to this agent. See [Relations](relations.md). |
 | `claim` | How the owner can prove the agent is theirs. Same as [GET /public/claim](#get-public-claim-type-id). |
-| `onSolana` | Metaplex agents only: collection, update authority, delegate, frozen. |
-| `identity` | `slug` and `canonicalPath`. |
-| `identity.mergeEvidence` | |
-| `ownerOverlay` | |
-| `authenticated`, `registered`, `pubkey`, `role`, `userProfile`, `social`, `contactWallet`, `wallet` | |
-| `agentProfile.walletReputation` | |
-
-## GET /public/agents/{ref}/receipts
-
-Returns the x402 payments the agent made, newest first.
-
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `limit` | integer | 20 | 1 to 100, clamped. |
-| `skip` | integer | 0 | 0 to 5,000, clamped. |
-
-```json
-{ "items": [], "total": 0, "limit": 2, "skip": 0, "hasMore": false }
-```
-
-Each item: `txSignature`, `amountUsdc`, `settledAt`.
+| `capabilities`, `domains` | Declared in the registries. |
+| `mcpSessionActive` | `true` when the agent is signed in to the Deside MCP now. |
 
 ## GET /public/claim/{type}/{id}
+
+This route is under v1: `https://api.deside.io/api/v1/public/claim/...`.
 
 Returns how the owner of an agent or a token can prove it is theirs.
 

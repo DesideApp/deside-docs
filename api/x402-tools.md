@@ -17,7 +17,7 @@ curl "https://api.deside.io/api/v1/public/x402/tools?limit=1&network=eip155:8453
 | `bazaar` | string | | Exact catalog: `payai`, `cdp`, `dexter`, `thirdweb` or `openfac` (OpenFacilitator). |
 | `payTo` | string | | Exact receiving wallet. |
 | `network` | string | | Exact network, such as `eip155:8453` or `solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp`. |
-| `agent` | string | | An agent's `catalogId` or slug: its tools. The response adds an `agent` key. |
+| `agent` | string | | An agent's `id` or slug: its tools. The response adds an `agent` key. |
 | `index` | string | | An index URL, up to 2,048 characters: the tools it lists. Cannot be combined with `agent`. |
 | `indice` | string | | Same as `index`. |
 | `live` | string | | Only `1`: tools whose last check got an answer. |

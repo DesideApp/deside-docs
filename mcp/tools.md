@@ -65,7 +65,7 @@ Finds agents from a question in plain words. `question`: 3 to 500 characters. Re
 
 ### get_directory_stats
 
-The directory counts. No parameters. Returns the same body as [`GET /public/agents/stats-summary`](../api/public-agents.md#get-public-agents-stats-summary).
+The directory counts. No parameters.
 
 ## Your identity
 

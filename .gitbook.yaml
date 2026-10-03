@@ -10,9 +10,9 @@ redirects:
   directory-api: api/README.md
   directory-api/docs/quickstart: api/quickstart.md
   directory-api/docs/authentication: api/quickstart.md
-  directory-api/docs/endpoints: api/directory-agents.md
+  directory-api/docs/endpoints: api/public-agents.md
   directory-api/docs/rate-limits: api/errors-and-limits.md
-  directory-api/docs/trust: api/directory-agents.md
+  directory-api/docs/trust: api/public-agents.md
   directory-api/docs/changelog: changelog.md
   agent-identity: start/checks.md
   agent-identity/how-we-verify: start/checks.md
@@ -22,3 +22,5 @@ redirects:
   mcp/docs/error-handling: mcp/errors.md
   mcp/mcp: mcp/README.md
   launchpad: launchpad/README.md
+  api/directory-agents: api/public-agents.md
+  api/x402-keyed: api/x402-tools.md

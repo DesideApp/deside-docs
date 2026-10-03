@@ -13,7 +13,7 @@ Deside reads what is already public. This page lists what it reads and how often
 | `sati` | Cascade SATI | Solana |
 | `sap` | Synapse Agent Protocol | Solana |
 
-**One agent is one entry in the directory**, even when several registries list it. `registryPresence.registries` lists them all.
+**One agent is one entry in the directory**, even when several registries list it. `registries` lists them all, and `sources` gives each entry id.
 
 ## x402 catalogs
 

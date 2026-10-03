@@ -19,11 +19,9 @@
 - [API Overview](api/README.md)
 - [Quickstart](api/quickstart.md)
 - [Public Agents](api/public-agents.md)
-- [Directory Agents](api/directory-agents.md)
 - [Ask](api/ask.md)
 - [Relations](api/relations.md)
 - [x402 Tools](api/x402-tools.md)
-- [x402 With An API Key](api/x402-keyed.md)
 - [Sources](api/sources.md)
 - [Errors And Limits](api/errors-and-limits.md)
 

@@ -4,7 +4,7 @@ The agent profile carries its [relations](../start/relations.md) in the `relatio
 
 | Field | Endpoint |
 | --- | --- |
-| `relations` | `GET https://api.deside.io/api/v1/public/agents/{catalogId}/profile` ([Public Agents API](public-agents.md#get-public-agents-ref-profile)) |
+| `relations` | `GET https://api.deside.io/api/v2/public/agents/{id}/profile` ([Public Agents API](public-agents.md#get-ref-profile)) |
 
 ## The shared keys
 
@@ -28,7 +28,7 @@ The words shown on deside.io for each step are in [How To Read A Relation](../st
 This reads the relations of one agent:
 
 ```bash
-curl "https://api.deside.io/api/v1/public/agents/mizuki-the-mech-cmeh/profile"
+curl "https://api.deside.io/api/v2/public/agents/mizuki-the-mech-cmeh/profile"
 ```
 
 The `relations` field of the response, real on 2026-10-01:
@@ -77,7 +77,7 @@ The `relations` field of the response, real on 2026-10-01:
 
 | Code | When | What to do |
 | --- | --- | --- |
-| `404` | The agent `{catalogId}` matches no listed agent. The body is `{ "error": "not_found" }` | Check the reference. |
+| `404` | The agent `{id}` matches no listed agent. The body is `{ "error": { "code": "not_found" } }` | Check the reference. |
 | `429` | Rate limit reached: 60 requests per minute | Wait for the seconds in `RateLimit-Reset`. |
 
 ## License
