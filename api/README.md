@@ -52,7 +52,6 @@ Then follow [Quickstart](quickstart.md) to get a free key and sync the whole dir
 | `GET /public/x402/census` | x402 Tool Directory counts | No |
 | `GET /public/x402/indices` | x402 indexes that agents publish | No |
 | `GET /directory/x402-tool-profiles` and `/{slug}` | x402 tools, for syncing | Yes |
-| `GET /directory/x402-wallet-edges` | Wallets shared between tools | Yes |
 | `GET /directory/x402-resources` and `/census` | Catalog entries as stored | Yes |
 
 All paths start with `https://api.deside.io/api/v1`.

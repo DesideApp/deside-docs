@@ -134,7 +134,6 @@ Returns the directory counts. Accepts `host`, `payTo`, `network` and `live=1`.
   "wallets": 2530,
   "bazaars": 5,
   "byBazaar": [{ "bazaar": "cdp", "n": 22012 }, { "bazaar": "payai", "n": 11224 }],
-  "topHosts": [{ "host": "market.datapackvibe.com", "n": 1400 }],
   "byNetwork": [{ "network": "eip155:8453", "n": 26865 }],
   "byVerdict": [{ "verdict": "offer", "n": 22965 }, { "verdict": "no-endpoint", "n": 5819 }],
   "projectedAt": "2026-10-02T06:21:25.359Z"

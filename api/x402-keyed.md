@@ -60,10 +60,6 @@ does not say the agent runs the tool.**
 
 An unknown slug answers `404` with `{ "error": "not_found" }`.
 
-## `GET /api/v1/directory/x402-wallet-edges`
-
-Same parameters, response and rules as the public `/public/x402/wallet-edges`, without the depth limit.
-
 ## `GET /api/v1/directory/x402-resources`
 
 Returns the catalog entries as Deside stored them from the catalogs, before
