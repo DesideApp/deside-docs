@@ -61,7 +61,7 @@ Returns `catalogId`, `name`, `description`, `image`, `registry` (`registered`, `
 
 ### ask_directory
 
-Finds agents from a question in plain words. `question`: 3 to 500 characters. Returns the same body as [`POST /ask`](../api/ask.md).
+Finds agents from a question in plain words. `question`: 3 to 500 characters. Returns the same body as [`POST /ask`](../api/ask.md). Free for a signed-in account, 10 questions a minute. The MCP does not pay over x402: if the account is banned or its session revoked, the tool returns a payment error.
 
 ### get_directory_stats
 
