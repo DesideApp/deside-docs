@@ -54,6 +54,8 @@ Categories: `trading_bots`, `token_signals`, `token_risk`, `contract_security`, 
       "chain": "evm",
       "category": "other",
       "ownerProven": false,
+      "team": false,
+      "handles": { "x": null, "github": null },
       "status": "responds",
       "liveKinds": ["mcp", "a2a", "x402"]
     }
@@ -73,6 +75,8 @@ Categories: `trading_bots`, `token_signals`, `token_risk`, `contract_security`, 
 | `chain` | `solana` or `evm`. |
 | `category` | One of the categories above, or `other`. |
 | `ownerProven` | `true` when the owner proved the agent is theirs. Shown as connected on deside.io. |
+| `team` | `true` when the account that owns the agent is a Verified team on Deside. `null` when it could not be read, which is not `false`. |
+| `handles` | The agent's `x` and `github` handles, or `null`. |
 | `status` | The state from our checks. See [Checks](../start/checks.md). |
 | `liveKinds` | Protocols that answered our last check: `mcp`, `a2a`, `x402`. |
 | `page.total` | Agents that match the filters. |
@@ -143,6 +147,8 @@ An old slug answers `301` to the current one. A slug shared by more than one age
     "chain": "evm",
     "category": "other",
     "ownerProven": false,
+    "team": false,
+    "handles": { "x": null, "github": null },
     "status": { "state": "responds", "since": null, "probedAt": "2026-10-02T05:15:01.027Z" },
     "liveKinds": ["mcp", "a2a", "x402"],
     "description": "Digital goods store selling gift card codes, service top-ups and travel eSIMs.",
