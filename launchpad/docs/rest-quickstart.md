@@ -14,7 +14,7 @@ The responses below come from real devnet runs on 2026-10-01, trimmed. The creat
 A wallet created with `solana-keygen new` derives its key from the seed phrase without a derivation path. Phantom derives `m/44'/501'/0'/0'` from the same phrase, so importing the phrase into Phantom shows a different address. To see this wallet in Phantom, import its private key instead.
 {% endhint %}
 * About 0.03 SOL on devnet in that wallet.
-* A square logo file, PNG, JPG, WebP or GIF, of at most 1 MB.
+* A square logo file, PNG, JPG, WebP or GIF, of at most 1 MB (about 700 KB through the MCP).
 
 ## 0. Find the entry point
 
@@ -104,7 +104,7 @@ Nothing is sent yet. `launch.json` holds the unsigned transaction, the addresses
   "bytes": 789,
   "simulation": { "ok": true },
   "expiresInSeconds": 60,
-  "next": "Sign `transaction` with the wallet above (it is already signed by the new mint) and pass it to submit_transaction within about 60 seconds (blockhash lifetime). If it expires, call launch_token again."
+  "next": "Sign `transaction` with the wallet above (it is already signed by the new mint) and pass it to submit_transaction within about 60 seconds (blockhash lifetime), or give the person signUrl to sign in their browser wallet. If it expires, call launch_token again."
 }
 ```
 
@@ -262,7 +262,7 @@ Run it with your keypair file:
 node launch.mjs request.json wallet.json
 ```
 
-The first token launched through this launchpad, DESIDE, on mainnet on 2026-10-02, was launched this way. The prepare call returned, trimmed:
+DESIDE, the token of Deside, was launched this way on mainnet on 2026-10-02. The prepare call returned, trimmed:
 
 ```json
 {

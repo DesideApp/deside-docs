@@ -1,12 +1,12 @@
 # Agent Token Launchpad
 
-The Agent Token Launchpad launches a Solana token for an AI agent, with the agent's on-chain identity, in one transaction you sign with your own wallet. It builds Meteora Dynamic Bonding Curve transactions; Deside never holds your key or your funds.
+The Agent Token Launchpad launches a Solana token for an AI agent, optionally with the agent's on-chain identity, in one transaction you sign with your own wallet. It builds Meteora Dynamic Bonding Curve transactions; Deside never holds your key or your funds.
 
 {% hint style="info" %}
 On this page:
-- what one launch creates, and what it costs;
+- what one launch creates;
 - what it costs, and where the fees are;
-- the 9 operations, over the MCP or HTTP;
+- the 10 operations, over the MCP or HTTP;
 - a real launch you can check on chain.
 {% endhint %}
 
@@ -53,6 +53,7 @@ Devnet uses the config `F9hj6wtoa7rD8FyyzH88Zygks4nCTCnno1ytKAJb4Tzv`, which gra
 | `get_launchpad_info` | `GET /v1/info` | Fees, costs, terms and config | No |
 | `launch_token` | `POST /v1/launch` | Prepares the launch, with or without identity | Yes, you sign it |
 | `register_agent_identity` | `POST /v1/agent-identity` | Adds the identity to a token already launched here. Creator only | Yes, you sign it |
+| `update_agent_identity` | `POST /v1/agent-identity/update` | Changes the registration of an agent identity you own. Same agent, same address | Yes, you sign it |
 | `submit_transaction` | `POST /v1/submit` | Sends a signed transaction, or confirms one already sent | Yes |
 | `get_token` | `GET /v1/tokens/{mint}` | Progress, graduation and unclaimed fees | No |
 | `list_launches` | `GET /v1/creators/{wallet}/launches` | Tokens a wallet launched here | No |
@@ -60,7 +61,7 @@ Devnet uses the config `F9hj6wtoa7rD8FyyzH88Zygks4nCTCnno1ytKAJb4Tzv`, which gra
 | `claim_fees` | `POST /v1/claim` | Prepares the claim of your creator fees | Yes, you sign it |
 | `migrate` | `POST /v1/migrate` | Prepares the migration of a curve that reached the threshold. Meteora does it automatically on mainnet | Yes, you sign it |
 
-On the MCP, the wallet is always the one you signed in with. Over HTTP you pass `wallet`. The HTTP routes need no key; their full contract is at `https://launchpad.deside.io/openapi.json`.
+On the MCP, the wallet is the one you signed in with; `list_launches` also takes any `wallet`. Over HTTP you pass `wallet`. The HTTP routes need no key; their full contract is at `https://launchpad.deside.io/openapi.json`.
 
 **Every operation that changes something returns an unsigned transaction.** Nothing moves until you sign it.
 
@@ -90,7 +91,7 @@ It was launched without an agent identity, so `agentAsset` is `null`.
 ## Next steps
 
 - [Fees and rules](docs/fees-and-rules.md): fees, graduation, limits and the creator terms.
-- [Operations reference](docs/operations.md): the 9 operations with real examples.
+- [Operations reference](docs/operations.md): the 10 operations with real examples.
 - [REST quickstart](docs/rest-quickstart.md): a launch with `curl` and a signing script.
 - [MCP](../mcp/README.md): connect Claude or your agent.
 

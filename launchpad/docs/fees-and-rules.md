@@ -19,7 +19,7 @@ The creator collects its share with [`claim_fees`](operations.md#claim_fees).
 
 ### Anti-sniper fee
 
-**For the first 120 seconds after launch the trading fee starts at 25% and falls linearly to 1%.** Trades in that window pay more; set `slippageBps` on `swap` with that in mind.
+**For the first 120 seconds after launch the trading fee starts at 25% and falls to 1% in 12 equal steps.** Trades in that window pay more; set `slippageBps` on `swap` with that in mind.
 
 ## Graduation
 
@@ -48,6 +48,7 @@ Deside charges no launch fee. The wallet that launches pays the network rent and
 |---|---|
 | Token and curve | About 0.0206 |
 | Agent identity, if requested | About 0.0049 |
+| Priority fee | Set from recent network fees and paid by the signer, at most 0.0028 |
 | Arweave storage | At cost, about 0.00005 for a small logo |
 
 A devnet launch with an agent identity and an 8.8 KB PNG logo cost the launching wallet 0.025420416 SOL in total, of which 0.000047176 SOL paid the Arweave storage.
@@ -60,7 +61,7 @@ A devnet launch with an agent identity and an 8.8 KB PNG logo cost the launching
 | Launches | 2 per minute, per wallet on the Deside MCP and per IP over HTTP |
 | Whole Launchpad | 600 requests and 30 launches per minute |
 | Request body | 2 MB |
-| Logo file (`imageBase64`) | 1 MB, PNG, JPG, WebP or GIF |
+| Logo file (`imageBase64`) | 1 MB (about 700 KB through the MCP), PNG, JPG, WebP or GIF |
 | Token name, symbol, description | 32, 10 and 500 characters |
 | Transaction size | 1232 bytes |
 | Time to sign and submit | About 60 seconds |
@@ -69,7 +70,7 @@ A devnet launch with an agent identity and an 8.8 KB PNG logo cost the launching
 
 ## Custody
 
-Deside holds no user keys and sends nothing you have not signed. `submit_transaction` only forwards transactions that call the Meteora DBC or DAMM v2 programs and no program outside the launchpad's list, so it is not a general relay.
+Deside holds no user keys and sends nothing you have not signed. `submit_transaction` only forwards transactions this launchpad prepared using only programs on its list (Meteora DBC and DAMM v2, Metaplex Core, Metaplex Agent Registry, Solana system programs), so it is not a general relay.
 
 ## Creator terms
 
@@ -83,6 +84,6 @@ This summary does not replace the terms. The full text, with its version, is at 
 
 ## Disclaimer
 
-The service returns this text in `get_launchpad_info` and in every `launch_token` response:
+The service returns this text in `get_launchpad_info`, `launch_token`, `register_agent_identity` and `update_agent_identity` responses:
 
 > Deside does not custody funds or keys. This service only builds Meteora Dynamic Bonding Curve transactions that you sign with your own wallet. Tokens are created by their signer, not by Deside. Deside is the fee partner of the launch configuration and receives the partner share of trading fees stated below. Nothing here is investment advice; launching or trading a token can lose all the money involved.

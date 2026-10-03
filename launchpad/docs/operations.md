@@ -1,14 +1,15 @@
 # Operations reference
 
-The launchpad has 9 operations. Each one is a tool of the [Deside MCP](../../mcp/README.md) and a REST route on `https://launchpad.deside.io`, with the same parameters and the same JSON, because both come from one schema. The OpenAPI document at `https://launchpad.deside.io/openapi.json` comes from that schema too.
+The launchpad has 10 operations. Each one is a tool of the [Deside MCP](../../mcp/README.md) and a REST route on `https://launchpad.deside.io`, with the same parameters and JSON. The OpenAPI document at `https://launchpad.deside.io/openapi.json` describes the REST routes.
 
-**On the MCP, `wallet` is always the wallet you signed in with: you do not pass it.**
+**On the MCP, `wallet` is your signed-in wallet by default: you do not pass it. `list_launches` accepts an optional `wallet` parameter for any wallet.**
 
 | MCP tool | REST route | Writes | What it does |
 |---|---|---|---|
 | [`get_launchpad_info`](#get_launchpad_info) | `GET /v1/info` | No | Fees, costs, flow and configuration per network |
 | [`launch_token`](#launch_token) | `POST /v1/launch` | Yes | Prepares one launch transaction |
 | [`register_agent_identity`](#register_agent_identity) | `POST /v1/agent-identity` | Yes | Prepares the identity of a token already launched here |
+| [`update_agent_identity`](#update_agent_identity) | `POST /v1/agent-identity/update` | Yes | Prepares the update of an agent identity you own |
 | [`submit_transaction`](#submit_transaction) | `POST /v1/submit` | Sends | Uploads the paid files and sends a signed transaction |
 | [`get_token`](#get_token) | `GET /v1/tokens/{mint}` | No | Status of one token |
 | [`list_launches`](#list_launches) | `GET /v1/creators/{wallet}/launches` | No | Tokens a wallet launched here |
@@ -25,6 +26,8 @@ A write operation returns an unsigned transaction and does not send anything. It
 | `transaction` | string | Base64 Solana transaction. Sign it with the wallet you passed and send it with `submit_transaction`. |
 | `bytes` | number | Serialized size. The Solana limit is 1232 bytes. |
 | `simulation` | object | `{ ok: true, computeUnits }`, or `{ ok: false, error, hint, logs }` with the last 8 log lines. |
+| `signUrl` | string | Present only when `simulation.ok` is `true`. A page where a person signs with a browser wallet; the page sends the signature to `submit_transaction`. |
+| `signUrlExpiresAt` | string | Present only when `simulation.ok` is `true`. ISO timestamp. The link lasts 2 minutes and works once. |
 | `next` | string | The next step, in words. |
 
 **Sign and submit within about 60 seconds.** That is the lifetime of the blockhash inside the transaction. If it expires, call the same operation again.
@@ -125,7 +128,7 @@ Prepares one unsigned transaction that creates your token and its Meteora bondin
 | `token.symbol` | string | Yes | 1 to 10 characters. |
 | `token.description` | string | No | Up to 500 characters. |
 | `token.image` | string | One of the two | https URL of a square PNG, JPG, WebP or GIF logo, up to 300 characters. Used as is: you keep it online. |
-| `token.imageBase64` | string | One of the two | The logo file in base64, PNG, JPG, WebP or GIF, 1 MB maximum. Stored permanently on Arweave, paid in the same signature. |
+| `token.imageBase64` | string | One of the two | The logo file in base64, PNG, JPG, WebP or GIF, 1 MB maximum (about 700 KB through the MCP). Stored permanently on Arweave, paid in the same signature. |
 | `token.website` | string | No | URL, up to 200 characters. |
 | `token.x` | string | No | X profile URL, up to 200 characters. |
 | `token.telegram` | string | No | Telegram URL, up to 200 characters. |
@@ -251,7 +254,7 @@ curl -s -X POST https://launchpad.deside.io/v1/launch \
   }'
 ```
 
-The MCP call takes the same object as `arguments`. `ENS` (`name.eth`), `DID` (`did:...`) and any other name are accepted the same way, up to 40 services. A service without `name` or `endpoint` is dropped.
+The MCP call takes the same object as `arguments`. `ENS` (`name.eth`), `DID` (`did:...`) and any other name are accepted the same way, up to 40 services. A service without `name` or `endpoint` is rejected with `400 invalid input`.
 
 **`x402Support` is not inferred from the services.** Declaring an `x402` service leaves it `false` unless you send `"x402Support": true`.
 
@@ -336,9 +339,52 @@ Response: `{ network, mint, agentAsset, creator, files: { agentRegistration, age
 
 ---
 
+### `update_agent_identity`
+
+Changes the EIP-8004 registration of an agent identity you own: updates the registration file on Arweave and points the Metaplex identity to it, in one unsigned transaction. The agent asset, its owner and on-chain address do not change. Only the owner of the asset can call it.
+
+**MCP:** `update_agent_identity` · **REST:** `POST /v1/agent-identity/update`
+
+**Parameters**
+
+| Name | Type | Required | Description |
+|---|---|---|---|
+| `network` | string | Yes | `mainnet` or `devnet`. |
+| `wallet` | string | REST only | The owner and update authority of the agent asset. |
+| `asset` | string | Yes | The agent asset address. |
+| `agent` | object | No | Fields to update. Omitted fields keep their value. |
+
+**The `agent` object**
+
+| Name | Type | Description |
+|---|---|---|
+| `name` | string | Up to 64 characters. When sent, updates the on-chain name (cut to 32 characters) and the registration. |
+| `description` | string | What the agent does, up to 1000 characters. When sent, updates the registration. |
+| `image` | string | Avatar URL. When sent, updates the on-chain metadata and the registration. |
+| `services` | array | Up to 40 entries. `services` replaces the whole list: if sent, the new list replaces the old one; if not sent, the old list is kept. Each entry is `{ name, endpoint, ... }` with the optional fields of each service type, same as `launch_token`. A service without `name` or `endpoint` is rejected with `400 invalid input`. |
+| `active` | boolean | Whether the agent is live. |
+| `x402Support` | boolean | `true` if the agent sells anything over x402. |
+| `supportedTrust` | array | Any of `reputation`, `crypto-economic`, `tee-attestation`. |
+
+**Response fields**
+
+| Field | Description |
+|---|---|
+| `network`, `agentAsset`, `owner` | The network and the asset being updated. |
+| `files` | `agentRegistration` (the new registration URL), `agentMetadata` (only if you sent `name`, `description` or `image`), `previousRegistration` (the URL it replaces). |
+| `registration` | The EIP-8004 document that will be stored. |
+| `cost` | `arweaveSol`: the Arweave storage cost. |
+| `transaction`, `signUrl?, signUrlExpiresAt?, bytes, simulation` | See [How write operations work](#how-write-operations-work). |
+| `expiresInSeconds` | `60`. |
+| `disclaimer` | The disclaimer text. |
+
+When you send `name`, `description` or `image`, the agent's on-chain NFT metadata file (`agentMetadata`) is also rebuilt and uploaded. The `agentMetadata` URL is returned only when at least one of those three fields is sent.
+
+---
+
 ### `submit_transaction`
 
-Sends a transaction prepared by this launchpad and signed by your wallet and waits for confirmation. For a launch, it first simulates the signed transaction and uploads the Arweave files the transaction paid for, and only then sends it: indexers read the token JSON when the mint is created and do not retry. If the simulation fails, you get a `422` with a `hint` and nothing is uploaded or sent. If the upload fails, you get a `503` and nothing is sent. It only accepts transactions that call the Meteora DBC or DAMM v2 programs and no programs outside the launchpad's list.
+Sends a transaction prepared by this launchpad and signed by your wallet and waits for confirmation. For a launch, it first simulates the signed transaction and uploads the Arweave files the transaction paid for, and only then sends it: indexers read the token JSON when the mint is created and do not retry. If the simulation fails, you get a `422` with a `hint` and nothing is uploaded or sent. If the upload fails, you get a `503` and nothing is sent. It only accepts transactions this launchpad prepared using only programs on its list (Meteora DBC and DAMM v2, Metaplex Core, Metaplex Agent Registry, Solana system programs).
 
 **MCP:** `submit_transaction` · **REST:** `POST /v1/submit`
 
@@ -457,7 +503,7 @@ Returns the tokens a wallet launched with this launchpad's configuration, read f
 | Name | Type | Required | Description |
 |---|---|---|---|
 | `network` | string | Yes | `mainnet` or `devnet`. |
-| `wallet` | string | Yes | Creator wallet. |
+| `wallet` | string | REST: Yes. MCP: No, defaults to your wallet. | Creator wallet. |
 
 Response: `{ network, creator, count, launches }`, where each launch is `{ mint, pool, graduated, raisedSol, unclaimedCreatorFeesSol }`.
 
@@ -540,7 +586,7 @@ A buy of 0.001 SOL on the curve, after the anti-sniper window, returned:
   "transaction": "AQAAAAAAAAAA...",
   "bytes": 696,
   "simulation": { "ok": true, "computeUnits": 53302 },
-  "next": "Sign and pass to submit_transaction."
+  "next": "Sign and pass to submit_transaction, or open signUrl to sign in the browser."
 }
 ```
 
@@ -578,7 +624,7 @@ A claim of the curve fees returned this `claims` list, next to the write fields:
   "claims": [{ "source": "curve", "sol": 0.000016185 }],
   "transaction": "AQAAAAAAAAAA...",
   "simulation": { "ok": true },
-  "next": "Sign and pass to submit_transaction."
+  "next": "Sign and pass to submit_transaction, or open signUrl to sign in the browser."
 }
 ```
 
@@ -617,7 +663,7 @@ A curve that has reached its threshold returns the write fields:
   "estimatedCostSol": 0.0165,
   "transaction": "AgAAAAAAAAAA...",
   "simulation": { "ok": true },
-  "next": "Sign and pass to submit_transaction."
+  "next": "Sign and pass to submit_transaction, or open signUrl to sign in the browser."
 }
 ```
 
@@ -641,20 +687,27 @@ Over the Deside MCP, an error is a tool result with `isError: true`. The launchp
 | `400` | `token.image (https URL) or token.imageBase64 is required` | Add a logo. |
 | `400` | `agent fields were sent but registerAgentIdentity is not true` | Set `registerAgentIdentity: true` or drop `agent`. |
 | `400` | `image must be PNG, JPG, WebP or GIF` / `image is N bytes; max 1 MB` | Send a supported file under 1 MB. |
+| `400` | `transaction (signed, base64) or signature is required` | Send a signed transaction or the signature of one you sent yourself. |
+| `400` | `could not read the token name; send agent.name` / `could not read the token logo; send agent.image` | Provide missing token metadata. |
+| `400` | `amount too small` | Increase the trade amount. |
 | `400` | `transaction is not fully signed: sign it with your wallet first` | Sign before `submit_transaction`. |
 | `400` | `only transactions prepared by this launchpad can be submitted here` | Send only transactions this service returned. |
-| `402` | `this launch transaction does not pay its Arweave upload; use the transaction returned by launch_token` | Do not edit the launch transaction. |
+| `402` | `this transaction did not pay the Arweave upload for this launch` / `this launch transaction does not pay its Arweave upload; use the transaction returned by launch_token` | Do not edit the launch transaction. |
 | `403` | `only the creator wallet of this token can claim its creator fees` | Call `claim_fees` with the creator wallet. |
 | `403` | Not the creator of the token | Only the creator can call `register_agent_identity`. |
 | `400` | Token not launched here | `register_agent_identity` only works on tokens launched with this launchpad's configuration. |
+| `404` | `route not found; see /openapi.json` | Check the endpoint and method. |
+| `404` | `this signing link expired or does not exist; prepare the operation again` | The sign link exceeded its 2-minute lifetime or was not found. Call the operation again. |
 | `404` | `no Meteora DBC pool for this mint on this network` | Check the mint and the `network`. |
 | `404` | `transaction not found or not confirmed yet; retry in a few seconds` | Retry `submit_transaction { signature }` shortly. |
+| `409` | `this signing link was already used` | The sign link works once only. Call the operation again to get a new link. |
 | `409` | `nothing to claim yet` | There are no fees to claim. |
 | `409` | `not ready: X of Y SOL raised` / `already graduated` | `migrate` only works once the threshold is reached and before graduation. |
 | `413` | `request body too large (max 2 MB)` | Use a smaller logo. |
 | `422` | `transaction is N bytes (limit 1232); use a shorter name, symbol or image URL` | Shorten the inputs. |
 | `422` | `transaction would fail: ...` | The simulation of the signed launch failed before anything was uploaded or sent. The body carries `hint` and `logs`. |
 | `422` | `transaction rejected: ...` | The RPC refused the transaction. The body carries `hint` and `logs`; an expired blockhash means prepare it again. |
+| `422` | `transaction failed on chain: ...` | The transaction was sent and confirmed but reverted. The body carries `hint` and `logs`. |
 | `429` | `too many requests, slow down` / `too many launches from this wallet, wait a minute` / `the launchpad is busy, retry in a few seconds` | Wait for the per-minute window to reset. |
 | `503` | `could not store the token files on Arweave, nothing was sent; call launch_token again` | Prepare the launch again and sign the new transaction. |
 | `503` | `uploads are not available on <network> right now` | Arweave uploads are not available on that network at the moment; try later. |
