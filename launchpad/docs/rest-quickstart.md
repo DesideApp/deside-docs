@@ -238,7 +238,7 @@ console.log(JSON.stringify(sent, null, 2));
 console.log(`Saved to ${out}`);
 ```
 
-Write the body of `launch_token` to `request.json`, without `wallet` (the script takes it from the keypair) and with `acceptTerms: true`. `token.imageFrom` is an optional logo URL the script downloads and sends as `imageBase64`:
+Write the body of `launch_token` to `request.json`, without `wallet` (the script takes it from the keypair) and with `acceptTerms: true`. A logo is required: give `token.imageFrom`, a logo URL the script downloads and sends as `imageBase64`, or `token.image` to use the URL as is:
 
 ```json
 {

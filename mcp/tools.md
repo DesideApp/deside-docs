@@ -117,7 +117,7 @@ These three tools return the backend's own error codes.
 
 ## Launchpad
 
-All take `network`: `mainnet` or `devnet`. Fees, limits and a real launch are in [Deside Launchpad](../launchpad/README.md).
+Every Launchpad tool takes `network`: `mainnet` or `devnet`. It is required in all of them, `submit_transaction` and `get_token` included, and optional only in `get_launchpad_info`. Fees, limits and a real launch are in [Deside Launchpad](../launchpad/README.md).
 
 ### get_launchpad_info
 
@@ -129,17 +129,20 @@ Prepares a token launch, with or without the agent's identity.
 
 | Name | Type | Required | Description |
 |---|---|---|---|
+| `network` | string | Yes | `mainnet` or `devnet`. |
 | `acceptTerms` | `true` | Yes | Read `https://launchpad.deside.io/terms` first. |
 | `token.name` | string | Yes | 1 to 32 characters. |
 | `token.symbol` | string | Yes | 1 to 10 characters. |
 | `token.description` | string | No | Up to 500. |
-| `token.image` | URL | No | Up to 300 characters. |
-| `token.imageBase64` | string | No | PNG, JPG, WebP or GIF, up to 950,000 characters of base64 (about 700 KB) through the MCP. Over REST, up to 1 MB. |
+| `token.image` | URL | One of the two | https URL of the logo, up to 300 characters. |
+| `token.imageBase64` | string | One of the two | PNG, JPG, WebP or GIF, up to 950,000 characters of base64 (about 700 KB) through the MCP. Over REST, up to 1 MB. |
 | `token.website`, `token.x`, `token.telegram` | URL | No | Up to 200 characters each. |
 | `registerAgentIdentity` | boolean | No | `true` to create the identity in the same signature. |
 | `agent` | object | No | `name` (up to 64), `description` (up to 1,000), `image`, `active`, `x402Support`, `supportedTrust` (`reputation`, `crypto-economic`, `tee-attestation`), and up to 40 `services` with `name`, `endpoint`, `version`. |
 
-Returns `mint`, `pool`, `agentAsset` (or `null`), `creator`, `files`, `cost` (`arweaveSol`, `estimatedTotalSol`), `transaction` (base64, unsigned by you), `bytes`, `simulation`, `expiresInSeconds: 60`, `next` and `disclaimer`. When `simulation.ok` is `true` it also returns `signUrl` and `signUrlExpiresAt`. When it is `false`, `error`, `hint` and the last `logs` say why.
+A logo is required: without `token.image` or `token.imageBase64` the call fails with `400`.
+
+Returns `network`, `mint`, `pool`, `agentAsset` (or `null`), `creator`, `files`, `cost` (`arweaveSol`, `estimatedTotalSol`), `transaction` (base64, a legacy transaction already signed by the new mint and, with an identity, the agent asset: add your signature with `partialSign`), `bytes`, `simulation`, `expiresInSeconds: 60`, `next` and `disclaimer`. When `simulation.ok` is `true` it also returns `signUrl` and `signUrlExpiresAt`. When it is `false`, `error`, `hint` and the last `logs` say why.
 
 ### register_agent_identity
 
@@ -159,13 +162,13 @@ Omitted fields keep their value. `services` replaces the whole list: include eve
 
 ### submit_transaction
 
-Sends a transaction you signed, or confirms one you already sent. Takes `transaction` (signed, base64) or `signature`. Returns `signature` and `links`; for a launch, also `mint`, `pool`, `agentAsset` and `uploads`.
+Sends a transaction you signed, or confirms one you already sent. Takes `network` and either `transaction` (signed, base64) or `signature`. Returns `signature` and `links`; for a launch, also `mint`, `pool`, `agentAsset` and `uploads`.
 
 **It sends any valid transaction prepared by this Launchpad, whoever signed it.**
 
 ### get_token
 
-A token's progress. Takes `mint`. Returns `name`, `symbol`, `uri`, `creator`, `pool`, `dbcConfig`, `launchedHere`, `graduated`, `curve` (`raisedSol`, `thresholdSol`, `progress`), `dammV2Pool` once graduated, `unclaimedCurveFeesSol` (`creator`, `partner`) and `links`.
+A token's progress. Takes `network` and `mint`. Returns `network`, `mint`, `name`, `symbol`, `uri`, `creator`, `pool`, `dbcConfig`, `launchedHere`, `graduated`, `curve` (`raisedSol`, `thresholdSol`, `progress`), `dammV2Pool` once graduated, `unclaimedCurveFeesSol` (`creator`, `partner`) and `links`.
 
 ### list_launches
 
