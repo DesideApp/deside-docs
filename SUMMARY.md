@@ -7,7 +7,7 @@
 - [How To Read A Relation](start/relations.md)
 - [Prove It Is Yours](start/prove-ownership.md)
 
-## Agent Token Launchpad
+## Deside Launchpad
 
 - [Launchpad Overview](launchpad/README.md)
 - [REST Quickstart](launchpad/docs/rest-quickstart.md)

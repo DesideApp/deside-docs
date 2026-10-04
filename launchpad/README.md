@@ -1,6 +1,6 @@
-# Agent Token Launchpad
+# Deside Launchpad
 
-The Agent Token Launchpad launches a Solana token for an AI agent, optionally with the agent's on-chain identity, in one transaction you sign with your own wallet. It builds Meteora Dynamic Bonding Curve transactions; Deside never holds your key or your funds.
+The Deside Launchpad launches a Solana token for an AI agent, optionally with the agent's on-chain identity, in one transaction you sign with your own wallet. It builds Meteora Dynamic Bonding Curve transactions; Deside never holds your key or your funds.
 
 {% hint style="info" %}
 On this page:

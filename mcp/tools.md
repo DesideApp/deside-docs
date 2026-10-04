@@ -117,7 +117,7 @@ These three tools return the backend's own error codes.
 
 ## Launchpad
 
-All take `network`: `mainnet` or `devnet`. Fees, limits and a real launch are in [Agent Token Launchpad](../launchpad/README.md).
+All take `network`: `mainnet` or `devnet`. Fees, limits and a real launch are in [Deside Launchpad](../launchpad/README.md).
 
 ### get_launchpad_info
 

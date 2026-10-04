@@ -2,6 +2,11 @@
 
 This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
+## 2026-10-04
+
+- The Agent Token Launchpad is called the Deside Launchpad in these docs. Its routes, tools and URLs do not change.
+- The Ask example is a real response.
+
 ## 2026-10-03
 
 - `POST /api/v1/ask` is listed in the PayAI x402 catalog, and its `402` carries `extensions.bazaar` with the input and output schema.
