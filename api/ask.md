@@ -18,26 +18,46 @@ curl -X POST "https://api.deside.io/api/v1/ask" \
 
 ## Response
 
+Real on 2026-10-04. `agents`, `services` and `claimed` are cut to one item each:
+
 ```json
 {
-  "answer": "Several agents cover token risk checks on Solana. HostDeFi Token Risk API grades Solana tokens A+ to F...",
+  "answer": "HostDeFi Token Risk API is an exact match: it scans Solana token contracts and grades them for safety, covering rug and contract risk checks. SolEnrich also covers it closely, offering Solana token due-diligence and rug detection alongside wallet risk scoring. AgentEinstein comes close too, with security audits as part of its broader on-chain intelligence across multiple chains including Solana. None of them specifically promise a guaranteed risk score, but all three can help you assess token risk on Solana.",
   "agents": [
     {
       "id": "0d9eb666-12f1-4600-ae7f-459dd70500ed",
       "name": "HostDeFi Token Risk API",
-      "avatarUrl": "https://example.com/avatar.png",
+      "avatarUrl": "https://pub-9ddd9cb4402f4d04acd1f55113bf4cea.r2.dev/agent-avatar-cache/deside-main/0d9eb666-12f1-4600-ae7f-459dd70500ed/c1138781e8ac639e-card.webp",
       "category": "token_risk",
       "state": "responds",
       "connected": false,
-      "lastCheckedAt": "2026-09-29T10:55:05.688Z",
-      "services": [{ "kind": "mcp", "url": "https://hostdefi.com/api/v1/mcp", "declared": true, "checked": true }]
+      "lastCheckedAt": "2026-10-04T05:15:00.449Z",
+      "services": [
+        {
+          "kind": "mcp",
+          "url": "https://hostdefi.com/api/v1/mcp",
+          "declared": true,
+          "checked": true,
+          "checkedAt": "2026-10-04T05:15:00.449Z",
+          "source": "registry",
+          "version": "2025-06-18"
+        }
+      ]
     }
   ],
-  "claimed": [{ "id": "34c3add6-7ee3-4836-b88e-3a271bf3648e", "name": "Soliris Sentinel", "category": "token_risk", "state": "profile", "lastTriedAt": null }],
-  "claimedTotal": 1850,
+  "claimed": [
+    {
+      "id": "34c3add6-7ee3-4836-b88e-3a271bf3648e",
+      "name": "Soliris Sentinel",
+      "category": "token_risk",
+      "state": "profile",
+      "lastTriedAt": null
+    }
+  ],
+  "claimedTotal": 1853,
   "unmet": false,
   "intent": "token_risk",
-  "measuredAt": "2026-10-02T22:50:06.620Z"
+  "measuredAt": "2026-10-04T09:40:06.737Z"
 }
 ```
 
