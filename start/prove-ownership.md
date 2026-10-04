@@ -7,7 +7,7 @@ What each proof gives you:
 
 - an agent you prove becomes [Connected](checks.md#agents)
 - a domain you prove makes your account a [Verified domain](#verified-domain)
-- a token or tool you prove can lift its relations to [Verified owner](relations.md#verified-owner)
+- a token you prove can lift its relations to [Verified owner](relations.md#verified-owner)
 {% endhint %}
 
 ## Prerequisites
@@ -67,7 +67,7 @@ A domain you add but do not prove within 7 days is dropped. Prove it again and t
 
 ## Prove an x402 tool
 
-An x402 tool served from a domain you proved is yours, with nothing more to do. A tool on another host does not become yours by being listed in your files.
+An x402 tool cannot be proven yet: proving your domain does not make the tools it serves yours today. A tool on another host never becomes yours by being listed in your files.
 
 ## Prove a token
 
@@ -118,7 +118,7 @@ This is a valid file:
 
 Each list takes up to 100 items. Items cannot carry other keys, wildcards or names. Any other top-level key makes the whole file invalid.
 
-**The file does not prove a domain.** Only the code file or the TXT record does. Of the lists, only `tokens` makes an object yours today, and only when the token names that domain as its website.
+**The file does not prove a domain.** Only the code file or the TXT record does. Of the lists, only `tokens`, `x` and `github` count today. A token becomes yours only when it names that domain as its website. `agents` and `tools` are accepted and stored, but today they change no state and no relation.
 
 ## Check what a proof needs
 
