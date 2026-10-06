@@ -151,7 +151,7 @@ Fields of `totals` and of each `byVersion` entry:
 
 | Field | Type | Description |
 |---|---|---|
-| `tokens` | object | `launched`, `graduated` and `inCurve`. |
+| `tokens` | object | `launched`, `graduated` and `inCurve`. They count every token of the config, including internal test tokens that are not listed, so they can be higher than the rows in `tokens` and `recentLaunches`. |
 | `volumeSol` | object | `curve`, `pool` and `total`. `pool` and `total` are `null` while any graduated pool has not been read swap by swap to the end. |
 | `curveFeesSol` | object | `creators`, `deside`, `meteora`, each `{ generated, claimed, unclaimed }`. |
 | `poolFeesSol` | object | `creators`, `deside`, `meteora`, each `{ generated, claimed, unclaimed }`, and `thirdPartyLps.generated`. |
@@ -188,7 +188,14 @@ Fields of `totals` and of each `byVersion` entry:
 
 ## The launchpad block of GET /v1/tokens/{mint}
 
-Returns, for a token launched here, the same [token row](#token-row) inside `launchpad`, plus its holders. For a token of another config the block is missing. The rest of the response is described in the [Operations reference](operations.md#get_token).
+Returns, for a token launched here, the same [token row](#token-row) inside `launchpad`, plus its holders. For a token of another config the block is missing.
+
+The block always has a `status`:
+
+- `ready`: every field below is filled.
+- `pending`: the token's statistics are still being read from the chain, for example right after a fee claim. The block then has only `status`, `retryAfterSeconds: 10` and a `note`. Ask again after those seconds.
+
+The rest of the response is described in the [Operations reference](operations.md#get_token).
 
 The block adds:
 
