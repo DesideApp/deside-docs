@@ -186,13 +186,13 @@ A devnet launch with identity and the logo in base64 returned:
 ```json
 {
   "network": "devnet",
-  "mint": "298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE",
-  "pool": "ChFjyzozWXzvfN9ysBtyW2yC9o8nj86d6eCqdTA1a1cg",
+  "mint": "5mnqvC5v3rwoe4UjtcvVCV6ED5uN138cHgTmgRdRGAQk",
+  "pool": "FnDUG9vpE9Hmqz1KEew3t1UNKSH52UsVSQMrsJUEWrq1",
   "agentAsset": "DsWkoxx8yZxfR8iuakrifdxJzUBk9KAoHjtHKknVZUpM",
   "creator": "YOUR_WALLET",
   "files": {
     "image": "https://devnet.irys.xyz/5eVNUjkYHiSuG4ukg9vyPmxxnxFvgBhrduBnK8VsCNY8",
-    "tokenMetadata": "https://devnet.irys.xyz/DRQFJN6Gtv8ePzELwiTWHJdfPz8eCNVH6htCp2UgJWpE",
+    "tokenMetadata": "https://devnet.irys.xyz/DJt1zyyjFU2TYVn8NUY75xJx8FkSQAVaZRUvzFhcQreV",
     "agentRegistration": "https://devnet.irys.xyz/5cYUiKjcGWBxt3dv49yfFRxPtNzS3SSeBM4SBQ7a4gtL"
   },
   "cost": { "arweaveSol": 0.000047176, "estimatedTotalSol": 0.025547 },
@@ -420,13 +420,13 @@ The launch with identity above returned:
   "signature": "Eb27VqgpAYKvb22Xm7mg4TvVfwC4eBbFNFBUa1519mDq7iRQSixDxtY1guyCCn6rMEp64f3bMEz67tquW8D8yjd",
   "links": {
     "transaction": "https://solscan.io/tx/Eb27VqgpAYKvb22Xm7mg4TvVfwC4eBbFNFBUa1519mDq7iRQSixDxtY1guyCCn6rMEp64f3bMEz67tquW8D8yjd?cluster=devnet",
-    "token": "https://solscan.io/token/298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE?cluster=devnet"
+    "token": "https://solscan.io/token/5mnqvC5v3rwoe4UjtcvVCV6ED5uN138cHgTmgRdRGAQk?cluster=devnet"
   },
   "uploads": {
     "ok": true,
     "files": [
       { "id": "5eVNUjkYHiSuG4ukg9vyPmxxnxFvgBhrduBnK8VsCNY8", "url": "https://devnet.irys.xyz/5eVNUjkYHiSuG4ukg9vyPmxxnxFvgBhrduBnK8VsCNY8", "matchesPrepared": true, "role": "image" },
-      { "id": "DRQFJN6Gtv8ePzELwiTWHJdfPz8eCNVH6htCp2UgJWpE", "url": "https://devnet.irys.xyz/DRQFJN6Gtv8ePzELwiTWHJdfPz8eCNVH6htCp2UgJWpE", "matchesPrepared": true, "role": "token-metadata" },
+      { "id": "DRQFJN6Gtv8ePzELwiTWHJdfPz8eCNVH6htCp2UgJWpE", "url": "https://devnet.irys.xyz/DJt1zyyjFU2TYVn8NUY75xJx8FkSQAVaZRUvzFhcQreV", "matchesPrepared": true, "role": "token-metadata" },
       { "id": "5cYUiKjcGWBxt3dv49yfFRxPtNzS3SSeBM4SBQ7a4gtL", "url": "https://devnet.irys.xyz/5cYUiKjcGWBxt3dv49yfFRxPtNzS3SSeBM4SBQ7a4gtL", "matchesPrepared": true, "role": "agent-registration" }
     ]
   }
@@ -464,28 +464,28 @@ Returns the name, creator, curve progress toward graduation, graduated pool and 
 #### Example
 
 ```bash
-curl -s 'https://launchpad.deside.io/v1/tokens/298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE?network=devnet'
+curl -s 'https://launchpad.deside.io/v1/tokens/5mnqvC5v3rwoe4UjtcvVCV6ED5uN138cHgTmgRdRGAQk?network=devnet'
 ```
 
-Response for a curve that has raised about 0.9% of its threshold:
+Response for a curve that has raised about 0.35% of its threshold:
 
 ```json
 {
   "network": "devnet",
-  "mint": "298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE",
-  "name": "Deside Test A",
-  "symbol": "DTEST",
-  "uri": "https://devnet.irys.xyz/DRQFJN6Gtv8ePzELwiTWHJdfPz8eCNVH6htCp2UgJWpE",
+  "mint": "5mnqvC5v3rwoe4UjtcvVCV6ED5uN138cHgTmgRdRGAQk",
+  "name": "Skill Test 2",
+  "symbol": "SKT2",
+  "uri": "https://devnet.irys.xyz/DJt1zyyjFU2TYVn8NUY75xJx8FkSQAVaZRUvzFhcQreV",
   "creator": "YOUR_WALLET",
-  "pool": "ChFjyzozWXzvfN9ysBtyW2yC9o8nj86d6eCqdTA1a1cg",
+  "pool": "FnDUG9vpE9Hmqz1KEew3t1UNKSH52UsVSQMrsJUEWrq1",
   "dbcConfig": "F9hj6wtoa7rD8FyyzH88Zygks4nCTCnno1ytKAJb4Tzv",
   "launchedHere": true,
   "graduated": false,
-  "curve": { "raisedSol": 0.005771385, "thresholdSol": 0.640674862, "progress": 0.009008290073975153 },
-  "unclaimedCurveFeesSol": { "creator": 0, "partner": 0.000048557 },
+  "curve": { "raisedSol": 0.002262807, "thresholdSol": 0.640674862, "progress": 0.003531911636014837 },
+  "unclaimedCurveFeesSol": { "creator": 0, "partner": 0.001481822 },
   "links": {
-    "token": "https://solscan.io/token/298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE?cluster=devnet",
-    "pool": "https://solscan.io/account/ChFjyzozWXzvfN9ysBtyW2yC9o8nj86d6eCqdTA1a1cg?cluster=devnet"
+    "token": "https://solscan.io/token/5mnqvC5v3rwoe4UjtcvVCV6ED5uN138cHgTmgRdRGAQk?cluster=devnet",
+    "pool": "https://solscan.io/account/FnDUG9vpE9Hmqz1KEew3t1UNKSH52UsVSQMrsJUEWrq1?cluster=devnet"
   }
 }
 ```
@@ -523,7 +523,7 @@ Response for a wallet with 3 launches, one of them graduated:
   "launches": [
     { "mint": "2bV3HTG6ukie8J74yaprpKiPKjti4LZ9UeB2rsPXseRv", "pool": "A196AYexv116g7Jr7Vu1nUpCe4JjducYfmgHiGWDPjWk", "graduated": false, "raisedSol": 0, "unclaimedCreatorFeesSol": 0 },
     { "mint": "5t4jR1knYHqL6Tn9qPGsZnKuxHqqQytXiirtaqNTgeK4", "pool": "AH9EL2EaZHb71L9SYr2AvTXPY5hv4KCdVdz2UR1XMtj1", "graduated": true, "raisedSol": 0.640674862, "unclaimedCreatorFeesSol": 0 },
-    { "mint": "298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE", "pool": "ChFjyzozWXzvfN9ysBtyW2yC9o8nj86d6eCqdTA1a1cg", "graduated": false, "raisedSol": 0.005771385, "unclaimedCreatorFeesSol": 0 }
+    { "mint": "5mnqvC5v3rwoe4UjtcvVCV6ED5uN138cHgTmgRdRGAQk", "pool": "FnDUG9vpE9Hmqz1KEew3t1UNKSH52UsVSQMrsJUEWrq1", "graduated": false, "raisedSol": 0.005771385, "unclaimedCreatorFeesSol": 0 }
   ]
 }
 ```
@@ -567,7 +567,7 @@ A buy of 0.003 SOL on a devnet curve during the anti-sniper window returned:
 ```bash
 curl -s -X POST https://launchpad.deside.io/v1/swap \
   -H 'content-type: application/json' \
-  -d '{ "network": "devnet", "wallet": "YOUR_WALLET", "mint": "298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE", "side": "buy", "amount": 0.001 }'
+  -d '{ "network": "devnet", "wallet": "YOUR_WALLET", "mint": "5mnqvC5v3rwoe4UjtcvVCV6ED5uN138cHgTmgRdRGAQk", "side": "buy", "amount": 0.001 }'
 ```
 
 A buy of 0.001 SOL on the curve, after the anti-sniper window, returned:
@@ -613,7 +613,7 @@ Response: `claims`, a list of `{ source }` with `source` one of `curve` (with `s
 ```bash
 curl -s -X POST https://launchpad.deside.io/v1/claim \
   -H 'content-type: application/json' \
-  -d '{ "network": "devnet", "wallet": "YOUR_WALLET", "mint": "298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE" }'
+  -d '{ "network": "devnet", "wallet": "YOUR_WALLET", "mint": "5mnqvC5v3rwoe4UjtcvVCV6ED5uN138cHgTmgRdRGAQk" }'
 ```
 
 A claim of the curve fees returned this `claims` list, next to the write fields:
@@ -651,7 +651,7 @@ Response: `note`, `estimatedCostSol` and the write fields.
 ```bash
 curl -s -X POST https://launchpad.deside.io/v1/migrate \
   -H 'content-type: application/json' \
-  -d '{ "network": "devnet", "wallet": "YOUR_WALLET", "mint": "298bT5xFzvWFe1LC2z1QTBi6ggR7vtkA3SY2ErLCYGBE" }'
+  -d '{ "network": "devnet", "wallet": "YOUR_WALLET", "mint": "5mnqvC5v3rwoe4UjtcvVCV6ED5uN138cHgTmgRdRGAQk" }'
 ```
 
 A curve that has reached its threshold returns the write fields:
