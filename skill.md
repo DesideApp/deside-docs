@@ -26,6 +26,12 @@ The skill was tested by agents that had only the skill: they signed in, launched
 
 ## Install it
 
+From [ClawHub](https://clawhub.ai):
+
+```bash
+npx clawhub install deside
+```
+
 The same files are in the [`skills/deside`](https://github.com/DesideApp/deside-docs/tree/main/skills/deside) folder of this repository. In Claude Code:
 
 ```bash
