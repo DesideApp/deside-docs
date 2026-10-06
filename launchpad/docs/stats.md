@@ -12,6 +12,8 @@ On this page:
 
 The routes need no key. Their schema is in `https://launchpad.deside.io/openapi.json`. They are not MCP tools, except the `launchpad` block, which `get_token` also returns.
 
+The same figures are shown live, with charts, on [deside.io/resources/launchpad](https://deside.io/resources/launchpad) and, for DESIDE, on [deside.io/resources/deside-token](https://deside.io/resources/deside-token).
+
 ## Core concepts
 
 ### Versions
