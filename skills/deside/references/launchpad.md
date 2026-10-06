@@ -195,6 +195,33 @@ Read a token's state with `get_token`. Takes `network` and `mint`. Returns `netw
 curl "https://launchpad.deside.io/v1/tokens/Ec9FVEahXUhQRkPneCmDYzXc3jFZWX4URcLfyPwHaRE1?network=mainnet"
 ```
 
+## Statistics
+
+Read-only, no key, over REST only. Always pass `network`. Full reference: https://docs.deside.io/launchpad/docs/stats
+
+| Route | Returns |
+|---|---|
+| `GET /v1/stats?network=mainnet` | `totals` and `byVersion` (tokens launched, graduated and in curve, `volumeSol`, `curveFeesSol`, `poolFeesSol`, `lockedLiquidity`), `recentLaunches` (up to 20) and `tokens[]` (one row per token). Cached 60 seconds. |
+| `GET /v1/tokens/{mint}?network=mainnet` | For a token launched here, a `launchpad` block: the token row plus `holders`, `programOwnedAccounts` and `holdersRule`. |
+| `GET /v1/stats/history?network=mainnet` | Points with `launches`, `graduations`, `volumeSol`, `feesSol` and `cumulative`. Optional `version`. |
+| `GET /v1/tokens/{mint}/history?network=mainnet` | Points with `volumeSol`, `feesSol`, `curveProgress`, `priceSol`, `marketCapSol`, `marketCapUsd` and `cumulative`. |
+
+History takes `interval` (`hour` or `day`, default `day`), `from` and `to` (ISO), at most 2000 points per call. Points are never filled in: if a pool is not read yet, `complete` is `false` and `pendingPools` lists it.
+
+Read the figures with these rules:
+
+* **Versions.** Each version is one Meteora DBC config and never changes; `v1` is the only one today. Each token has its `version` and `dbcConfig`.
+* **Fees** are `{ generated, claimed, unclaimed }` per recipient, in SOL. Pool fees are counted only in SOL.
+* **`lockedLiquidity`** is the 2 positions locked at graduation (creator 90%, Deside 10%). Other liquidity is in `thirdPartyLiquidity`.
+* **`holders`** counts wallets with a balance; program-owned accounts are left out and counted in `programOwnedAccounts`. A bot's wallet counts.
+* **Curve volume** is `null` for a version with a dynamic fee until every swap is read. v1 has none.
+* **`graduatedAt`** is the time of the migration transaction.
+* **History pool fees** are split only into `lp`, `meteora` and `referral`. The split by position is only in `/v1/stats` (see `feeNote`).
+* **`marketCapUsd` in history** has values only from 2026-10-05; earlier points are `null`.
+* **`solUsd`** comes from Jupiter Price v3.
+
+**The statistics routes allow 10 requests a minute per IP.** Over it they answer `429`.
+
 ## Limits
 
 | Limit | Value |

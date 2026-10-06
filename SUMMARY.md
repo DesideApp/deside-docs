@@ -13,6 +13,7 @@
 - [REST Quickstart](launchpad/docs/rest-quickstart.md)
 - [Operations Reference](launchpad/docs/operations.md)
 - [Fees And Rules](launchpad/docs/fees-and-rules.md)
+- [Statistics Reference](launchpad/docs/stats.md)
 
 ## API
 

@@ -2,6 +2,11 @@
 
 This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
+## 2026-10-06
+
+- Launchpad statistics added, with no key: `GET /v1/stats` (totals, totals per version and one row per token), `GET /v1/stats/history` and `GET /v1/tokens/{mint}/history` (points per `hour` or `day`, at most 2000 per call, never filled in). The statistics routes allow 10 requests a minute per IP. See [Statistics reference](launchpad/docs/stats.md).
+- `GET /v1/tokens/{mint}` and `get_token` carry a `launchpad` block for tokens launched here: version, launch and graduation dates, volume, fees by recipient, locked liquidity, price, market cap and holders. The other fields do not change.
+
 ## 2026-10-04
 
 - The Agent Token Launchpad is called the Deside Launchpad in these docs. Its routes, tools and URLs do not change.

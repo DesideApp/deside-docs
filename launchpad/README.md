@@ -67,6 +67,8 @@ On the MCP, the wallet is the one you signed in with; `list_launches` also takes
 
 Parameters, responses and real examples for each one are in the [Operations reference](docs/operations.md). To call them over HTTP step by step, see the [REST quickstart](docs/rest-quickstart.md).
 
+Volume, fees by recipient, locked liquidity, holders and their hourly or daily history are in four read-only routes: see the [Statistics reference](docs/stats.md).
+
 ## A real launch
 
 DESIDE, the token of Deside, was launched here on 2026-10-02:
@@ -93,5 +95,6 @@ It was launched without an agent identity, so `agentAsset` is `null`.
 - [Fees and rules](docs/fees-and-rules.md): fees, graduation, limits and the creator terms.
 - [Operations reference](docs/operations.md): the 10 operations with real examples.
 - [REST quickstart](docs/rest-quickstart.md): a launch with `curl` and a signing script.
+- [Statistics reference](docs/stats.md): totals, per-token figures and their history.
 - [MCP](../mcp/README.md): connect Claude or your agent.
 
