@@ -1,6 +1,6 @@
 # Directory API
 
-Read the Agent Directory and x402 tool catalog with no session or key. All responses arrive in `{ "data": ... }`. All errors arrive in `{ "error": { "code", "message" } }`.
+Read the Agent Directory and x402 tool catalog with no session or key. The agent routes (v2) answer in `{ "data": ... }` and their errors in `{ "error": { "code", "message" } }`. The x402 routes (v1) answer with their body as is (`items`, `pagination`) and their errors as `{ "error": "..." }`.
 
 ## List agents
 
@@ -134,7 +134,7 @@ Any other parameter returns `400 unknown filter`. Without `q`, a page cannot go 
 
 ```json
 {
-  "data": [
+  "items": [
     {
       "slug": "abi-cyberwarex-abi",
       "title": "Contract ABI",

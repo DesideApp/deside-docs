@@ -1,6 +1,6 @@
 # MCP tools reference
 
-The Deside MCP has 22 tools. Read tools need `deside:read`; tools that prepare, send or change something need `deside:write`.
+The Deside MCP has 24 tools. Read tools need `deside:read`; tools that prepare, send or change something need `deside:write`.
 
 **A tool that changes something returns an unsigned transaction. Nothing happens until you sign it.**
 
@@ -13,6 +13,8 @@ On success, fields arrive in `structuredContent`. On failure, `isError: true`; s
 | `ask_directory` | read | No |
 | `get_directory_stats` | read | No |
 | `token_card` | read | No |
+| `search_x402_tools` | read | No |
+| `x402_tool_card` | read | No |
 | `get_user_info` | read | No |
 | `get_my_identity` | read | No |
 | `list_my_agent_identities` | read | No |
@@ -64,11 +66,19 @@ Finds agents from a question in plain words. Free when signed in (10 a minute). 
 
 ### get_directory_stats
 
-The directory counts. No parameters. Returns `listed` (total), `byChain`, `byCategory`, `respondingAgents`, `respondingByKind` (how many answered on each protocol), `connected`, `endpoints` (by protocol: declared, checked, alive), `measuredAt`.
+The directory counts. No parameters. Returns `listed` (total), `byChain`, `byCategory`, `respondingAgents`, `respondingByKind` (how many answered on each protocol), `connected`, `endpoints` (by protocol: declared, checked, alive), `measuredAt`, and `x402Tools`: the x402 tool counts as `GET https://api.deside.io/api/v1/public/x402/census` returns them (`tools`, `hosts`, `wallets`, `bazaars`, `byBazaar`, `byNetwork`, `byVerdict`, `projectedAt`), or `null` when only those counts cannot be read.
 
 ### token_card
 
 Read one Solana token on Deside. Takes `mint` (base58, 32 to 44 characters). Returns `market` (`phase`, `priceUsd`, `marketCapUsd`, `priceChange24h`, `priceObservedAt`), `behindToken` (related agents, tools and links, each marked Declared, Matched or Verified owner), `claim` (ways to prove ownership).
+
+### search_x402_tools
+
+Finds x402 tools. Same filters and body as `GET https://api.deside.io/api/v1/public/x402/tools` (fields in directory-api.md). All parameters optional: `q` (text, up to 512; one page, not with `cursor`), `host` (exact), `bazaar` (`cdp`, `payai`, `dexter`, `thirdweb` or `openfac`), `payTo` (receiving wallet), `network` (CAIP-2, such as `eip155:8453`), `index` (x402 index URL; not with `agent`), `agent` (a `catalogId` from `search_agents`: the tools it lists; not with `index`), `live` (`true`: only tools that answered the last check), `limit` (1 to 100, default 25), `cursor` (`pagination.nextCursor` of the previous page, same filters). Returns `items` and `pagination`, plus `agent` when you filter by agent. A rejected combination returns `INVALID_INPUT` with the reason in `message`.
+
+### x402_tool_card
+
+One x402 tool. Takes `slug` (lowercase letters, digits and dashes, 1 to 128, from `search_x402_tools`). Returns the body of `GET https://api.deside.io/api/v1/public/x402/tools/{slug}`: `prices`, payment wallets, `probe` (`verdict`, `at`, `httpStatus`, `quote`), input and output schemas, the bazaars that list it, and `index.agents` (catalogIds of the agents that list it, for `agent_trust_card`). Unknown slug: `NOT_FOUND`.
 
 ## Your identity
 
@@ -224,7 +234,7 @@ Prepares the graduation of a token whose curve is full, paid by your wallet, in 
 
 ## Limits
 
-`search_agents`, `agent_trust_card`, `get_directory_stats` and `token_card` share 20 calls a minute and 100 a day per OAuth client. Over the limit, the MCP returns `RATE_LIMITED` (429). `ask_directory` allows 10 questions a minute per account. Launchpad tools allow 60 requests and 2 launches a minute per wallet.
+`search_agents`, `agent_trust_card`, `get_directory_stats`, `token_card`, `search_x402_tools` and `x402_tool_card` share 20 calls a minute and 100 a day per OAuth client. Over the limit, the MCP returns `RATE_LIMITED` (429). `ask_directory` allows 10 questions a minute per account. Launchpad tools allow 60 requests and 2 launches a minute per wallet.
 
 ## Errors
 

@@ -1,6 +1,6 @@
 # Tools reference
 
-The Deside MCP has 22 tools.
+The Deside MCP has 24 tools.
 Read tools need `deside:read`; tools that prepare, send or change something need `deside:write`. Launchpad tools always act with the wallet you signed in with.
 
 **A tool that changes something returns an unsigned transaction. Nothing moves until you sign it.**
@@ -14,6 +14,8 @@ On success, the tool's fields arrive in `structuredContent` and, as JSON text, i
 | `ask_directory` | read | No |
 | `get_directory_stats` | read | No |
 | `token_card` | read | No |
+| `search_x402_tools` | read | No |
+| `x402_tool_card` | read | No |
 | `get_user_info` | read | No |
 | `get_my_identity` | read | No |
 | `list_my_agent_identities` | read | No |
@@ -67,7 +69,7 @@ Finds agents from a question in plain words. `question`: 3 to 500 characters. Re
 
 ### get_directory_stats
 
-The directory counts. No parameters. Returns the `data` of [`GET /api/v2/public/agents/stats`](../api/public-agents.md#get-stats).
+The directory counts. No parameters. Returns the `data` of [`GET /api/v2/public/agents/stats`](../api/public-agents.md#get-stats), plus `x402Tools`: the body of [`GET /api/v1/public/x402/census`](../api/x402-tools.md#get-publicx402census), or `null` when only that count cannot be read.
 
 ### token_card
 
@@ -78,6 +80,29 @@ Read one Solana token in Deside: its market data and who is behind it.
 | `mint` | string | Yes | Solana mint address (base58, 32 to 44 characters). |
 
 Returns `market` (phase, price, marketCap, change24h), `behindToken` (agents, tools and links related to the token, each with a step: Declared, Matched or Verified owner) and `claim` (the ways the owner can prove ownership: wallet, x, or domain via dns or deside-json, marked as Verified domain).
+
+### search_x402_tools
+
+Finds tools in the x402 Tool Directory. Same filters and same body as [`GET /api/v1/public/x402/tools`](../api/x402-tools.md#get-publicx402tools).
+
+| Name | Type | Required | Description |
+|---|---|---|---|
+| `q` | string | No | Text in title, host and description, up to 512 characters. Returns one page. Not together with `cursor`. |
+| `host` | string | No | Exact host, such as `api.deside.io`. |
+| `bazaar` | string | No | `cdp`, `payai`, `dexter`, `thirdweb` or `openfac`. |
+| `payTo` | string | No | Wallet that receives the payment. |
+| `network` | string | No | Payment network in CAIP-2, such as `eip155:8453`. |
+| `index` | string | No | URL of an x402 index, up to 2,048 characters. Not together with `agent`. |
+| `agent` | string | No | An agent's `catalogId` from `search_agents`: the tools it lists. Not together with `index`. |
+| `live` | boolean | No | `true`: only tools that answered the last check. |
+| `limit` | integer | No | 1 to 100. Default 25. |
+| `cursor` | string | No | `pagination.nextCursor` of the previous page, with the same filters. |
+
+Returns `items` and `pagination`, plus `agent` when you filter by `agent`. A combination the API rejects comes back as `INVALID_INPUT`, with the reason in `message`.
+
+### x402_tool_card
+
+One x402 tool. `slug`: lowercase letters, digits and dashes, 1 to 128, from `search_x402_tools`. Returns the body of [`GET /api/v1/public/x402/tools/{slug}`](../api/x402-tools.md#get-publicx402toolsslug), including `index.agents`: the agents that list the tool. An unknown slug returns `NOT_FOUND`.
 
 ## Your identity
 
@@ -188,4 +213,4 @@ Prepares the migration of a curve that reached its threshold. Takes `mint`. Mete
 
 ## Limits
 
-`search_agents`, `agent_trust_card`, `get_directory_stats` and `token_card` share a limit of 20 calls a minute and 100 a day per OAuth client. The MCP enforces this limit and returns `RATE_LIMITED` (429) when you exceed it. See [Errors and limits](errors.md).
+`search_agents`, `agent_trust_card`, `get_directory_stats`, `token_card`, `search_x402_tools` and `x402_tool_card` share a limit of 20 calls a minute and 100 a day per OAuth client. The MCP enforces this limit and returns `RATE_LIMITED` (429) when you exceed it. See [Errors and limits](errors.md).

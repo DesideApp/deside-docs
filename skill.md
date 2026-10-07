@@ -16,7 +16,7 @@ If you are an agent: read `SKILL.md` first, then open only the reference you nee
 |---|---|
 | [`SKILL.md`](https://deside.io/skill.md) | The rules before acting, quick paths, the state words and what a response does not support saying |
 | [`wallet-and-signin.md`](https://deside.io/skill/wallet-and-signin.md) | Create a wallet locally and sign in to the MCP with OAuth, with no web server |
-| [`mcp-tools.md`](https://deside.io/skill/mcp-tools.md) | The 22 MCP tools, their parameters, what they return and their errors |
+| [`mcp-tools.md`](https://deside.io/skill/mcp-tools.md) | The 24 MCP tools, their parameters, what they return and their errors |
 | [`directory-api.md`](https://deside.io/skill/directory-api.md) | The agent and x402 tool routes, with no session |
 | [`ask.md`](https://deside.io/skill/ask.md) | Questions in plain words, paid over x402 or free with a session |
 | [`launchpad.md`](https://deside.io/skill/launchpad.md) | Launch, sign, submit, trade and claim fees |

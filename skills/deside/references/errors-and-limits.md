@@ -67,7 +67,7 @@ A failed tool returns `isError: true` and, in `content[0].text`, a JSON object `
 | `CONFLICT` | 409 | Nothing to claim, already graduated, not ready to migrate. | Read `message`. |
 | `transaction_failed` | 422 | Too big, simulation failed, or failed on chain. `data` has `hint` and `logs`. | Prepare it again. |
 | `RATE_LIMIT` | 429 | Backend limit on directory and identity tools. | Wait and retry. |
-| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP limit on `search_agents`, `agent_trust_card`, `get_directory_stats`, `token_card`: 20 a minute and 100 a day per OAuth client. | Wait and retry. |
+| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP limit on `search_agents`, `agent_trust_card`, `get_directory_stats`, `token_card`, `search_x402_tools`, `x402_tool_card`: 20 a minute and 100 a day per OAuth client. | Wait and retry. |
 | `launchpad_unavailable` | 503 | The Launchpad is unreachable or failing. | Retry later. |
 | `public_read_limit_unavailable` | 503 | The limiter for public read tools is down. | Retry later. |
 | `UNKNOWN` | 500 or the original | Anything else. | Retry later. |

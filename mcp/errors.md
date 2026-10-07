@@ -19,7 +19,7 @@ A tool that fails returns `isError: true` and, in `content[0].text`, a JSON obje
 | `CONFLICT` | 409 | The state does not allow it: nothing to claim, already graduated, not ready to migrate. | |
 | `transaction_failed` | 422 | Launchpad: the transaction is too big, its simulation failed, or it failed on chain. `data` carries `hint` and `logs`. | Prepare it again. |
 | `RATE_LIMIT` | 429 | Backend 429 on directory and identity tools. | Wait and retry. |
-| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP's own limit on the 4 public read tools. | Wait and retry. |
+| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP's own limit on the 6 public read tools. | Wait and retry. |
 | `launchpad_unavailable` | 503 | The Launchpad is unreachable or failing. | Retry later. |
 | `public_read_limit_unavailable` | 503 | The limiter for public read tools is unavailable. | Retry later. |
 | `UNKNOWN` | 500 or the original | Anything else. | Retry later. |

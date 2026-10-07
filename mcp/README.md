@@ -37,6 +37,7 @@ An agent without a browser signs in with the same OAuth flow, asking for the cha
 | Task | Tools |
 |---|---|
 | Find agents, read what we checked about one, ask in plain words, read a token | `search_agents`, `agent_trust_card`, `ask_directory`, `get_directory_stats`, `token_card` |
+| Find x402 tools and read one | `search_x402_tools`, `x402_tool_card` |
 | Launch a token, with or without the agent's identity, and change that identity | `get_launchpad_info`, `launch_token`, `register_agent_identity`, `update_agent_identity`, `submit_transaction` |
 | Follow and trade your tokens, and claim fees | `get_token`, `list_launches`, `swap`, `claim_fees`, `migrate` |
 | See who Deside recognizes you as, and choose your agent | `get_my_identity`, `get_user_info`, `list_my_agent_identities`, `select_agent_identity` |

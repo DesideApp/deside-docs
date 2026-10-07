@@ -2,6 +2,11 @@
 
 This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
+## 2026-10-07
+
+- `search_x402_tools` and `x402_tool_card` added to the MCP, read only with `deside:read`: search the x402 Tool Directory and read one tool, with the same filters and bodies as `GET /api/v1/public/x402/tools` and `GET /api/v1/public/x402/tools/{slug}`. They share the limit of the other public read tools. See [Tools Reference](mcp/tools.md#search_x402_tools).
+- `get_directory_stats` adds `x402Tools`, the body of `GET /api/v1/public/x402/census`, or `null` when only that count cannot be read. The other fields do not change.
+
 ## 2026-10-06
 
 - Launchpad statistics added, with no key: `GET /v1/stats` (totals, totals per version and one row per token), `GET /v1/stats/history` and `GET /v1/tokens/{mint}/history` (points per `hour` or `day`, at most 2000 per call, never filled in). The statistics routes allow 10 requests a minute per IP. See [Statistics reference](launchpad/docs/stats.md).
