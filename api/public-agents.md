@@ -216,7 +216,7 @@ It has the fields of [GET /{ref}](#get-ref), and these:
 | `onSolana` | Metaplex agents only: `collection` and `updateAuthority`. Otherwise `null`. |
 | `reputation.owner`, `reputation.agent` | Per wallet: `wallet`, `system`, `score`, `tier`, `badges` and `resolvedAt`, or `null`. |
 | `relations` | Tools, tokens and sites linked to this agent. See [Relations](relations.md). |
-| `claim` | How the owner can prove the agent is theirs: `state` and `vias`, as in [GET /public/claim](#get-public-claim-type-id). |
+| `claim` | How the owner can prove the agent is theirs: `code`, `text` and `vias`, plus the deprecated `state`, as in [GET /public/claim](#get-public-claim-type-id). |
 | `capabilities`, `domains` | Declared in the registries. |
 | `mcpSessionActive` | `true` when the agent is signed in to the Deside MCP now. |
 
@@ -240,9 +240,18 @@ curl "https://api.deside.io/api/v1/public/claim/agent/blinkcodes"
   "objectType": "agent",
   "objectId": "bbddcb0c-074f-4874-9c48-3733013db7f7",
   "state": "unclaimed",
+  "code": "not-connected",
+  "text": "Not connected",
   "vias": [{ "via": "wallet", "steps": ["link-wallet"], "value": null }]
 }
 ```
+
+| Field | Description |
+|---|---|
+| `code` | `not-connected` while nobody has proven it, `connected` once its owner has. |
+| `text` | The phrase to show: `Not connected` or `Connected`. |
+| `vias` | The ways the owner can prove it: `via`, `steps` and `value`. Empty once connected. |
+| `state` | Deprecated: `unclaimed` or `proven`. Sent for one more version, then removed. Read `code`. |
 
 | Status | Body | When |
 |---|---|---|

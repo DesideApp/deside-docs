@@ -1,6 +1,6 @@
 # Relations
 
-The agent profile carries its [relations](../start/relations.md) in the `relations` field. It needs no key. Each relation uses the keys `kind`, `step` and `vias[].how`.
+The agent profile carries its [relations](../start/relations.md) in the `relations` field. It needs no key. Each relation uses the keys `kind`, `step`, `vias[].code` and `vias[].text`.
 
 | Field | Endpoint |
 | --- | --- |
@@ -12,8 +12,20 @@ The agent profile carries its [relations](../start/relations.md) in the `relatio
 | --- | --- |
 | `kind` | `agent`, `token` or `tool`: the kind of the related object. In an agent profile it is `token` or `tool`. |
 | `step` | `proven`, `matches` or `declared`. |
-| `vias[].how` | `same-wallet`, `same-domain`, `agent-lists-token` or `agent-lists-tool`. |
+| `vias[].code` | The rule of the phrase: `owner-created`, `same-key` or `names`. |
+| `vias[].text` | The phrase, ready to show: for example `Its owner created this token`, `Same website as this token` or `Names this tool`. |
+| `vias[].how` | Deprecated: `same-wallet`, `same-domain`, `agent-lists-token` or `agent-lists-tool`. It is sent for one more version and will be removed. Read `code` and `text`. |
 | `vias[].value` | The shared wallet or domain, or `null` when the agent lists the object. |
+
+What each code means, read from the agent:
+
+| `code` | `text` | When |
+| --- | --- | --- |
+| `owner-created` | `Its owner created this token` | The agent's owner wallet created the token. |
+| `same-key` | `Same wallet as this tool`, `Same website as this token`, `Same website as this tool` | Both sides carry the wallet or website in `value`. |
+| `names` | `Names this token`, `Names this tool` | The agent's registry entry names it as its own. |
+
+Show `text` as it comes. Do not build the phrase from `code`: the wording can change, the code does not.
 
 What each step means:
 
@@ -31,7 +43,7 @@ This reads the relations of one agent:
 curl "https://api.deside.io/api/v2/public/agents/mizuki-the-mech-cmeh/profile"
 ```
 
-The `relations` field of the response, real on 2026-10-01:
+The `relations` field of the response, real on 2026-10-07:
 
 ```json
 {
@@ -42,8 +54,8 @@ The `relations` field of the response, real on 2026-10-01:
       "id": "solana:DwquZcs2JtPe2w9xfyqF9wDnySQXLBHTMawusJ8Uk1mi",
       "step": "matches",
       "vias": [
-        { "how": "agent-lists-token", "value": null },
-        { "how": "same-wallet", "value": "638VSKkGvrxstYoGdRbxhofuKXVFCtPZqKiyXVWPCmeH" }
+        { "how": "agent-lists-token", "code": "names", "text": "Names this token", "value": null },
+        { "how": "same-wallet", "code": "owner-created", "text": "Its owner created this token", "value": "638VSKkGvrxstYoGdRbxhofuKXVFCtPZqKiyXVWPCmeH" }
       ],
       "card": {
         "chain": "solana",
@@ -65,7 +77,7 @@ The `relations` field of the response, real on 2026-10-01:
 | `items[].kind` | string | `token` or `tool`. |
 | `items[].id` | string | Its id. A token is `solana:<mint>` or `evm:<address>`. A tool is its URL. |
 | `items[].step` | string | `proven`, `matches` or `declared`. |
-| `items[].vias` | array | What connects the two objects, each `{ how, value }`. |
+| `items[].vias` | array | What connects the two objects, each `{ code, text, value }`, plus the deprecated `how`. See [The shared keys](#the-shared-keys). |
 | `items[].card` | object or null | The related object: `chain`, `address`, `name`, `symbol` for a token; `slug`, `title`, `host` for a tool. `null` when Deside has no record of it. |
 
 ## What the keys do not mean

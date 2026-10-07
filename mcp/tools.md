@@ -79,7 +79,9 @@ Read one Solana token in Deside: its market data and who is behind it.
 |---|---|---|---|
 | `mint` | string | Yes | Solana mint address (base58, 32 to 44 characters). |
 
-Returns `market` (phase, price, marketCap, change24h), `behindToken` (agents, tools and links related to the token, each with a step: Declared, Matched or Verified owner) and `claim` (the ways the owner can prove ownership: wallet, x, or domain via dns or deside-json, marked as Verified domain).
+Returns `market` (`phase`, `priceUsd`, `marketCapUsd`, `priceChange24h`), `behindToken` (agents, tools and links related to the token, each with a step: Declared, Matched or Verified owner) and `claim` (`code` and `text`, `Connected` or `Not connected`, and the ways the owner can prove ownership: wallet, x, or domain via dns or deside-json, marked as Verified domain).
+
+In `behindToken`, each related agent or tool carries `vias[]`, each with a `code` and a `text` read from the token: `created-by-owner-of` (`Created by this agent's owner`), `same-key` (for example `Same website as this agent`) or `named-by` (`Named by this agent`). A Verified owner row also carries `proof`, with `code` `connected-by` and a `text` such as `Connected by website`. Show `text` as it comes. The old `how` and `howText` of each via are deprecated and will be removed.
 
 ### search_x402_tools
 

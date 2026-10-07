@@ -70,7 +70,7 @@ The directory counts. No parameters. Returns `listed` (total), `byChain`, `byCat
 
 ### token_card
 
-Read one Solana token on Deside. Takes `mint` (base58, 32 to 44 characters). Returns `market` (`phase`, `priceUsd`, `marketCapUsd`, `priceChange24h`, `priceObservedAt`), `behindToken` (related agents, tools and links, each marked Declared, Matched or Verified owner), `claim` (ways to prove ownership).
+Read one Solana token on Deside. Takes `mint` (base58, 32 to 44 characters). Returns `market` (`phase`, `priceUsd`, `marketCapUsd`, `priceChange24h`, `priceObservedAt`), `behindToken` (related agents, tools and links, each marked Declared, Matched or Verified owner; each via carries `code` and `text`, for example `created-by-owner-of` and `Created by this agent's owner`), `claim` (`code` and `text`: `connected` and `Connected`, or `not-connected` and `Not connected`; and the ways to prove ownership). Quote `text` as it comes. The old `how`, `howText` and `claim.state` are deprecated and will be removed.
 
 ### search_x402_tools
 

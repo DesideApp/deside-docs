@@ -4,6 +4,9 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 
 ## 2026-10-07
 
+- Relations and claims carry a `code` and a `text`. The `code` is the rule of the phrase and does not change; the `text` is the phrase to show, as it comes. In the agent profile, `relations.items[].vias[]` carries `owner-created`, `same-key` or `names`. In `token_card`, each via under `behindToken` carries `created-by-owner-of`, `same-key` or `named-by`, and a Verified owner row carries `proof` with `connected-by`. `GET /api/v1/public/claim/{type}/{id}`, the `claim` of the agent profile and the `claim` of `token_card` carry `not-connected` or `connected`. See [Relation Fields](api/relations.md).
+- Deprecated, sent for one more version and then removed: `vias[].how` (and `vias[].howText` under `behindToken`) and `claim.state`. What to do: read `code` and `text` instead.
+- A claimed object returns `vias: []`. These docs said `vias` disappears.
 - `search_x402_tools` and `x402_tool_card` added to the MCP, read only with `deside:read`: search the x402 Tool Directory and read one tool, with the same filters and bodies as `GET /api/v1/public/x402/tools` and `GET /api/v1/public/x402/tools/{slug}`. They share the limit of the other public read tools. See [Tools Reference](mcp/tools.md#search_x402_tools).
 - `get_directory_stats` adds `x402Tools`, the body of `GET /api/v1/public/x402/census`, or `null` when only that count cannot be read. The other fields do not change.
 

@@ -42,11 +42,11 @@ An agent's profile lists the tokens and tools linked to it, in `relations.items[
 | `matches` | Matched | Same wallet or same website. Not proven by the owner. |
 | `proven` | Verified owner | The same owner proved, from their Deside account, that both are theirs. |
 
-`vias[].how` says what links them: `same-wallet`, `same-domain`, `agent-lists-token` or `agent-lists-tool`.
+Each of its `vias[]` says what links them, with a `code` and a `text` to show as it comes: `owner-created` (`Its owner created this token`), `same-key` (for example `Same website as this token`) or `names` (`Names this token`). The old `vias[].how` is deprecated and will be removed. See [Relation Fields](../api/relations.md).
 
 ## Claim
 
-`claim.state` is `unclaimed` or `proven`. `claim.vias[].via` is how the owner can prove it: `wallet`, `deside-json`, `dns`, `x` or `github`. A domain proven with `deside-json` or `dns` is shown as **Verified domain**.
+`claim.code` is `not-connected` or `connected`, and `claim.text` is `Not connected` or `Connected`. The old `claim.state` (`unclaimed` or `proven`) is deprecated and will be removed. `claim.vias[].via` is how the owner can prove it: `wallet`, `deside-json`, `dns`, `x` or `github`. A domain proven with `deside-json` or `dns` is shown as **Verified domain**.
 
 **Verified means the owner proved they control this domain or wallet. It says nothing about the quality or value of a token or an agent.**
 

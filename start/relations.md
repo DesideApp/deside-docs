@@ -24,7 +24,7 @@ Today relations are shown on an agent's profile, in the Related section, and on 
 
 **Declared means one side names the other.** An agent's registry entry names a token or an x402 tool as its own. Nobody has checked it: anyone could have written it.
 
-Example: the registry entry of the agent `mizuki-the-mech` names the token MIZUKI as its own. The token page shows that agent as `Declared`, with the via `This agent lists this token as its own`.
+Example: the registry entry of the agent `mizuki-the-mech` names the token MIZUKI as its own. The token page shows that agent as `Declared`, with the via `Named by this agent`. The agent's profile shows the same link as `Names this token`.
 
 ### Matched
 
@@ -35,7 +35,7 @@ Example: the registry entry of the agent `mizuki-the-mech` names the token MIZUK
 
 Each side must bring its own datum. A registry entry that names a token is a declaration, not a match, however many times it is repeated.
 
-Example: the agent `mizuki-the-mech-cmeh` has owner wallet `638V…CmeH`, and the token MIZUKI was created by the same wallet. The relation reads `Matched`, with the via `Created by this agent's owner`.
+Example: the agent `mizuki-the-mech-cmeh` has owner wallet `638V…CmeH`, and the token MIZUKI was created by the same wallet. The relation reads `Matched`. Both pages show the via `Created by this agent's owner`. On the API, the agent profile carries it as `Its owner created this token`.
 
 ### Verified owner
 
@@ -45,13 +45,16 @@ When two different accounts have proven the two sides, the relation is marked as
 
 ## How a relation is connected
 
-Each relation lists one or more vias, the facts that connect it:
+Each relation lists one or more vias, the facts that connect it. A via is read from the side you are looking at, so the same fact has one phrase on the token's page and another on the agent's profile:
 
-| Via | Shown as | Meaning |
-| --- | --- | --- |
-| Same wallet | `Created by this agent's owner` | Both sides carry this wallet. |
-| Same domain | `Same website as this agent` (on a token's page) | Both sides carry this domain. |
-| Agent names it | `This agent lists this token as its own`, `This agent lists this tool as its own` | The agent's registry entry names the token or tool as its own. |
+| Via | On a token's page | On an agent's profile | Meaning |
+| --- | --- | --- | --- |
+| Same wallet, agent and token | `Created by this agent's owner` | `Created by this agent's owner` | The agent's owner wallet created the token. |
+| Same wallet, other pairs | `Same wallet as this tool` | `Same wallet as this tool` | Both sides carry this wallet. |
+| Same domain | `Same website as this agent`, `Same website as this tool` | `Same website as this token`, `Same website as this tool` | Both sides carry this domain. |
+| The agent names it | `Named by this agent` | `Names this token`, `Names this tool` | The agent's registry entry names the token or tool as its own. |
+
+On the API each via carries a `code`, the rule of the phrase, and a `text`, the phrase itself. In the agent profile, the same wallet between agent and token reads `Its owner created this token`. The codes are in [Relation Fields](../api/relations.md).
 
 A relation can have several vias. The relation in the Matched example above has two: the same wallet, and the agent's registry entry naming the token.
 
@@ -72,12 +75,12 @@ An X account can be named by anyone. A token's metadata can name `@solana` witho
 
 A token is not a product of Deside: it is one of the three kinds of record, and its page answers one question, who is behind it. The answer is the list of its relations, under Behind this token, each with its step. The summary line names the strongest of them.
 
-On 2026-10-01 the token MIZUKI read `Mizuki the Mech · registered agent · X declared`, with step Matched. It had two relations to agents:
+On 2026-10-07 the token MIZUKI read `Mizuki the Mech · agent matched · X declared`, with step Matched. It had two relations to agents:
 
 | Agent | Step | Vias |
 | --- | --- | --- |
-| `mizuki-the-mech-cmeh` | Matched | `Created by this agent's owner`, `This agent lists this token as its own` |
-| `mizuki-the-mech` | Declared | `This agent lists this token as its own` |
+| `mizuki-the-mech-cmeh` | Matched | `Created by this agent's owner`, `Named by this agent` |
+| `mizuki-the-mech` | Declared | `Named by this agent` |
 
 Only the first agent shares a wallet with the token. The second only names the token in its registry entry, so it stays Declared.
 

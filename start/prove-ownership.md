@@ -135,6 +135,8 @@ Response:
   "objectType": "token",
   "objectId": "solana:DwquZcs2JtPe2w9xfyqF9wDnySQXLBHTMawusJ8Uk1mi",
   "state": "unclaimed",
+  "code": "not-connected",
+  "text": "Not connected",
   "vias": [
     {
       "via": "wallet",
@@ -150,7 +152,20 @@ Response:
 }
 ```
 
-Each via is a way to claim it. Once claimed, `state` becomes `proven` and `vias` disappears.
+Each via is a way to claim it. `code` and `text` say where it stands: `not-connected` and `Not connected` while nobody has proven it, `connected` and `Connected` once its owner has. Then `vias` is empty. The token DESIDE, real on 2026-10-07:
+
+```json
+{
+  "objectType": "token",
+  "objectId": "solana:Ec9FVEahXUhQRkPneCmDYzXc3jFZWX4URcLfyPwHaRE1",
+  "state": "proven",
+  "code": "connected",
+  "text": "Connected",
+  "vias": []
+}
+```
+
+`state` (`unclaimed` or `proven`) is deprecated. It is sent for one more version and will be removed: read `code`.
 
 ## Verified domain
 
