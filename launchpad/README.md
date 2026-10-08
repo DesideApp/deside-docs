@@ -69,6 +69,8 @@ Parameters, responses and real examples for each one are in the [Operations refe
 
 Volume, fees by recipient, locked liquidity, holders and their hourly or daily history are in four read-only routes: see the [Statistics reference](docs/stats.md).
 
+What DESIDE does in the Deside trading app, its fee table, weekly buyback, burn and daily supply, is in one read-only route: see the [DESIDE reference](docs/deside.md).
+
 ## A real launch
 
 DESIDE, the token of Deside, was launched here on 2026-10-02:
@@ -96,5 +98,6 @@ It was launched without an agent identity, so `agentAsset` is `null`.
 - [Operations reference](docs/operations.md): the 10 operations with real examples.
 - [REST quickstart](docs/rest-quickstart.md): a launch with `curl` and a signing script.
 - [Statistics reference](docs/stats.md): totals, per-token figures and their history.
+- [DESIDE reference](docs/deside.md): DESIDE in the trading app, fees, buyback and burn.
 - [MCP](../mcp/README.md): connect Claude or your agent.
 

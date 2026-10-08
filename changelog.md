@@ -2,6 +2,11 @@
 
 This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
+## 2026-10-08
+
+- `GET /v1/deside?network=mainnet` added on the Launchpad, with no key: the fee table of the Deside trading app, the weekly DESIDE buyback per fee currency, what each burn destroyed and sent to the Deside USDC Liquidity wallet (read on chain), totals, and one point a day of the DESIDE supply and the liquidity balance. Amounts are strings in base units. Weeks run Monday to Monday UTC from 2026-10-05; days start on 2026-10-08 and no gap is filled. See [DESIDE reference](launchpad/docs/deside.md).
+- `GET https://api.deside.io/api/v1/trading/fees` documented: the public fee table of the trading app, with the DESIDE tiers. See [DESIDE reference](launchpad/docs/deside.md#get-api-v1-trading-fees).
+
 ## 2026-10-07
 
 - Relations and claims carry a `code` and a `text`. The `code` is the rule of the phrase and does not change; the `text` is the phrase to show, as it comes. In the agent profile, `relations.items[].vias[]` carries `owner-created`, `same-key` or `names`. In `token_card`, each via under `behindToken` carries `created-by-owner-of`, `same-key` or `named-by`, and a Verified owner row carries `proof` with `connected-by`. `GET /api/v1/public/claim/{type}/{id}`, the `claim` of the agent profile and the `claim` of `token_card` carry `not-connected` or `connected`. See [Relation Fields](api/relations.md).

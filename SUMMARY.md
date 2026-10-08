@@ -14,6 +14,7 @@
 - [Operations Reference](launchpad/docs/operations.md)
 - [Fees And Rules](launchpad/docs/fees-and-rules.md)
 - [Statistics Reference](launchpad/docs/stats.md)
+- [DESIDE Reference](launchpad/docs/deside.md)
 
 ## API
 

@@ -222,6 +222,14 @@ Read the figures with these rules:
 
 **The statistics routes allow 10 requests a minute per IP.** Over it they answer `429`.
 
+## DESIDE in the trading app
+
+`GET https://launchpad.deside.io/v1/deside?network=mainnet` (mainnet only, no key, same limit as the statistics routes, refreshed once an hour) returns what DESIDE does in the Deside trading app: holding DESIDE lowers the fee on other tokens, and part of each fee buys back DESIDE once a week, half burned and half sent as USDC to the Deside USDC Liquidity wallet.
+
+It returns `mint`, `wallets` (`feeOwner`, `liquidity`), `fees` (the table of `GET https://api.deside.io/api/v1/trading/fees` as is, or `null`), `weeks[]` (Monday to Monday UTC from 2026-10-05, with the buyback owed per fee mint in `byMint[]` and the on-chain `burn`, or `null`), `totals` and `days[]` (DESIDE supply, burned to date and liquidity USDC, one point per UTC day, gaps not filled).
+
+**Every `*Raw` field is a string in base units.** DESIDE and USDC have 6 decimals; a `byMint` row carries its own `decimals` (SOL is 9). Full reference: https://docs.deside.io/launchpad/docs/deside
+
 ## Limits
 
 | Limit | Value |
