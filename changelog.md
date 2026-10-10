@@ -2,6 +2,12 @@
 
 This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
+## 2026-10-10
+
+- The fee table of the Deside trading app changed at 12:30 UTC. Deside Launchpad tokens, DESIDE included, pay no Deside fee (`launchpadBps` `0`). Other tokens pay 0.25% with no tier and 0.20%, 0.15% or 0.10% with a DESIDE tier; converting SOL to USDC stays at 0.10%. 20% of every fee charged now goes to the buyback, with or without a tier: before, only trades in a tier set anything aside. See [DESIDE reference](launchpad/docs/deside.md#get-api-v1-trading-fees).
+- `GET https://api.deside.io/api/v1/trading/fees` adds `restBuybackBpsX100`, `convertBuybackBpsX100` and `thresholdSteps`: the ladder of 17 steps that sets how much DESIDE each tier needs from the DESIDE market cap, the step in force and the day it started. `tiers[].minDeside` are the amounts of the step in force. The other fields do not change.
+- `weeks[].byMint[].trades` in `GET /v1/deside` counts the trades that set aside more than 0, with or without a tier.
+
 ## 2026-10-08
 
 - `GET /v1/deside?network=mainnet` added on the Launchpad, with no key: the fee table of the Deside trading app, the weekly DESIDE buyback per fee currency, what each burn destroyed and sent to the Deside USDC Liquidity wallet (read on chain), totals, and one point a day of the DESIDE supply and the liquidity balance. Amounts are strings in base units. Weeks run Monday to Monday UTC from 2026-10-05; days start on 2026-10-08 and no gap is filled. See [DESIDE reference](launchpad/docs/deside.md).
