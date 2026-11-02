@@ -52,7 +52,7 @@ Deside never asks for your secret key or seed phrase. Don't paste them anywhere 
 
 ## Next steps
 
-- [API](api/README.md): every public route, with real responses.
+- [API](api/README.md): the agent and x402 routes, with real responses.
 - [MCP](mcp/README.md): sign-in, the tools and their errors.
 - [Deside Launchpad](launchpad/README.md): how a launch works, fees and a real example.
 - [Changelog](changelog.md): what changed in the contracts and what to do about it.

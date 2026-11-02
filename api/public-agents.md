@@ -184,7 +184,7 @@ It has the list fields, and these:
 | `sources` | Each registry entry: `registry` and its `entryId`. |
 | `ownerScore` | The owner wallet's score: `system`, `score`, `tier`. Only when two registries list the agent; otherwise `null`. |
 | `endpoints[]` | Endpoints that answered our check: `kind`, `url`, `evidence`, `version`, `latencyMs`, `checkedAt`. |
-| `services[]` | Everything the agent declares: `kind`, `url`, `live`, `checkedAt`, `version`. An x402 service also has `x402` with `state`, `tools` and `indexes[]`. |
+| `services[]` | Everything the agent declares: `kind`, `url`, `live`, `checkedAt`, `version`. An x402 service also has `x402` with `state`, `tools` and `indexes[]`. It also has `probe`: `verdict`, `reason` and `probedAt` of our last probe of that URL; the whole probe is in [`GET /public/x402/probes`](x402-tools.md#get-publicx402probes). |
 | `links` | Declared links, by name. |
 | `skills` | Declared skills. |
 | `updatedAt` | When the entry last changed. |

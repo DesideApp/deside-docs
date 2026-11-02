@@ -40,6 +40,7 @@ Then follow [Quickstart](quickstart.md) to filter, page and read one agent.
 | `GET /api/v1/public/x402/tools/{slug}` | One x402 tool |
 | `GET /api/v1/public/x402/census` | x402 Tool Directory counts |
 | `GET /api/v1/public/x402/indices` | x402 indexes that agents publish |
+| `GET /api/v1/public/x402/probes` | The whole last probe of an x402 tool or agent |
 
 All paths start with `https://api.deside.io`.
 
@@ -48,7 +49,7 @@ All paths start with `https://api.deside.io`.
 | What | Value |
 |---|---|
 | Base URL | `https://api.deside.io` |
-| OpenAPI | `https://api.deside.io/openapi.json` (the v1 routes: x402, Ask and claim) |
+| OpenAPI | `https://api.deside.io/openapi.json` (the routes on this page except `/public/x402/probes`) |
 | Response format | JSON, field names in English |
 
 ## Next steps
