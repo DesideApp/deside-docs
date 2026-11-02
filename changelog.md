@@ -6,6 +6,19 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 
 - The MCP accepts only the scopes `deside:read`, `deside:write` and `llm:invoke`. Any other scope in `POST /oauth/register` or `GET /oauth/authorize` answers `invalid_scope`. Clients already connected keep the access they had. What to do: request `deside:read`, and `deside:write` only to prepare, send or change something.
 
+## 2026-11-01
+
+- `GET https://api.deside.io/api/v1/public/x402/probes` added, with no key: the whole last probe of an x402 tool (`tool` or `url`) or of the x402 URLs an agent declares (`agent`), with the HTTP status, the response, the offer, the price and wallet checks, the latency and the last 10 verdicts. Everything under `response.untrusted` is third-party text. See [x402 Tools](api/x402-tools.md#get-publicx402probes).
+- `GET /api/v1/public/x402/tools` adds `verdict` (`offer`, `no-offer`, `no-endpoint`, `no-response`, `blocked`, `unprobed`). It cannot be combined with `live`.
+- `GET /api/v1/public/x402/census` counts the tools never probed as `unprobed` in `byVerdict`, which now sums to `tools`.
+- An `x402` service in `GET /api/v2/public/agents/{ref}` and `/{ref}/profile` carries `probe`: `verdict`, `reason` and `probedAt`.
+- `get_x402_probe`, `get_x402_census` and `list_x402_indexes` added to the MCP, read only with `deside:read`. The MCP has 27 tools.
+- `search_agents` takes the filters of deside.io/agents: `category`, `live`, `connected`, `skill`, `duplicates` and `sort`; `limit` goes up to 100 and `offset` up to 5000. It returns `limit`, `offset` and `facets`. `capability` was removed: it did not filter anything. What to do: use `category` or `service`.
+- `agent_trust_card` returns the fields of `/{ref}/profile`, among them `token`, `holdings`, `relations` and `claim`, without the raw registry documents. The full list is in [Tools](mcp/tools.md).
+- `search_x402_tools` adds `verdict`, and through the MCP its cursor reaches the last tool.
+- The public read tools of the MCP are nine and share 20 calls a minute and 2,000 a day per OAuth client (it was 100 a day).
+- A failed tool also returns its error in `structuredContent`. A request to the MCP without a token answers `401` with `WWW-Authenticate`, whatever the method.
+
 ## 2026-10-10
 
 - The fee table of the Deside trading app changed at 12:30 UTC. Deside Launchpad tokens, DESIDE included, pay no Deside fee (`launchpadBps` `0`). Other tokens pay 0.25% with no tier and 0.20%, 0.15% or 0.10% with a DESIDE tier; converting SOL to USDC stays at 0.10%. 20% of every fee charged now goes to the buyback, with or without a tier: before, only trades in a tier set anything aside. See [DESIDE reference](launchpad/docs/deside.md#get-api-v1-trading-fees).
