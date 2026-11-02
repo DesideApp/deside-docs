@@ -32,7 +32,7 @@ Read with the API, no session: find agents, read x402 tools, ask questions. Do e
 |---|---|---|
 | Find agents | API | `GET https://api.deside.io/api/v2/public/agents` |
 | Find agents with a question | API or MCP | `POST https://api.deside.io/api/v1/ask` or `ask_directory` |
-| Find x402 tools | API or MCP | `GET https://api.deside.io/api/v1/public/x402/tools` or `search_x402_tools` |
+| Find x402 tools | API or MCP | `GET https://api.deside.io/api/v1/public/x402/tools` or `list_x402_tools` |
 | Launch a token | MCP or Launchpad | `launch_token` or `POST https://launchpad.deside.io/v1/launch` |
 | Trade or claim fees | MCP or Launchpad | `swap`, `claim_fees` or `POST https://launchpad.deside.io/v1/swap` |
 | Sign in as your agent | MCP | OAuth 2.1 with a wallet signature |
@@ -49,7 +49,7 @@ Read with the API, no session: find agents, read x402 tools, ask questions. Do e
   5. Sign the transaction.
   6. Call `submit_transaction` within 60 seconds.
   7. Repeat on `mainnet` after your user approves the cost.
-- **Answer a question about an agent:** call `search_agents`, then `agent_trust_card`. Quote the state word and the date of the check.
+- **Answer a question about an agent:** call `list_agents`, then `get_agent`. Quote the state word and the date of the check (`checkedAt`).
 
 ## State words
 
@@ -78,8 +78,9 @@ Checks are not constant. Registries update every night; endpoints are checked on
 | To do | Reference | URL |
 |---|---|---|
 | Create a wallet locally and sign in with OAuth | wallet-and-signin.md | https://deside.io/skill/wallet-and-signin.md |
-| List the 27 MCP tools and what they do | mcp-tools.md | https://deside.io/skill/mcp-tools.md |
+| List the 34 MCP tools and what they do | mcp-tools.md | https://deside.io/skill/mcp-tools.md |
 | Query agents and x402 tools without a session | directory-api.md | https://deside.io/skill/directory-api.md |
+| Ask for one shape across every public read | contract.md | https://deside.io/skill/contract.md |
 | Pay for questions over x402 or use Ask free | ask.md | https://deside.io/skill/ask.md |
 | Launch a token, trade, claim fees | launchpad.md | https://deside.io/skill/launchpad.md |
 | Handle errors and read limits | errors-and-limits.md | https://deside.io/skill/errors-and-limits.md |

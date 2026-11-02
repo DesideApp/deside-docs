@@ -1,5 +1,7 @@
 # Errors and limits
 
+A public read of agents or x402 tools asked with `?minor=1.1` fails in one common shape, described under Common contract errors. See [contract.md](https://deside.io/skill/contract.md).
+
 ## API limits
 
 | Routes | Limit | Counted by |
@@ -11,6 +13,10 @@
 | `POST https://api.deside.io/api/v1/ask` | See Ask limits below | Account or IP |
 
 Over the 15-minute limit, the `429` body is plain text. Other `429` responses carry `Retry-After` in seconds. Headers on all responses: `ratelimit-limit`, `ratelimit-remaining`, `ratelimit-reset` (seconds).
+
+## Common contract errors
+
+A request with `?minor=1.1`, and every answer of `GET /api/v2/public/agents/{ref}/holdings`, fails as `{ "error": { "code", "message" } }` with `code` one of `invalid_request` (400, or 409 with `candidates`), `not_found` (404), `rate_limited` (429), `unavailable` (503) or `payment_required` (402). The tables below are the old shapes.
 
 ## Agent routes (v2) errors
 
@@ -54,7 +60,7 @@ Over the 15-minute limit, the `429` body is plain text. Other `429` responses ca
 
 ## MCP errors
 
-A failed tool returns `isError: true` and, in `content[0].text`, a JSON object `{ "error", "status", "message", "data" }`. A parameter that breaks the schema returns `isError: true` with text starting `MCP error -32602`, naming the parameter.
+A failed contract tool (see mcp-tools.md) returns `isError: true` and `{ "error": { "code", "message" } }` with the codes of the common contract; a missing session or scope comes as `AUTH_REQUIRED` or `insufficient_scope` below. Any other failed tool returns `isError: true` and, in `content[0].text`, a JSON object `{ "error", "status", "message", "data" }`. A parameter that breaks the schema returns `isError: true` with text starting `MCP error -32602`, naming the parameter.
 
 | `error` | Status | When | What to do |
 |---|---|---|---|
@@ -67,7 +73,7 @@ A failed tool returns `isError: true` and, in `content[0].text`, a JSON object `
 | `CONFLICT` | 409 | Nothing to claim, already graduated, not ready to migrate. | Read `message`. |
 | `transaction_failed` | 422 | Too big, simulation failed, or failed on chain. `data` has `hint` and `logs`. | Prepare it again. |
 | `RATE_LIMIT` | 429 | Backend limit on directory and identity tools. | Wait and retry. |
-| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP limit on `search_agents`, `agent_trust_card`, `get_directory_stats`, `token_card`, `search_x402_tools`, `x402_tool_card`, `get_x402_census`, `list_x402_indexes` and `get_x402_probe`: 20 a minute and 2,000 a day per OAuth client. | Wait and retry. |
+| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP limit on the 16 public read tools listed in mcp-tools.md: 20 a minute and 2,000 a day per OAuth client. A contract tool says `rate_limited`. | Wait and retry. |
 | `launchpad_unavailable` | 503 | The Launchpad is unreachable or failing. | Retry later. |
 | `public_read_limit_unavailable` | 503 | The limiter for public read tools is down. | Retry later. |
 | `UNKNOWN` | 500 or the original | Anything else. | Retry later. |

@@ -59,6 +59,7 @@ curl -X POST "https://api.deside.io/api/v1/ask" \
 | `intent` | The category the question was read as. |
 | `degraded` | `true` when the answer could not be built. `answer` is then null and lists are empty. You are not charged. |
 | `measuredAt` | When the directory data was measured. |
+| `sources[]` | Where the answer comes from: one row per public route it used, with `route` (such as `/api/v2/public/agents/stats`), `asOf` (when that data was measured) and `stale` (`true` after 48 hours). A degraded answer has no `sources`. |
 
 ## Ask over the MCP
 
