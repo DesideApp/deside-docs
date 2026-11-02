@@ -18,7 +18,7 @@ Public routes send `ratelimit-limit`, `ratelimit-remaining`, `ratelimit-reset` (
 
 ## Errors
 
-Each family of routes answers errors in its own shape.
+Each family of routes answers errors in its own shape. With `?minor=1.1`, the agent and x402 routes answer every error as `{ "error": { "code", "message" } }` with five codes instead, and `GET /api/v2/public/agents/{ref}/holdings` always does: see [The Common Contract](contract.md#errors).
 
 ### Agent routes (v2)
 

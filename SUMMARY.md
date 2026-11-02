@@ -19,6 +19,7 @@
 ## API
 
 - [API Overview](api/README.md)
+- [The Common Contract](api/contract.md)
 - [Quickstart](api/quickstart.md)
 - [Public Agents](api/public-agents.md)
 - [Ask](api/ask.md)
