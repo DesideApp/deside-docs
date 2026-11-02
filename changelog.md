@@ -4,6 +4,18 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 
 ## 2026-11-02
 
+- Every public read of agents and x402 tools can answer in one common shape: ask with `?minor=1.1` or the header `X-API-Minor: 1.1`. Lists, items and errors take one form, lists page with a signed cursor, and every check date comes as `checkedAt` with `stale`. Without it, nothing changes. See [The Common Contract](api/contract.md).
+- `cb` and `minor` are accepted on every public route, including x402: they no longer answer `400 unknown filter`.
+- `GET /api/v1/public/x402/tools`: `hasMore` is `false` on the last page you can reach (row 500), so following `nextCursor` stops by itself.
+- `GET /api/v1/public/x402/probes`: `?agent=` takes an agent `slug` too.
+- `GET https://api.deside.io/api/v2/public/agents/{ref}/holdings` added, with no key: what the wallets of an agent hold and the evidence of its token. It answers only in the common contract. See [Public agents](api/public-agents.md#get-refholdings).
+- `GET /api/v1/public/x402/tools/{slug}` adds `usage`: one row per bazaar that publishes how much the tool is used. The bazaar declares the numbers; Deside does not verify them. See [x402 Tools](api/x402-tools.md#usage).
+- `POST /api/v1/ask` adds `sources`: the public routes the answer comes from, each with `asOf` and `stale`. See [Ask](api/ask.md).
+- The MCP has 34 tools. Added, read only with `deside:read` and in the common contract: `list_agents`, `get_agent`, `get_agent_holdings`, `list_x402_tools`, `get_x402_tool`, `list_units` and `get_unit`. `search_agents`, `agent_trust_card`, `search_x402_tools` and `x402_tool_card` keep their shape. See [Tools reference](mcp/tools.md).
+- `get_directory_stats`, `get_x402_census`, `list_x402_indexes` and `get_x402_probe` answer in the common contract: `{ data, asOf }`, or `{ data, page, asOf }` for `list_x402_indexes`, and their errors come as `{ error: { code, message } }`. What to do: read the old fields under `data`, page `list_x402_indexes` with `page.nextCursor`, and read `checkedAt` where `get_x402_probe` said `probedAt`. `get_directory_stats` now nests the agent counts under `data.agents`.
+- The public read tools of the MCP are 16 and share 20 calls a minute and 2,000 a day per OAuth client.
+- `https://api.deside.io/openapi.json` describes 56 public paths, each operation marked `common` or `legacy` in `x-deside-contract`. The MCP serves its server card at `https://mcp.deside.io/.well-known/mcp/server-card.json`, with no session.
+- Correction: `?agent=` of `GET /api/v1/public/x402/tools` takes only an agent `id`. These docs said it also took a slug.
 - The MCP accepts only the scopes `deside:read`, `deside:write` and `llm:invoke`. Any other scope in `POST /oauth/register` or `GET /oauth/authorize` answers `invalid_scope`. Clients already connected keep the access they had. What to do: request `deside:read`, and `deside:write` only to prepare, send or change something.
 
 ## 2026-11-01
