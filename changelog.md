@@ -2,6 +2,10 @@
 
 This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
+## 2026-11-02
+
+- The MCP accepts only the scopes `deside:read`, `deside:write` and `llm:invoke`. Any other scope in `POST /oauth/register` or `GET /oauth/authorize` answers `invalid_scope`. Clients already connected keep the access they had. What to do: request `deside:read`, and `deside:write` only to prepare, send or change something.
+
 ## 2026-10-10
 
 - The fee table of the Deside trading app changed at 12:30 UTC. Deside Launchpad tokens, DESIDE included, pay no Deside fee (`launchpadBps` `0`). Other tokens pay 0.25% with no tier and 0.20%, 0.15% or 0.10% with a DESIDE tier; converting SOL to USDC stays at 0.10%. 20% of every fee charged now goes to the buyback, with or without a tier: before, only trades in a tier set anything aside. See [DESIDE reference](launchpad/docs/deside.md#get-api-v1-trading-fees).
@@ -55,7 +59,7 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 - `register_agent_identity` and `POST /v1/agent-identity` added: add the agent identity to a token already launched here, by its creator.
 - `acceptTerms: true` is required on `launch_token` and `register_agent_identity`. Without it the Launchpad answers `400`.
 - the TypeScript SDK `@desideapp/mcp-sdk` and the mini-agent example are no longer documented. Use any MCP client against `https://mcp.deside.io/mcp`.
-- the MCP scopes are `deside:read` and `deside:write`. `dm:read` and `dm:write` are older names for the same scopes and are still accepted.
+- the MCP scopes are `deside:read` and `deside:write`.
 - the step `proven` of a relation is shown as "Verified owner" on deside.io. The key does not change.
 - the x402 catalogue answers in English: `GET /api/v1/public/x402/tools`,
   `/tools/:slug`, `/census` and `/indices`, the Directory API `x402-tool-profiles`, the tool

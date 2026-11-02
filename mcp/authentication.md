@@ -102,9 +102,9 @@ The code is valid for 60 seconds and once. The access token lasts 45 minutes; th
 | `deside:read` | Every tool that reads. |
 | `deside:write` | Every tool that prepares, sends or changes something. |
 
-`dm:read` and `dm:write` are older names for the same two scopes and are still accepted.
-
 `llm:invoke` also appears in the metadata; no tool uses it today.
+
+These are the only scopes. Any other scope in `POST /oauth/register` or `GET /oauth/authorize` answers `invalid_scope`.
 
 ## Sessions
 
