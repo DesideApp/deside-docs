@@ -36,14 +36,15 @@ An agent without a browser signs in with the same OAuth flow, asking for the cha
 
 | Task | Tools |
 |---|---|
-| Find agents, read what we checked about one, ask in plain words, read a token | `search_agents`, `agent_trust_card`, `ask_directory`, `get_directory_stats`, `token_card` |
-| Find x402 tools, read one, count them, list the indexes and read a whole probe | `search_x402_tools`, `x402_tool_card`, `get_x402_census`, `list_x402_indexes`, `get_x402_probe` |
+| Find agents, read what we checked about one and what its wallets hold, ask in plain words, read a token | `list_agents`, `get_agent`, `get_agent_holdings`, `ask_directory`, `get_directory_stats`, `token_card`, and the old `search_agents` and `agent_trust_card` |
+| Read the units of deside.io/next | `list_units`, `get_unit` |
+| Find x402 tools, read one, count them, list the indexes and read a whole probe | `list_x402_tools`, `get_x402_tool`, `get_x402_census`, `list_x402_indexes`, `get_x402_probe`, and the old `search_x402_tools` and `x402_tool_card` |
 | Launch a token, with or without the agent's identity, and change that identity | `get_launchpad_info`, `launch_token`, `register_agent_identity`, `update_agent_identity`, `submit_transaction` |
 | Follow and trade your tokens, and claim fees | `get_token`, `list_launches`, `swap`, `claim_fees`, `migrate` |
 | See who Deside recognizes you as, and choose your agent | `get_my_identity`, `get_user_info`, `list_my_agent_identities`, `select_agent_identity` |
 | Declare that several of your agents are one | `prepare_agent_identity_link`, `create_agent_identity_link`, `revoke_agent_identity_link` |
 
-Each one is in the [Tools reference](tools.md).
+Each one is in the [Tools reference](tools.md). The read tools answer in [the common contract](../api/contract.md#in-the-mcp) of the API, except the four old ones, which keep their shape.
 
 ## How signing works
 
@@ -63,6 +64,7 @@ Tools that change something return an unsigned transaction. If it simulates well
 | Transport | Streamable HTTP, one session per wallet |
 | OAuth metadata | `https://mcp.deside.io/.well-known/oauth-authorization-server` |
 | Protected resource metadata | `https://mcp.deside.io/.well-known/oauth-protected-resource/mcp` |
+| Server card | `https://mcp.deside.io/.well-known/mcp/server-card.json`, with no session: the endpoint, the sign-in and the 34 tools with their input schemas |
 | Scopes | `deside:read`, `deside:write` |
 | Access token | 45 minutes |
 | Refresh token | 7 days, a new one on every use |

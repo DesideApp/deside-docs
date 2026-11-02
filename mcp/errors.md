@@ -2,7 +2,15 @@
 
 ## Tool errors
 
-A tool that fails returns `isError: true` and a JSON object, both in `structuredContent` and as text in `content[0].text`:
+A read tool in [the common contract](../api/contract.md#in-the-mcp) (`list_agents`, `get_agent`, `get_agent_holdings`, `get_directory_stats`, `list_units`, `get_unit`, `list_x402_tools`, `get_x402_tool`, `get_x402_census`, `list_x402_indexes`, `get_x402_probe`) that fails returns `isError: true` and, in `structuredContent` and in `content[0].text`:
+
+```json
+{ "error": { "code": "not_found", "message": "agent not found" } }
+```
+
+`code` is one of `invalid_request` (400 or 409; a 409 also carries `candidates`), `not_found`, `rate_limited`, `unavailable` or `payment_required`. A missing session or scope still returns `AUTH_REQUIRED` or `insufficient_scope`, as below. A parameter that breaks the tool's schema fails before the tool runs, with text starting `MCP error -32602`.
+
+Any other tool that fails returns `isError: true` and a JSON object, both in `structuredContent` and as text in `content[0].text`:
 
 ```json
 { "error": "INVALID_INPUT", "status": 400, "message": "…", "data": { } }
@@ -19,7 +27,7 @@ A tool that fails returns `isError: true` and a JSON object, both in `structured
 | `CONFLICT` | 409 | The state does not allow it: nothing to claim, already graduated, not ready to migrate. | |
 | `transaction_failed` | 422 | Launchpad: the transaction is too big, its simulation failed, or it failed on chain. `data` carries `hint` and `logs`. | Prepare it again. |
 | `RATE_LIMIT` | 429 | Backend 429 on directory and identity tools. | Wait and retry. |
-| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP's own limit on the 9 public read tools. | Wait and retry. |
+| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP's own limit on the 16 public read tools. A contract tool says `rate_limited`. | Wait and retry. |
 | `launchpad_unavailable` | 503 | The Launchpad is unreachable or failing. | Retry later. |
 | `public_read_limit_unavailable` | 503 | The limiter for public read tools is unavailable. | Retry later. |
 | `UNKNOWN` | 500 or the original | Anything else. | Retry later. |
@@ -49,7 +57,7 @@ These come as an HTTP response on `/mcp`, before any tool runs:
 
 | What | Limit |
 |---|---|
-| `search_agents`, `agent_trust_card`, `get_directory_stats`, `token_card`, `search_x402_tools`, `x402_tool_card`, `get_x402_census`, `list_x402_indexes`, `get_x402_probe` | 20 a minute and 2,000 a day per OAuth client |
+| The 16 public read tools: `list_agents`, `get_agent`, `get_agent_holdings`, `search_agents`, `agent_trust_card`, `get_directory_stats`, `token_card`, `list_units`, `get_unit`, `list_x402_tools`, `get_x402_tool`, `search_x402_tools`, `x402_tool_card`, `get_x402_census`, `list_x402_indexes`, `get_x402_probe` | 20 a minute and 2,000 a day per OAuth client, together |
 | `ask_directory` | 10 a minute per signed-in account |
 | Launchpad, per wallet | 60 requests and 2 launches a minute |
 | Launchpad, whole | 600 requests and 30 launches a minute |
