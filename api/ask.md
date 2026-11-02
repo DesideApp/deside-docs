@@ -72,6 +72,7 @@ Real on 2026-10-04. `agents`, `services` and `claimed` are cut to one item each:
 | `intent` | The category the question was read as. |
 | `degraded` | `true` when the answer could not be built. `answer` is then `null` and the lists are empty. |
 | `measuredAt` | When the directory data was measured. |
+| `sources[]` | Where the answer comes from: one row per public route it used, with `route` (such as `/api/v2/public/agents/stats`), `asOf` (when that data was measured) and `stale` (`true` after 48 hours). A degraded answer has no `sources`. |
 
 ## Pay with x402
 
