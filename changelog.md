@@ -2,6 +2,10 @@
 
 This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
+## 2026-11-03
+
+- The MCP has 32 tools. `list_units` and `get_unit` are off while we work on Teams: they are no longer in `tools/list` or in the server card, and calling one answers like a tool that does not exist. The public read tools of the MCP are 14.
+
 ## 2026-11-02
 
 - Every public read of agents and x402 tools can answer in one common shape: ask with `?minor=1.1` or the header `X-API-Minor: 1.1`. Lists, items and errors take one form, lists page with a signed cursor, and every check date comes as `checkedAt` with `stale`. Without it, nothing changes. See [The Common Contract](api/contract.md).

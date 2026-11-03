@@ -2,7 +2,7 @@
 
 The read tools marked contract below answer in the common shape of the public API, the one it serves with `?minor=1.1`. See [contract.md](https://deside.io/skill/contract.md).
 
-The Deside MCP has 34 tools. Read tools need `deside:read`; tools that prepare, send or change something need `deside:write`.
+The Deside MCP has 32 tools. Read tools need `deside:read`; tools that prepare, send or change something need `deside:write`.
 
 **A tool that changes something returns an unsigned transaction. Nothing happens until you sign it.**
 
@@ -20,8 +20,6 @@ Their shape: `{ "data", "page", "asOf" }` for a list and `{ "data", "asOf" }` fo
 | `ask_directory` | read | No |
 | `get_directory_stats` | read, contract | No |
 | `token_card` | read | No |
-| `list_units` | read, contract | No |
-| `get_unit` | read, contract | No |
 | `list_x402_tools` | read, contract | No |
 | `get_x402_tool` | read, contract | No |
 | `search_x402_tools` | read, old shape | No |
@@ -112,16 +110,6 @@ The directory counts. No parameters. Returns `{ data: { agents, x402Tools }, asO
 ### token_card
 
 Read one Solana token on Deside. Takes `mint` (base58, 32 to 44 characters). Returns `market` (`phase`, `priceUsd`, `marketCapUsd`, `priceChange24h`, `priceObservedAt`), `behindToken` (related agents, tools and links, each marked Declared, Matched or Verified owner; each via carries `code` and `text`, for example `created-by-owner-of` and `Created by this agent's owner`), `claim` (`code` and `text`: `connected` and `Connected`, or `not-connected` and `Not connected`; and the ways to prove ownership). Quote `text` as it comes. The old `how`, `howText` and `claim.state` are deprecated and will be removed.
-
-### list_units
-
-Lists the units of deside.io/next as the gallery shows them, Teams first. A unit joins the token, agents and x402 tools that belong together. All parameters optional: `filter` (`all`, `teams`, `with-token` or `without-token`; default `all`), `chain` (`solana` or `base`), `q` (text in the unit name or its token symbol, up to 64), `limit` (1 to 48, default 24) and `cursor` (`page.nextCursor` of the previous page, with the same filters).
-
-Returns `{ data, page, asOf, facets }`. Each unit has `id`, `name`, `network`, `mark` (`team`: an account connected its pieces; `matching`: the pieces share a wallet, website or X account), `kind` (which pieces it joins), `live`, `token`, `agents`, `tools` and `profileAgent`. `facets` counts the whole gallery for each chip and does not change with your filters; the count of your list is `page.total`.
-
-### get_unit
-
-One unit, as its page on deside.io/next shows it. Takes `id` from `list_units`, as it comes (it may contain `#` and `:`), up to 200 characters. Returns `{ data, asOf }`: `unit`, `pieces` (tokens, agents and tools), `pairs` (two pieces and the key they share in `via`: `wallet`, `website` or `x`), `toolGroups` (by `wallet` or `host`) and `profileAgentId` (read it with `get_agent`). An unknown unit returns `not_found`.
 
 ### list_x402_tools
 
@@ -309,7 +297,7 @@ Prepares the graduation of a token whose curve is full, paid by your wallet, in 
 
 ## Limits
 
-The 16 public read tools (`list_agents`, `get_agent`, `get_agent_holdings`, `search_agents`, `agent_trust_card`, `get_directory_stats`, `token_card`, `list_units`, `get_unit`, `list_x402_tools`, `get_x402_tool`, `search_x402_tools`, `x402_tool_card`, `get_x402_census`, `list_x402_indexes` and `get_x402_probe`) share 20 calls a minute and 2,000 a day per OAuth client. Over the limit, the MCP returns `RATE_LIMITED` (429), or `rate_limited` on a contract tool. `ask_directory` allows 10 questions a minute per account. Launchpad tools allow 60 requests and 2 launches a minute per wallet.
+The 14 public read tools (`list_agents`, `get_agent`, `get_agent_holdings`, `search_agents`, `agent_trust_card`, `get_directory_stats`, `token_card`, `list_x402_tools`, `get_x402_tool`, `search_x402_tools`, `x402_tool_card`, `get_x402_census`, `list_x402_indexes` and `get_x402_probe`) share 20 calls a minute and 2,000 a day per OAuth client. Over the limit, the MCP returns `RATE_LIMITED` (429), or `rate_limited` on a contract tool. `ask_directory` allows 10 questions a minute per account. Launchpad tools allow 60 requests and 2 launches a minute per wallet.
 
 ## Errors
 

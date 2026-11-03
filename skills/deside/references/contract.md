@@ -114,7 +114,6 @@ These MCP tools answer in the common contract, with the same `data`, `page` and 
 | `list_x402_indexes` | `GET /api/v1/public/x402/indices` |
 | `get_x402_probe` | `GET /api/v1/public/x402/probes` |
 | `get_directory_stats` | `/agents/stats` and `/x402/census` together: `{ "data": { "agents", "x402Tools" }, "asOf" }` |
-| `list_units`, `get_unit` | The units of deside.io/next |
 
 You do not send `minor` to the MCP: these tools always answer in the contract. A failed one returns `isError: true` with `{ "error": { "code", "message" } }` and the codes above. A missing session or scope still returns `AUTH_REQUIRED` or `insufficient_scope`, as every tool does.
 
@@ -124,4 +123,4 @@ You do not send `minor` to the MCP: these tools always answer in the contract. A
 
 `https://api.deside.io/openapi.json` (OpenAPI 3.1) describes 56 public paths. Each operation carries `x-deside-contract`: `common` for the 10 routes on this page, `legacy` for the rest.
 
-The MCP publishes its server card at `https://mcp.deside.io/.well-known/mcp/server-card.json`, with no session: the endpoint, the sign-in and the 34 tools with their input schemas.
+The MCP publishes its server card at `https://mcp.deside.io/.well-known/mcp/server-card.json`, with no session: the endpoint, the sign-in and the 32 tools with their input schemas.

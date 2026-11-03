@@ -2,7 +2,7 @@
 
 ## Tool errors
 
-A read tool in [the common contract](../api/contract.md#in-the-mcp) (`list_agents`, `get_agent`, `get_agent_holdings`, `get_directory_stats`, `list_units`, `get_unit`, `list_x402_tools`, `get_x402_tool`, `get_x402_census`, `list_x402_indexes`, `get_x402_probe`) that fails returns `isError: true` and, in `structuredContent` and in `content[0].text`:
+A read tool in [the common contract](../api/contract.md#in-the-mcp) (`list_agents`, `get_agent`, `get_agent_holdings`, `get_directory_stats`, `list_x402_tools`, `get_x402_tool`, `get_x402_census`, `list_x402_indexes`, `get_x402_probe`) that fails returns `isError: true` and, in `structuredContent` and in `content[0].text`:
 
 ```json
 { "error": { "code": "not_found", "message": "agent not found" } }
@@ -27,7 +27,7 @@ Any other tool that fails returns `isError: true` and a JSON object, both in `st
 | `CONFLICT` | 409 | The state does not allow it: nothing to claim, already graduated, not ready to migrate. | |
 | `transaction_failed` | 422 | Launchpad: the transaction is too big, its simulation failed, or it failed on chain. `data` carries `hint` and `logs`. | Prepare it again. |
 | `RATE_LIMIT` | 429 | Backend 429 on directory and identity tools. | Wait and retry. |
-| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP's own limit on the 16 public read tools. A contract tool says `rate_limited`. | Wait and retry. |
+| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP's own limit on the 14 public read tools. A contract tool says `rate_limited`. | Wait and retry. |
 | `launchpad_unavailable` | 503 | The Launchpad is unreachable or failing. | Retry later. |
 | `public_read_limit_unavailable` | 503 | The limiter for public read tools is unavailable. | Retry later. |
 | `UNKNOWN` | 500 or the original | Anything else. | Retry later. |
@@ -57,7 +57,7 @@ These come as an HTTP response on `/mcp`, before any tool runs:
 
 | What | Limit |
 |---|---|
-| The 16 public read tools: `list_agents`, `get_agent`, `get_agent_holdings`, `search_agents`, `agent_trust_card`, `get_directory_stats`, `token_card`, `list_units`, `get_unit`, `list_x402_tools`, `get_x402_tool`, `search_x402_tools`, `x402_tool_card`, `get_x402_census`, `list_x402_indexes`, `get_x402_probe` | 20 a minute and 2,000 a day per OAuth client, together |
+| The 14 public read tools: `list_agents`, `get_agent`, `get_agent_holdings`, `search_agents`, `agent_trust_card`, `get_directory_stats`, `token_card`, `list_x402_tools`, `get_x402_tool`, `search_x402_tools`, `x402_tool_card`, `get_x402_census`, `list_x402_indexes`, `get_x402_probe` | 20 a minute and 2,000 a day per OAuth client, together |
 | `ask_directory` | 10 a minute per signed-in account |
 | Launchpad, per wallet | 60 requests and 2 launches a minute |
 | Launchpad, whole | 600 requests and 30 launches a minute |

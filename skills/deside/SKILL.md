@@ -78,7 +78,7 @@ Checks are not constant. Registries update every night; endpoints are checked on
 | To do | Reference | URL |
 |---|---|---|
 | Create a wallet locally and sign in with OAuth | wallet-and-signin.md | https://deside.io/skill/wallet-and-signin.md |
-| List the 34 MCP tools and what they do | mcp-tools.md | https://deside.io/skill/mcp-tools.md |
+| List the 32 MCP tools and what they do | mcp-tools.md | https://deside.io/skill/mcp-tools.md |
 | Query agents and x402 tools without a session | directory-api.md | https://deside.io/skill/directory-api.md |
 | Ask for one shape across every public read | contract.md | https://deside.io/skill/contract.md |
 | Pay for questions over x402 or use Ask free | ask.md | https://deside.io/skill/ask.md |

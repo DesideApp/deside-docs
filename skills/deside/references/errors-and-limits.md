@@ -73,7 +73,7 @@ A failed contract tool (see mcp-tools.md) returns `isError: true` and `{ "error"
 | `CONFLICT` | 409 | Nothing to claim, already graduated, not ready to migrate. | Read `message`. |
 | `transaction_failed` | 422 | Too big, simulation failed, or failed on chain. `data` has `hint` and `logs`. | Prepare it again. |
 | `RATE_LIMIT` | 429 | Backend limit on directory and identity tools. | Wait and retry. |
-| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP limit on the 16 public read tools listed in mcp-tools.md: 20 a minute and 2,000 a day per OAuth client. A contract tool says `rate_limited`. | Wait and retry. |
+| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP limit on the 14 public read tools listed in mcp-tools.md: 20 a minute and 2,000 a day per OAuth client. A contract tool says `rate_limited`. | Wait and retry. |
 | `launchpad_unavailable` | 503 | The Launchpad is unreachable or failing. | Retry later. |
 | `public_read_limit_unavailable` | 503 | The limiter for public read tools is down. | Retry later. |
 | `UNKNOWN` | 500 or the original | Anything else. | Retry later. |

@@ -1,6 +1,6 @@
 # Tools reference
 
-The Deside MCP has 34 tools.
+The Deside MCP has 32 tools.
 Read tools need `deside:read`; tools that prepare, send or change something need `deside:write`. Launchpad tools always act with the wallet you signed in with.
 
 **A tool that changes something returns an unsigned transaction. Nothing moves until you sign it.**
@@ -19,8 +19,6 @@ On success, the tool's fields arrive in `structuredContent` and, as JSON text, i
 | `ask_directory` | read | No |
 | `get_directory_stats` | read, contract | No |
 | `token_card` | read | No |
-| `list_units` | read, contract | No |
-| `get_unit` | read, contract | No |
 | `list_x402_tools` | read, contract | No |
 | `get_x402_tool` | read, contract | No |
 | `search_x402_tools` | read, old shape | No |
@@ -124,24 +122,6 @@ Read one Solana token in Deside: its market data and who is behind it.
 Returns `market` (`phase`, `priceUsd`, `marketCapUsd`, `priceChange24h`), `behindToken` (agents, tools and links related to the token, each with a step: Declared, Matched or Verified owner) and `claim` (`code` and `text`, `Connected` or `Not connected`, and the ways the owner can prove ownership: wallet, x, or domain via dns or deside-json, marked as Verified domain).
 
 In `behindToken`, each related agent or tool carries `vias[]`, each with a `code` and a `text` read from the token: `created-by-owner-of` (`Created by this agent's owner`), `same-key` (for example `Same website as this agent`) or `named-by` (`Named by this agent`). A Verified owner row also carries `proof`, with `code` `connected-by` and a `text` such as `Connected by website`. Show `text` as it comes. The old `how` and `howText` of each via are deprecated and will be removed.
-
-### list_units
-
-Lists the units of deside.io/next as the gallery shows them, Teams first. A unit joins the token, agents and x402 tools that belong together.
-
-| Name | Type | Required | Description |
-|---|---|---|---|
-| `filter` | string | No | `all`, `teams`, `with-token` or `without-token`. Default `all`. |
-| `chain` | string | No | `solana` or `base`. |
-| `q` | string | No | Text in the unit name or its token symbol, up to 64 characters. |
-| `limit` | integer | No | 1 to 48. Default 24. |
-| `cursor` | string | No | `page.nextCursor` of the previous page, with the same filters. |
-
-Returns `{ data, page, asOf, facets }`. Each unit has `id`, `name`, `network`, `mark` (`team`: an account connected its pieces; `matching`: the pieces share a wallet, website or X account), `kind` (which pieces it joins), `live`, `token`, `agents`, `tools` and `profileAgent`. `facets` counts the whole gallery for each chip and does not change with your filters; the count of your list is `page.total`.
-
-### get_unit
-
-One unit, as its page on deside.io/next shows it. `id`: from `list_units`, as it comes (it may contain `#` and `:`), up to 200 characters. Returns `{ data, asOf }`: `unit`, `pieces` (tokens, agents and tools), `pairs` (two pieces and the key they share in `via`: `wallet`, `website` or `x`), `toolGroups` (by `wallet` or `host`) and `profileAgentId` (read it with `get_agent`). An unknown unit returns `not_found`.
 
 ### list_x402_tools
 
@@ -300,4 +280,4 @@ Prepares the migration of a curve that reached its threshold. Takes `mint`. Mete
 
 ## Limits
 
-The 16 public read tools (`list_agents`, `get_agent`, `get_agent_holdings`, `search_agents`, `agent_trust_card`, `get_directory_stats`, `token_card`, `list_units`, `get_unit`, `list_x402_tools`, `get_x402_tool`, `search_x402_tools`, `x402_tool_card`, `get_x402_census`, `list_x402_indexes` and `get_x402_probe`) share 20 calls a minute and 2,000 a day per OAuth client. Over the limit, the MCP returns `RATE_LIMITED` (429), or `rate_limited` on a contract tool. See [Errors and limits](errors.md).
+The 14 public read tools (`list_agents`, `get_agent`, `get_agent_holdings`, `search_agents`, `agent_trust_card`, `get_directory_stats`, `token_card`, `list_x402_tools`, `get_x402_tool`, `search_x402_tools`, `x402_tool_card`, `get_x402_census`, `list_x402_indexes` and `get_x402_probe`) share 20 calls a minute and 2,000 a day per OAuth client. Over the limit, the MCP returns `RATE_LIMITED` (429), or `rate_limited` on a contract tool. See [Errors and limits](errors.md).
