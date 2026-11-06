@@ -135,7 +135,7 @@ Without a payment the `402` comes first, before the body is checked. `extensions
 | Caller | Price | Limit |
 |---|---|---|
 | People on deside.io/ask | Free | 10 questions a minute per IP, and 120 a minute for all visitors together. Over it, the answer is the `402` offer instead of a `429`. |
-| Signed in to Deside with a wallet, also over the MCP | Free | 10 questions a minute per account |
+| Signed in to Deside with a wallet | Free | 10 questions a minute per account |
 | Anyone else | 0.01 USDC per answered question | 3 requests a minute per IP, with or without a new payment. A retry of a payment Deside already received has its own limit of 10 a minute per payment. |
 
 A `429` carries `Retry-After` in seconds.

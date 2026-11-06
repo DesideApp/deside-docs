@@ -22,6 +22,7 @@
 - [The Common Contract](api/contract.md)
 - [Quickstart](api/quickstart.md)
 - [Public Agents](api/public-agents.md)
+- [Domains](api/domains.md)
 - [Ask](api/ask.md)
 - [Relations](api/relations.md)
 - [x402 Tools](api/x402-tools.md)

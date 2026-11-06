@@ -61,12 +61,6 @@ curl -X POST "https://api.deside.io/api/v1/ask" \
 | `measuredAt` | When the directory data was measured. |
 | `sources[]` | Where the answer comes from: one row per public route it used, with `route` (such as `/api/v2/public/agents/stats`), `asOf` (when that data was measured) and `stale` (`true` after 48 hours). A degraded answer has no `sources`. |
 
-## Ask over the MCP
-
-Free when signed in. 10 questions a minute per account.
-
-Tool `ask_directory`: takes `question` (3 to 500 characters). Returns the same body as the API. The MCP never pays over x402: if the account cannot use Ask free (banned, or session revoked), the tool fails with `UNKNOWN` and `status` 402.
-
 ## Pay for Ask with x402
 
 Without a Deside session, you pay 0.01 USDC per answered question on Solana. You only need USDC: the facilitator pays the network fee, so you need no SOL.
@@ -126,7 +120,7 @@ Without a payment, the `402` comes first, before the body is checked.
 | Caller | Price | Limit |
 |---|---|---|
 | People on deside.io/ask | Free | 10 a minute per IP, and 120 a minute for all visitors together. Over it, the answer is the `402` offer. |
-| Signed in to Deside with a wallet, also over the MCP | Free | 10 a minute per account. |
+| Signed in to Deside with a wallet | Free | 10 a minute per account. |
 | Anyone else | 0.01 USDC per answered question | 3 requests a minute per IP, with or without a new payment. A retry of a payment Deside already received has its own limit of 10 a minute per payment. |
 
 A `429` carries `Retry-After` in seconds.

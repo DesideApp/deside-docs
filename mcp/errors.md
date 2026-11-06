@@ -2,13 +2,13 @@
 
 ## Tool errors
 
-A read tool in [the common contract](../api/contract.md#in-the-mcp) (`list_agents`, `get_agent`, `get_agent_holdings`, `get_directory_stats`, `list_x402_tools`, `get_x402_tool`, `get_x402_census`, `list_x402_indexes`, `get_x402_probe`) that fails returns `isError: true` and, in `structuredContent` and in `content[0].text`:
+A read tool in [the common contract](../api/contract.md#in-the-mcp) (`list_agents`, `get_agent`, `get_agent_holdings`, `get_agent_discovery`, `get_host_discovery`, `list_host_agents`, `get_directory_stats`, `list_x402_tools`, `get_x402_tool`, `get_x402_census`, `list_x402_indexes`, `get_x402_probe`) that fails returns `isError: true` and, in `structuredContent` and in `content[0].text`:
 
 ```json
 { "error": { "code": "not_found", "message": "agent not found" } }
 ```
 
-`code` is one of `invalid_request` (400 or 409; a 409 also carries `candidates`), `not_found`, `rate_limited`, `unavailable` or `payment_required`. A missing session or scope still returns `AUTH_REQUIRED` or `insufficient_scope`, as below. A parameter that breaks the tool's schema fails before the tool runs, with text starting `MCP error -32602`.
+`code` is one of `invalid_request` (400 or 409; a 409 also carries `candidates`), `not_found`, `rate_limited`, `unavailable` or `payment_required`. A missing session or scope still returns `AUTH_REQUIRED` or `insufficient_scope`, as below. An argument the tool does not take is `invalid_request`, and `message` names it with the arguments the tool takes. A value outside the tool's schema, such as a `category` that is not in its list, fails before the tool runs, with text starting `MCP error -32602`.
 
 Any other tool that fails returns `isError: true` and a JSON object, both in `structuredContent` and as text in `content[0].text`:
 
@@ -26,8 +26,8 @@ Any other tool that fails returns `isError: true` and a JSON object, both in `st
 | `NOT_FOUND` | 404 | Nothing matches: no agent, no pool for that mint, or a transaction not found yet. | Check the id; retry a transaction a few seconds later. |
 | `CONFLICT` | 409 | The state does not allow it: nothing to claim, already graduated, not ready to migrate. | |
 | `transaction_failed` | 422 | Launchpad: the transaction is too big, its simulation failed, or it failed on chain. `data` carries `hint` and `logs`. | Prepare it again. |
-| `RATE_LIMIT` | 429 | Backend 429 on directory and identity tools. | Wait and retry. |
-| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP's own limit on the 14 public read tools. A contract tool says `rate_limited`. | Wait and retry. |
+| `RATE_LIMIT` | 429 | The API limit, on `token_card`. | Wait and retry. |
+| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP's own limit on `token_card`. A contract tool says `rate_limited`. | Wait and retry. |
 | `launchpad_unavailable` | 503 | The Launchpad is unreachable or failing. | Retry later. |
 | `public_read_limit_unavailable` | 503 | The limiter for public read tools is unavailable. | Retry later. |
 | `UNKNOWN` | 500 or the original | Anything else. | Retry later. |
@@ -49,6 +49,21 @@ These come as an HTTP response on `/mcp`, before any tool runs:
 | 409 | `session_conflict` | Two `initialize` for the same wallet at the same moment. Retry one. |
 | 413 | `payload_too_large` | Body over 1 MB. |
 
+## Errors without sign-in
+
+`https://mcp.deside.io/mcp/public` answers these as an HTTP response, before any tool runs:
+
+| Status | `error` | When |
+|---|---|---|
+| 400 | `invalid_request` | A JSON-RPC batch. Send one message per request. |
+| 400 | `INVALID_INPUT` | The body is not valid JSON. |
+| 405 | `method_not_allowed` | Any method other than POST. |
+| 413 | `payload_too_large` | Body over 64 KB. |
+| 429 | `rate_limited` | Over 60 requests a minute from your IP. `Retry-After` says 60. |
+| 503 | `busy` | Too many requests open at once. `Retry-After` says 5. |
+
+A tool that hits the API limits of your IP returns `rate_limited`, as any contract tool.
+
 ## OAuth errors
 
 `/oauth/register` and `/oauth/token` answer `400` with `{"error": "…", "error_description": "…"}`: `invalid_client_metadata`, `invalid_redirect_uri`, `invalid_scope`, `invalid_request`, `invalid_grant`, `unsupported_grant_type`. Over the limit: `429 RATE_LIMITED`.
@@ -57,12 +72,11 @@ These come as an HTTP response on `/mcp`, before any tool runs:
 
 | What | Limit |
 |---|---|
-| The 14 public read tools: `list_agents`, `get_agent`, `get_agent_holdings`, `search_agents`, `agent_trust_card`, `get_directory_stats`, `token_card`, `list_x402_tools`, `get_x402_tool`, `search_x402_tools`, `x402_tool_card`, `get_x402_census`, `list_x402_indexes`, `get_x402_probe` | 20 a minute and 2,000 a day per OAuth client, together |
-| `ask_directory` | 10 a minute per signed-in account |
+| Signed in, the 13 read tools that read the public API: `list_agents`, `get_agent`, `get_agent_holdings`, `get_agent_discovery`, `get_host_discovery`, `list_host_agents`, `get_directory_stats`, `token_card`, `list_x402_tools`, `get_x402_tool`, `get_x402_census`, `list_x402_indexes`, `get_x402_probe` | 20 a minute and 2,000 a day per OAuth client, together |
+| Without sign-in, `/mcp/public` | 60 requests a minute per IP, plus the [API limits](../api/errors-and-limits.md) of your IP |
 | Launchpad, per wallet | 60 requests and 2 launches a minute |
 | Launchpad, whole | 600 requests and 30 launches a minute |
 | `/oauth/register` | 30 a minute per IP |
 | Other `/oauth/*` | 60 a minute per IP |
 | Sign link | 2 minutes, once |
 | Prepared transaction | About 60 seconds |
-

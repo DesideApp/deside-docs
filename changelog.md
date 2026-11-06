@@ -2,6 +2,20 @@
 
 This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
+## 2026-11-05
+
+- The MCP has 23 tools. Removed: `search_agents` and `agent_trust_card` (use `list_agents` and `get_agent`), `search_x402_tools` and `x402_tool_card` (use `list_x402_tools` and `get_x402_tool`), `ask_directory` (use [`POST /api/v1/ask`](api/ask.md)), and `get_my_identity`, `get_user_info`, `list_my_agent_identities`, `select_agent_identity`, `prepare_agent_identity_link`, `create_agent_identity_link` and `revoke_agent_identity_link`.
+- `https://mcp.deside.io/mcp/public` added: 12 read tools with no sign-in, 60 requests a minute per IP, POST only and with no session. See [MCP](mcp/README.md#use-it-without-signing-in).
+- `GET https://api.deside.io/api/v2/public/domains/{host}/agents` and the MCP tool `list_host_agents` added: the agents that declare a host, as their website or as a service. See [Domains](api/domains.md).
+- `get_agent` no longer returns `ownerProven`, `team`, `ownerScore`, `reputation`, `relations` or `claim`, and the rows of `list_agents` no longer return `ownerProven` or `team`. The API routes keep them.
+- `list_agents` no longer takes `connected`; it takes `ownerWallet`, `agentWallet`, `coreAsset` and `collection`. A contract tool answers an argument it does not take with `invalid_request`, naming it.
+- Docs: [Public agents](api/public-agents.md#get-refdiscovery), [Domains](api/domains.md) and the [Tools reference](mcp/tools.md) now describe `GET /api/v2/public/agents/{ref}/discovery`, `GET /api/v2/public/domains/{host}/discovery`, `get_agent_discovery` and `get_host_discovery`: what the hosts of an agent serve to machines.
+- `GET /api/v2/public/agents`: `ownerWallet` and `agentWallet` take a `0x` address. `collection` filters by the on-chain Metaplex Core collection, the `onSolana.collection` of the profile.
+
+## 2026-11-04
+
+- `GET /api/v2/public/agents`: a value outside the list of `category`, `chain`, `connected`, `registry` or `sort` answers `400 invalid_request`. It used to be ignored. `category=other` is a filter. What to do: send only the listed values.
+
 ## 2026-11-03
 
 - The MCP has 32 tools. `list_units` and `get_unit` are off while we work on Teams: they are no longer in `tools/list` or in the server card, and calling one answers like a tool that does not exist. The public read tools of the MCP are 14.
@@ -51,7 +65,7 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 - Relations and claims carry a `code` and a `text`. The `code` is the rule of the phrase and does not change; the `text` is the phrase to show, as it comes. In the agent profile, `relations.items[].vias[]` carries `owner-created`, `same-key` or `names`. In `token_card`, each via under `behindToken` carries `created-by-owner-of`, `same-key` or `named-by`, and a Verified owner row carries `proof` with `connected-by`. `GET /api/v1/public/claim/{type}/{id}`, the `claim` of the agent profile and the `claim` of `token_card` carry `not-connected` or `connected`. See [Relation Fields](api/relations.md).
 - Deprecated, sent for one more version and then removed: `vias[].how` (and `vias[].howText` under `behindToken`) and `claim.state`. What to do: read `code` and `text` instead.
 - A claimed object returns `vias: []`. These docs said `vias` disappears.
-- `search_x402_tools` and `x402_tool_card` added to the MCP, read only with `deside:read`: search the x402 Tool Directory and read one tool, with the same filters and bodies as `GET /api/v1/public/x402/tools` and `GET /api/v1/public/x402/tools/{slug}`. They share the limit of the other public read tools. See [Tools Reference](mcp/tools.md#search_x402_tools).
+- `search_x402_tools` and `x402_tool_card` added to the MCP, read only with `deside:read`: search the x402 Tool Directory and read one tool, with the same filters and bodies as `GET /api/v1/public/x402/tools` and `GET /api/v1/public/x402/tools/{slug}`. They share the limit of the other public read tools. See [Tools Reference](mcp/tools.md).
 - `get_directory_stats` adds `x402Tools`, the body of `GET /api/v1/public/x402/census`, or `null` when only that count cannot be read. The other fields do not change.
 
 ## 2026-10-06
@@ -67,7 +81,7 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 ## 2026-10-03
 
 - `POST /api/v1/ask` is listed in the PayAI x402 catalog, and its `402` carries `extensions.bazaar` with the input and output schema.
-- `search_agents`, `agent_trust_card` and `get_directory_stats` on the MCP answer with the v2 agent shape with `catalogId` in place of `id`. `wallet`, `primarySource`, `primarySourceEntryId`, `sourceEntries`, `registryPresence`, `registry` and `publicReceipts` are gone: read `sources`, `registries`, `wallets`, `status`, `endpoints` and `services`. See [Tools Reference](mcp/tools.md#directory).
+- `search_agents`, `agent_trust_card` and `get_directory_stats` on the MCP answer with the v2 agent shape with `catalogId` in place of `id`. `wallet`, `primarySource`, `primarySourceEntryId`, `sourceEntries`, `registryPresence`, `registry` and `publicReceipts` are gone: read `sources`, `registries`, `wallets`, `status`, `endpoints` and `services`. See [Tools Reference](mcp/tools.md).
 - the agent routes moved to `/api/v2/public/agents`: `GET /`, `/stats`, `/{ref}` and `/{ref}/profile` with no key. Answers come in `{data}` and errors in `{error:{code,message}}`. Field names changed: `catalogId` is `id`, `canonicalPath` is `path`, `curationPublic.state` is `status`. `stats-summary` is `/stats`. The profile no longer carries raw registry data, `receipts`, `registryStatus`, `collectionBadges` or the retired Verified badge. `/api/v1/public/agents` and all its routes, `receipts` included, are retired and answer `404`: move to v2. Each agent carries `team` and `handles` (`x`, `github`). See [Public agents](api/public-agents.md).
 - the paid Directory API with keys is closed: `/api/v1/directory/agents`, `/directory/x402-tool-profiles`, `/directory/x402-resources` and the key console answer `404`. Use the [public routes](api/README.md#routes), which need no key.
 - `POST /api/v1/ask` is paid over x402: 0.01 USDC per answered question on Solana, for callers without a Deside session. Without a payment it answers `402` with the offer, and `GET https://api.deside.io/.well-known/x402` lists it. deside.io and users signed in with a wallet stay free. See [Ask](api/ask.md#pay-with-x402).

@@ -25,6 +25,7 @@ These routes speak it:
 - `GET /api/v1/public/x402/tools`, `/tools/{slug}`, `/census`, `/indices` and `/probes`.
 - `GET /api/v2/public/agents`, `/stats`, `/{ref}` and `/{ref}/profile`.
 - `GET /api/v2/public/agents/{ref}/holdings`, which has no old shape (see [Public agents](public-agents.md#get-refholdings)): it always answers in the common contract, with `minor` or without it.
+- `GET /api/v2/public/agents/{ref}/discovery`, `GET /api/v2/public/domains/{host}/discovery` and `GET /api/v2/public/domains/{host}/agents`, which have no old shape either (see [Public agents](public-agents.md#get-refdiscovery) and [Domains](domains.md)).
 
 ## The shape
 
@@ -108,6 +109,9 @@ These MCP tools answer in the common contract, with the same `data`, `page` and 
 | `list_agents` | `GET /api/v2/public/agents` |
 | `get_agent` | `GET /api/v2/public/agents/{ref}/profile`, without the raw registry documents |
 | `get_agent_holdings` | `GET /api/v2/public/agents/{ref}/holdings` |
+| `get_agent_discovery` | `GET /api/v2/public/agents/{ref}/discovery` |
+| `get_host_discovery` | `GET /api/v2/public/domains/{host}/discovery` |
+| `list_host_agents` | `GET /api/v2/public/domains/{host}/agents` |
 | `list_x402_tools` | `GET /api/v1/public/x402/tools` |
 | `get_x402_tool` | `GET /api/v1/public/x402/tools/{slug}` |
 | `get_x402_census` | `GET /api/v1/public/x402/census` |
@@ -117,10 +121,10 @@ These MCP tools answer in the common contract, with the same `data`, `page` and 
 
 You do not send `minor` to the MCP: these tools always answer in the contract. Each one is in the [Tools reference](../mcp/tools.md). A failed one returns `isError: true` with `{ "error": { "code", "message" } }` and the codes above. A missing session or scope still returns `AUTH_REQUIRED` or `insufficient_scope`, as every tool does.
 
-`search_agents`, `agent_trust_card`, `search_x402_tools` and `x402_tool_card` stay as they were, with the old shape. Prefer `list_agents`, `get_agent`, `list_x402_tools` and `get_x402_tool`.
+The same 12 tools answer with no sign-in at `https://mcp.deside.io/mcp/public`, with the depth and the limits of the public API.
 
 ## The machine-readable reference
 
-`https://api.deside.io/openapi.json` (OpenAPI 3.1) describes 56 public paths. Each operation carries `x-deside-contract`: `common` for the 10 routes on this page, `legacy` for the rest.
+`https://api.deside.io/openapi.json` (OpenAPI 3.1) describes 58 public paths. Each operation carries `x-deside-contract`: `common` for the 13 routes on this page, `legacy` for the rest.
 
-The MCP publishes its server card at `https://mcp.deside.io/.well-known/mcp/server-card.json`, with no session: the endpoint, the sign-in and the 32 tools with their input schemas.
+The MCP publishes its server card at `https://mcp.deside.io/.well-known/mcp/server-card.json`, with no session: the endpoint, the sign-in and the 23 tools with their input schemas.

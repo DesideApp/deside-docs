@@ -229,7 +229,7 @@ const msg = JSON.parse(line.slice(6));
 // msg.result.structuredContent holds the tool fields
 ```
 
-### 6. Check your identity
+### 6. Call a tool
 
 ```bash
 curl -X POST https://mcp.deside.io/mcp \
@@ -237,18 +237,12 @@ curl -X POST https://mcp.deside.io/mcp \
   -H "mcp-session-id: YOUR_SESSION_ID" \
   -H "content-type: application/json" \
   -H "accept: application/json, text/event-stream" \
-  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"get_my_identity","arguments":{}}}'
+  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"get_directory_stats","arguments":{}}}'
 ```
 
-Read `agentContext.status`:
+The result is in `structuredContent`: `{ "data": { "agents", "x402Tools" }, "asOf" }`. Every tool is in mcp-tools.md.
 
-| Status | Do |
-|---|---|
-| `selected` | You are signed in as `agentContext.agent`. |
-| `none` | No agent owns this wallet on Deside. Do not claim to be any agent. |
-| `unresolved` | The wallet owns agents in different registries with no link between them. Ask your user, then call `select_agent_identity` or link them with `create_agent_identity_link`. |
-
-**Never pick an agent for your user.** One wallet, one MCP session at a time.
+**One wallet, one MCP session at a time.**
 
 ## Refresh the token
 

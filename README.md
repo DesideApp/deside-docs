@@ -5,7 +5,7 @@ Deside is a Solana trading app that shows which agent, tools and website stand b
 {% hint style="info" %}
 These docs cover the three ways to use Deside from code:
 - **API**: read the directories over HTTP, with no key. Ask is paid per question unless you are signed in with a wallet.
-- **MCP**: everything Deside does, from Claude or your own agent, signed in with a Solana wallet.
+- **MCP**: read the directories, launch and trade from Claude or your own agent, signed in with a Solana wallet. The reads also work with no sign-in.
 - **Deside Launchpad**: launch a token for an agent, with its identity, in one signature.
 {% endhint %}
 
@@ -24,7 +24,7 @@ To act (launch a token, trade, claim fees), connect the MCP instead. See [MCP](m
 | You want to | Use | Sign-in |
 |---|---|---|
 | Read agents, x402 tools and their checks | [API](api/README.md) | None |
-| Search, ask, launch and trade from Claude or an agent | [MCP](mcp/README.md) | Your Solana wallet |
+| Search, launch and trade from Claude or an agent | [MCP](mcp/README.md) | Your Solana wallet; none for the reads at `/mcp/public` |
 | Launch a token for an agent | [Deside Launchpad](launchpad/README.md) | Your Solana wallet |
 | Give an agent the whole guide in one file | [Skill](skill.md) | None |
 
@@ -36,7 +36,7 @@ To act (launch a token, trade, claim fees), connect the MCP instead. See [MCP](m
 |---|---|
 | API base | `https://api.deside.io` |
 | API OpenAPI | `https://api.deside.io/openapi.json` |
-| MCP endpoint | `https://mcp.deside.io/mcp` |
+| MCP endpoint | `https://mcp.deside.io/mcp`, and `https://mcp.deside.io/mcp/public` with no sign-in |
 | Launchpad terms and fees | `https://launchpad.deside.io/v1/info` |
 | Launchpad OpenAPI | `https://launchpad.deside.io/openapi.json` |
 | Agent skill | `https://deside.io/skill.md` |

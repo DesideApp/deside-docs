@@ -1,6 +1,6 @@
 # MCP
 
-The Deside MCP is a remote [Model Context Protocol](https://modelcontextprotocol.io/) server at `https://mcp.deside.io/mcp`. Claude, or your own agent, uses it to search the directories, ask in plain words, and launch, trade and claim with your own Solana wallet. You sign in once with that wallet; Deside never sees your key.
+The Deside MCP is a remote [Model Context Protocol](https://modelcontextprotocol.io/) server at `https://mcp.deside.io/mcp`. Claude, or your own agent, uses it to read the Agent Directory and the x402 Tool Directory, and to launch, trade and claim with your own Solana wallet. You sign in once with that wallet; Deside never sees your key. The read tools also answer with no sign-in at `https://mcp.deside.io/mcp/public`.
 
 {% hint style="info" %}
 On these pages:
@@ -36,14 +36,40 @@ An agent without a browser signs in with the same OAuth flow, asking for the cha
 
 | Task | Tools |
 |---|---|
-| Find agents, read what we checked about one and what its wallets hold, ask in plain words, read a token | `list_agents`, `get_agent`, `get_agent_holdings`, `ask_directory`, `get_directory_stats`, `token_card`, and the old `search_agents` and `agent_trust_card` |
-| Find x402 tools, read one, count them, list the indexes and read a whole probe | `list_x402_tools`, `get_x402_tool`, `get_x402_census`, `list_x402_indexes`, `get_x402_probe`, and the old `search_x402_tools` and `x402_tool_card` |
+| Find agents, read what we checked about one and what its wallets hold, and read the counts | `list_agents`, `get_agent`, `get_agent_holdings`, `get_directory_stats` |
+| Read what a host serves to machines, and which agents declare it | `get_agent_discovery`, `get_host_discovery`, `list_host_agents` |
+| Find x402 tools, read one, count them, list the indexes and read a whole probe | `list_x402_tools`, `get_x402_tool`, `get_x402_census`, `list_x402_indexes`, `get_x402_probe` |
+| Read a token and who is behind it | `token_card` |
 | Launch a token, with or without the agent's identity, and change that identity | `get_launchpad_info`, `launch_token`, `register_agent_identity`, `update_agent_identity`, `submit_transaction` |
 | Follow and trade your tokens, and claim fees | `get_token`, `list_launches`, `swap`, `claim_fees`, `migrate` |
-| See who Deside recognizes you as, and choose your agent | `get_my_identity`, `get_user_info`, `list_my_agent_identities`, `select_agent_identity` |
-| Declare that several of your agents are one | `prepare_agent_identity_link`, `create_agent_identity_link`, `revoke_agent_identity_link` |
 
-Each one is in the [Tools reference](tools.md). The read tools answer in [the common contract](../api/contract.md#in-the-mcp) of the API, except the four old ones, which keep their shape.
+Each one is in the [Tools reference](tools.md). The read tools of the directories answer in [the common contract](../api/contract.md#in-the-mcp) of the API. To ask in plain words, use [Ask](../api/ask.md) over the API.
+
+## Use it without signing in
+
+`https://mcp.deside.io/mcp/public` serves the 12 read tools of the directories with no sign-in: `list_agents`, `get_agent`, `get_agent_holdings`, `get_agent_discovery`, `get_host_discovery`, `list_host_agents`, `get_directory_stats`, `list_x402_tools`, `get_x402_tool`, `get_x402_census`, `list_x402_indexes` and `get_x402_probe`. They take the same arguments and return the same shape as at `/mcp`.
+
+This request lists them:
+
+```bash
+curl -X POST https://mcp.deside.io/mcp/public \
+  -H "content-type: application/json" \
+  -H "accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+```
+
+The answer is one server-sent event whose `data:` line holds the JSON-RPC result.
+
+**It keeps no session: every request is a POST that stands on its own.** There is no `mcp-session-id`, no OAuth and no streaming over GET. Any other tool answers as a tool that does not exist.
+
+| What | Limit |
+|---|---|
+| Requests | 60 a minute per IP. Opening a client session is 3 requests (`initialize`, `notifications/initialized`, `tools/list`); each tool call is 1. |
+| Public API limits | Each call also counts against the [API limits](../api/errors-and-limits.md) of your IP. |
+| Depth | The same as the public API: the agent list stops at `skip` 500, and the x402 tool list at row 500. |
+| Request body | 64 KB, one JSON-RPC message. Batches are refused. |
+
+To read deeper or to use the Launchpad and `token_card`, sign in at `/mcp`.
 
 ## How signing works
 
@@ -59,11 +85,12 @@ Tools that change something return an unsigned transaction. If it simulates well
 
 | What | Value |
 |---|---|
-| Endpoint | `https://mcp.deside.io/mcp` |
+| Endpoint | `https://mcp.deside.io/mcp`, signed in with your wallet |
+| Endpoint without sign-in | `https://mcp.deside.io/mcp/public`, 12 read tools |
 | Transport | Streamable HTTP, one session per wallet |
 | OAuth metadata | `https://mcp.deside.io/.well-known/oauth-authorization-server` |
 | Protected resource metadata | `https://mcp.deside.io/.well-known/oauth-protected-resource/mcp` |
-| Server card | `https://mcp.deside.io/.well-known/mcp/server-card.json`, with no session: the endpoint, the sign-in and the 32 tools with their input schemas |
+| Server card | `https://mcp.deside.io/.well-known/mcp/server-card.json`, with no session: the endpoint, the sign-in and the 23 tools with their input schemas |
 | Scopes | `deside:read`, `deside:write` |
 | Access token | 45 minutes |
 | Refresh token | 7 days, a new one on every use |

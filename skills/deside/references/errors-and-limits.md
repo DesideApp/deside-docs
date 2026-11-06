@@ -60,7 +60,7 @@ A request with `?minor=1.1`, and every answer of `GET /api/v2/public/agents/{ref
 
 ## MCP errors
 
-A failed contract tool (see mcp-tools.md) returns `isError: true` and `{ "error": { "code", "message" } }` with the codes of the common contract; a missing session or scope comes as `AUTH_REQUIRED` or `insufficient_scope` below. Any other failed tool returns `isError: true` and, in `content[0].text`, a JSON object `{ "error", "status", "message", "data" }`. A parameter that breaks the schema returns `isError: true` with text starting `MCP error -32602`, naming the parameter.
+A failed contract tool (see mcp-tools.md) returns `isError: true` and `{ "error": { "code", "message" } }` with the codes of the common contract; a missing session or scope comes as `AUTH_REQUIRED` or `insufficient_scope` below. Any other failed tool returns `isError: true` and, in `content[0].text`, a JSON object `{ "error", "status", "message", "data" }`. An argument a contract tool does not take is `invalid_request`, naming it. A value outside the schema returns `isError: true` with text starting `MCP error -32602`, naming the parameter.
 
 | `error` | Status | When | What to do |
 |---|---|---|---|
@@ -72,8 +72,8 @@ A failed contract tool (see mcp-tools.md) returns `isError: true` and `{ "error"
 | `NOT_FOUND` | 404 | No agent, no pool for that mint, or a transaction not found yet. | Check the id; retry a transaction a few seconds later. |
 | `CONFLICT` | 409 | Nothing to claim, already graduated, not ready to migrate. | Read `message`. |
 | `transaction_failed` | 422 | Too big, simulation failed, or failed on chain. `data` has `hint` and `logs`. | Prepare it again. |
-| `RATE_LIMIT` | 429 | Backend limit on directory and identity tools. | Wait and retry. |
-| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP limit on the 14 public read tools listed in mcp-tools.md: 20 a minute and 2,000 a day per OAuth client. A contract tool says `rate_limited`. | Wait and retry. |
+| `RATE_LIMIT` | 429 | The API limit, on `token_card`. | Wait and retry. |
+| `RATE_LIMITED` | 429 | Launchpad tools, or the MCP limit on the 13 read tools listed in mcp-tools.md: 20 a minute and 2,000 a day per OAuth client. A contract tool says `rate_limited`. | Wait and retry. |
 | `launchpad_unavailable` | 503 | The Launchpad is unreachable or failing. | Retry later. |
 | `public_read_limit_unavailable` | 503 | The limiter for public read tools is down. | Retry later. |
 | `UNKNOWN` | 500 or the original | Anything else. | Retry later. |
@@ -89,6 +89,19 @@ Session errors come as HTTP responses on `https://mcp.deside.io/mcp` before any 
 | 404 | `session_not_found` | Unknown or closed session. Run `initialize` again. |
 | 409 | `session_conflict` | Two `initialize` for the same wallet at the same moment. Retry one. |
 | 413 | `payload_too_large` | Body over 1 MB. |
+
+Without sign-in, `https://mcp.deside.io/mcp/public` answers these as HTTP responses before any tool runs:
+
+| Status | `error` | When |
+|---|---|---|
+| 400 | `invalid_request` | A JSON-RPC batch. Send one message per request. |
+| 400 | `INVALID_INPUT` | The body is not valid JSON. |
+| 405 | `method_not_allowed` | Any method other than POST. |
+| 413 | `payload_too_large` | Body over 64 KB. |
+| 429 | `rate_limited` | Over 60 requests a minute from your IP. Wait 60 seconds. |
+| 503 | `busy` | Too many requests open at once. Wait 5 seconds. |
+
+Each tool call there also counts against the API limits of your IP; over them, the tool returns `rate_limited`.
 
 ## Launchpad errors
 
@@ -132,7 +145,7 @@ A request to `/mcp` without a valid token answers `401` with `WWW-Authenticate: 
 | Caller | Price | Limit |
 |---|---|---|
 | People on deside.io/ask | Free | 10 a minute per IP, and 120 a minute for all visitors. |
-| Signed in with a wallet, also over the MCP | Free | 10 a minute per account. |
+| Signed in with a wallet | Free | 10 a minute per account. |
 | Anyone else | 0.01 USDC per answered question | 3 requests a minute per IP. |
 
 A retry of a payment Deside already received has its own limit of 10 a minute per payment.
