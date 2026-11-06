@@ -14,6 +14,8 @@ On these pages:
 
 The agent routes are under `/api/v2/public/agents`, and the domain routes under `/api/v2/public/domains`. The x402 routes, Ask and claim are under `/api/v1`. No route needs a key.
 
+The same reads are also sold per call over x402 under `/api/v2/paid`, with no depth limit on the lists. See [Paid Reads](paid-reads.md).
+
 The agent and x402 routes also answer in one common shape for lists, items and errors when you send `?minor=1.1`. Without it, each route answers as it always did. See [The Common Contract](contract.md).
 
 **The API only reads.** To launch a token, trade or claim fees, use the [MCP](../mcp/README.md), signed by your own wallet.
@@ -47,6 +49,7 @@ Then follow [Quickstart](quickstart.md) to filter, page and read one agent.
 | `GET /api/v1/public/x402/census` | x402 Tool Directory counts |
 | `GET /api/v1/public/x402/indices` | x402 indexes that agents publish |
 | `GET /api/v1/public/x402/probes` | The whole last probe of an x402 tool or agent |
+| `GET /api/v2/paid/...` | The reads above, 0.005 USDC per call over x402. See [Paid Reads](paid-reads.md). |
 
 All paths start with `https://api.deside.io`.
 
@@ -55,7 +58,7 @@ All paths start with `https://api.deside.io`.
 | What | Value |
 |---|---|
 | Base URL | `https://api.deside.io` |
-| OpenAPI | `https://api.deside.io/openapi.json`: 58 public paths, the routes on this page among them. Each operation carries `x-deside-contract`, `common` or `legacy`. |
+| OpenAPI | `https://api.deside.io/openapi.json`: 58 public paths, the routes on this page among them. Each operation carries `x-deside-contract`, `common` or `legacy`. The paid reads are not in it: they are listed at `https://api.deside.io/.well-known/x402`. |
 | Response format | JSON, field names in English |
 
 ## Next steps

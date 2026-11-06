@@ -80,7 +80,7 @@ A route that takes filters answers 400 `invalid_request` to a parameter it does 
 
 Lists page only with `cursor` and `limit`. The cursor is opaque: pass back `page.nextCursor` as it came, with the same filters. A cursor that was changed returns 400 `malformed cursor`. The same cursor with other filters returns 400 `cursor does not match the current filters`.
 
-Through the public API, `/x402/tools` reaches row 500 and the agent list row 500 (96 with `sort=featured`). `hasMore` is `false` on the last page you can reach, so a client that follows `nextCursor` stops by itself.
+Through the public API, `/x402/tools` reaches row 500 and the agent list row 500 (96 with `sort=featured`). `hasMore` is `false` on the last page you can reach, so a client that follows `nextCursor` stops by itself. The [paid reads](paid-reads.md) have no depth limit.
 
 ## Freshness
 

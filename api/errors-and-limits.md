@@ -9,6 +9,7 @@
 | Public single reads and counts | 60 a minute | IP |
 | Each public family, agents and x402 | 500 a day | IP |
 | `/ask` | 10 a minute signed in with a wallet, by account. Others pay per question, 3 requests a minute. See [Ask](ask.md#limits). | Account or IP |
+| `/v2/paid` | 60 answers with status 400 or above a minute. A paid `200` does not count. See [Paid Reads](paid-reads.md#limits). | IP |
 
 Over the 15-minute limit, the `429` body is plain text, not JSON.
 
@@ -58,3 +59,7 @@ Each family of routes answers errors in its own shape. With `?minor=1.1`, the ag
 | 429 | `rate_limited` | Wait `retryAfterSec`. |
 
 The payment errors (`402`, `409`, `503`) are on the [Ask](ask.md#errors) page.
+
+### Paid reads
+
+The paid reads answer the errors of their free route, and their payment errors are on the [Paid Reads](paid-reads.md#errors) page.

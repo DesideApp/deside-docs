@@ -2,6 +2,10 @@
 
 This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
+## 2026-11-06
+
+- Paid reads added: the 12 public reads of agents, domains and x402 tools, sold per call over x402 at 0.005 USDC on Solana, under `https://api.deside.io/api/v2/paid`. They answer in the common contract, only a `200` is charged, and the lists have no depth limit. They are listed at `https://api.deside.io/.well-known/x402`. The free routes do not change. See [Paid Reads](api/paid-reads.md).
+
 ## 2026-11-05
 
 - The MCP has 23 tools. Removed: `search_agents` and `agent_trust_card` (use `list_agents` and `get_agent`), `search_x402_tools` and `x402_tool_card` (use `list_x402_tools` and `get_x402_tool`), `ask_directory` (use [`POST /api/v1/ask`](api/ask.md)), and `get_my_identity`, `get_user_info`, `list_my_agent_identities`, `select_agent_identity`, `prepare_agent_identity_link`, `create_agent_identity_link` and `revoke_agent_identity_link`.

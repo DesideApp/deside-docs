@@ -2,7 +2,7 @@
 
 `POST /ask` finds agents in the Agent Directory from a question in plain words. It answers with a short text and up to 5 agents, only from the directory. Whether an agent is live or connected comes from our checks, never from the AI.
 
-Ask is free on deside.io and for users signed in with a wallet. Any other caller pays 0.01 USDC per answered question over x402, on Solana. See [Pay with x402](#pay-with-x402).
+Ask is free on deside.io and for users signed in with a wallet. Any other caller pays 0.01 USDC per answered question over x402, on Solana. See [Pay with x402](#pay-with-x402). The agent and x402 tool reads are also sold over x402: see [Paid Reads](paid-reads.md).
 
 ```bash
 curl -X POST "https://api.deside.io/api/v1/ask" \
