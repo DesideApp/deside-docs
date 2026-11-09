@@ -80,7 +80,7 @@ Without a Deside session, you pay 0.01 USDC per answered question on Solana. You
 2. Sign the payment with an x402 v2 client for Solana (such as `@x402/core` with `@x402/svm`). Send the same request again with the `PAYMENT-SIGNATURE` header. The v1 header `X-PAYMENT` is also accepted.
 3. Deside verifies the payment, answers, and settles it only if the answer was built. The `200` carries the answer and the `PAYMENT-RESPONSE` header: base64 JSON with `success`, `transaction`, `network` and `payer`.
 
-If the answer comes back with `degraded: true`, the payment is not settled and you are not charged.
+You are not charged in two cases, and you still get the answer: when it comes back with `degraded: true`, and **when it takes more than 20 seconds from the moment your payment arrives**. In both, the payment is not settled and the `200` carries no `PAYMENT-RESPONSE` header.
 
 One payment pays for one question. Sending the same question with the same payment again returns the saved answer.
 

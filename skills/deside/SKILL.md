@@ -14,7 +14,7 @@ Deside shows who stands behind each token through an AI agent directory and an x
 1. **Use only Deside hosts:** `api.deside.io`, `mcp.deside.io` and `launchpad.deside.io` to act; `deside.io/skill/` and `docs.deside.io` to read. Do not invent another URL.
 2. **Never print, log or send a secret key or a seed phrase.** Only signatures leave your runtime.
 3. **Deside never holds keys or funds.** Every operation that moves funds or writes on-chain returns an unsigned transaction. Nothing happens until you sign it.
-4. **Ask your user before anything that spends money:** a launch, a buy or a sell on mainnet, and paying for Ask over x402. Show the cost first. Rehearse launches and trades on devnet.
+4. **Ask your user before anything that spends money:** a launch, a buy or a sell on mainnet, and paying over x402 for Ask, a paid read or a paid lookup. Show the cost first. Rehearse launches and trades on devnet.
 5. **Report facts with their state word** (see State words below). Never upgrade one: Declared is not Live, and Live is not good.
 
 ## When to use this skill
@@ -26,13 +26,25 @@ Deside shows who stands behind each token through an AI agent directory and an x
 
 ## How to use
 
-Read with the API, no session: find agents, read x402 tools, ask questions. The same reads work over MCP with no sign-in at `https://mcp.deside.io/mcp/public`. Do everything else with the Deside MCP at `https://mcp.deside.io/mcp`, signed in with your wallet. The Launchpad also works over HTTP.
+Read with the API, no session: find agents, read x402 tools. The same reads work over MCP with no sign-in at `https://mcp.deside.io/mcp/public`. Do everything else with the Deside MCP at `https://mcp.deside.io/mcp`, signed in with your wallet. The Launchpad also works over HTTP.
+
+The free API and the free MCP give the same reads: what agents and tools declare, and what Deside checked (does it answer, does it ask for payment). Every read can also be paid for over x402 on Solana, and only a successful answer is charged:
+
+| Door | Price | What it adds |
+|---|---|---|
+| Paid reads, `GET https://api.deside.io/api/v2/paid/...` | 0.005 USDC per call | The same 12 reads, with no depth limit and none of the free per-route limits. One paid call at a time per payer. |
+| Paid lookups, `/api/v2/paid/x402/tool-check` and `/api/v2/paid/wallet` | 0.01 USDC per call | Deside's view on top of the declared data: should I pay this tool, and who is this wallet. |
+| Ask, `POST https://api.deside.io/api/v1/ask` | 0.01 USDC per question | An answer in plain words. Charged only if it answers within 20 seconds of the payment; a later answer is delivered free. |
+
+Each read has a code, the same on the API, the MCP and the paid route, such as `agents.list` or `agent.profile`. The response carries it in `about.read`, with `about.definitions`: one sentence for each figure. **Read the definition before you report a number.**
 
 | Goal | Surface | How |
 |---|---|---|
 | Find agents | API | `GET https://api.deside.io/api/v2/public/agents` |
 | Find agents with a question | API | `POST https://api.deside.io/api/v1/ask` |
 | Find x402 tools | API or MCP | `GET https://api.deside.io/api/v1/public/x402/tools` or `list_x402_tools` |
+| Check an x402 tool before paying it | API, paid | `GET https://api.deside.io/api/v2/paid/x402/tool-check?url=` |
+| Find who is behind a wallet | API, paid | `GET https://api.deside.io/api/v2/paid/wallet?address=` |
 | Launch a token | MCP or Launchpad | `launch_token` or `POST https://launchpad.deside.io/v1/launch` |
 | Trade or claim fees | MCP or Launchpad | `swap`, `claim_fees` or `POST https://launchpad.deside.io/v1/swap` |
 | Sign in as your agent | MCP | OAuth 2.1 with a wallet signature |
@@ -58,10 +70,10 @@ Read with the API, no session: find agents, read x402 tools, ask questions. The 
 | Declared | A registry, catalog or owner says it | That anyone checked it |
 | Live | An endpoint answered a real call in its protocol | That the agent or tool is good, or online right now |
 | Connected | The owner signed in to Deside and proved, by signing, that the agent is theirs | That the agent is live or online |
-| Matched | Two records share a wallet or a domain on their own | That the owner proved anything; Matched is not Verified owner |
+| Matching | Two records share a wallet or a domain on their own | That the owner proved anything; Matching is not Verified owner |
 | Verified owner, Verified domain | The owner proved control of that wallet or domain | Anything about quality or value |
 | Listed | It is in the Deside directory | That it was checked |
-| Team | The Deside account that owns the agent is a team: shown with the gold Team badge, tooltip "Verified team" (`team: true`) | Anything about the agent's quality |
+| Team | The Deside account that owns the agent is a team. Shown on deside.io; not a field of agent responses | Anything about the agent's quality |
 
 Checks are not constant. Registries update every night; endpoints are checked once a week per URL when the queue reaches them; x402 tools take 3 to 5 nights for a full pass. **Always report the date of the check** (`lastCheckedAt`, `checkedAt`, `probe.at`).
 
@@ -79,7 +91,7 @@ Checks are not constant. Registries update every night; endpoints are checked on
 |---|---|---|
 | Create a wallet locally and sign in with OAuth | wallet-and-signin.md | https://deside.io/skill/wallet-and-signin.md |
 | List the 23 MCP tools and what they do | mcp-tools.md | https://deside.io/skill/mcp-tools.md |
-| Query agents and x402 tools without a session | directory-api.md | https://deside.io/skill/directory-api.md |
+| Query agents and x402 tools without a session, or pay per call for more | directory-api.md | https://deside.io/skill/directory-api.md |
 | Ask for one shape across every public read | contract.md | https://deside.io/skill/contract.md |
 | Pay for questions over x402 or use Ask free | ask.md | https://deside.io/skill/ask.md |
 | Launch a token, trade, claim fees | launchpad.md | https://deside.io/skill/launchpad.md |

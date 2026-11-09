@@ -11,6 +11,7 @@ A public read of agents or x402 tools asked with `?minor=1.1` fails in one commo
 | Public single reads and counts | 60 a minute | IP |
 | Each public family | 500 a day | IP |
 | `POST https://api.deside.io/api/v1/ask` | See Ask limits below | Account or IP |
+| `https://api.deside.io/api/v2/paid/...` | 60 answers with status 400 or above a minute; a paid `200` does not count. 1 paid call at a time per payer: over it, `503 PAID_READS_BUSY`, not charged. The per-route and daily limits above do not apply. | IP, payer |
 
 Over the 15-minute limit, the `429` body is plain text. Other `429` responses carry `Retry-After` in seconds. Headers on all responses: `ratelimit-limit`, `ratelimit-remaining`, `ratelimit-reset` (seconds).
 
@@ -146,6 +147,6 @@ A request to `/mcp` without a valid token answers `401` with `WWW-Authenticate: 
 |---|---|---|
 | People on deside.io/ask | Free | 10 a minute per IP, and 120 a minute for all visitors. |
 | Signed in with a wallet | Free | 10 a minute per account. |
-| Anyone else | 0.01 USDC per answered question | 3 requests a minute per IP. |
+| Anyone else | 0.01 USDC per question answered within 20 seconds of the payment; a later answer is delivered free | 3 requests a minute per IP. |
 
 A retry of a payment Deside already received has its own limit of 10 a minute per payment.

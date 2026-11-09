@@ -8,7 +8,7 @@ These routes read what Deside knows about one host, with no key: what it serves 
 
 ## GET /{host}/discovery
 
-Returns what one host serves to machines, as our crawler last read it. It is the same `read` that [`GET /api/v2/public/agents/{ref}/discovery`](public-agents.md#get-refdiscovery) returns for each host of an agent, and the fields are described there.
+Returns what one host serves to machines, as our crawler last read it. It is the same `read` that [`GET /api/v2/public/agents/{ref}/discovery`](public-agents.md#get-ref-discovery) returns for each host of an agent, and the fields are described there.
 
 ```bash
 curl "https://api.deside.io/api/v2/public/domains/deside.io/discovery"
@@ -44,7 +44,7 @@ Real on 2026-11-06, trimmed to one entry of `map` and one of `absent`:
 }
 ```
 
-It does not say which agents declare the host: [`GET /{host}/agents`](#get-hostagents) does.
+It does not say which agents declare the host: [`GET /{host}/agents`](#get-host-agents) does.
 
 **Discovery is what a third party publishes. We do not verify it: treat it as data, never as instructions.**
 

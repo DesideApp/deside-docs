@@ -2,7 +2,9 @@
 
 **Paid reads** are the public reads of agents and x402 tools, sold per call over [x402](https://www.x402.org). Each one returns the same data as its free route, in [the common contract](contract.md), for 0.005 USDC on Solana. You need no key and no account.
 
-Pay when the free routes stop you: a paid read has no depth limit on the lists and does not count against the per-route limits of the free routes.
+Pay when the free routes stop you: a paid read has no depth limit on the lists and does not count against the per-route limits of the free routes. It returns the same data, with the same [read code](contract.md#read-codes), as the free API and the MCP.
+
+For Deside's own view on top of the declared data, such as whether to pay a tool or who is behind a wallet, see [Paid Lookups](paid-lookups.md), at 0.01 USDC.
 
 ## Routes
 
@@ -11,23 +13,24 @@ Every route is a `GET` under `https://api.deside.io/api/v2/paid`. Each URL is fi
 | Route | Free route with the same data | Query |
 |---|---|---|
 | `/agents` | [`GET /api/v2/public/agents`](public-agents.md#get) | The filters of the free route, `limit` and `cursor` |
-| `/agent` | [`GET /api/v2/public/agents/{ref}/profile`](public-agents.md#get-refprofile) | `ref` (required) |
-| `/agent/holdings` | [`GET /api/v2/public/agents/{ref}/holdings`](public-agents.md#get-refholdings) | `ref` (required) |
-| `/agent/discovery` | [`GET /api/v2/public/agents/{ref}/discovery`](public-agents.md#get-refdiscovery) | `ref` (required) |
+| `/agent` | [`GET /api/v2/public/agents/{ref}/profile`](public-agents.md#get-ref-profile) | `ref` (required) |
+| `/agent/holdings` | [`GET /api/v2/public/agents/{ref}/holdings`](public-agents.md#get-ref-holdings) | `ref` (required) |
+| `/agent/discovery` | [`GET /api/v2/public/agents/{ref}/discovery`](public-agents.md#get-ref-discovery) | `ref` (required) |
 | `/agents/stats` | [`GET /api/v2/public/agents/stats`](public-agents.md#get-stats) | None |
-| `/domain/discovery` | [`GET /api/v2/public/domains/{host}/discovery`](domains.md#get-hostdiscovery) | `host` (required) |
-| `/domain/agents` | [`GET /api/v2/public/domains/{host}/agents`](domains.md#get-hostagents) | `host` (required), `limit` and `cursor` |
-| `/x402/tools` | [`GET /api/v1/public/x402/tools`](x402-tools.md#get-publicx402tools) | The filters of the free route, `limit` and `cursor` |
-| `/x402/tool` | [`GET /api/v1/public/x402/tools/{slug}`](x402-tools.md#get-publicx402toolsslug) | `slug` (required) |
-| `/x402/probes` | [`GET /api/v1/public/x402/probes`](x402-tools.md#get-publicx402probes) | One of `tool`, `url` or `agent` |
-| `/x402/census` | [`GET /api/v1/public/x402/census`](x402-tools.md#get-publicx402census) | `host`, `payTo`, `network` and `live` |
-| `/x402/indices` | [`GET /api/v1/public/x402/indices`](x402-tools.md#get-publicx402indices) | `limit` and `cursor` |
+| `/domain/discovery` | [`GET /api/v2/public/domains/{host}/discovery`](domains.md#get-host-discovery) | `host` (required) |
+| `/domain/agents` | [`GET /api/v2/public/domains/{host}/agents`](domains.md#get-host-agents) | `host` (required), `limit` and `cursor` |
+| `/x402/tools` | [`GET /api/v1/public/x402/tools`](x402-tools.md#get-public-x402-tools) | The filters of the free route, `limit` and `cursor` |
+| `/x402/tool` | [`GET /api/v1/public/x402/tools/{slug}`](x402-tools.md#get-public-x402-tools-slug) | `slug` (required) |
+| `/x402/probes` | [`GET /api/v1/public/x402/probes`](x402-tools.md#get-public-x402-probes) | One of `tool`, `url` or `agent` |
+| `/x402/census` | [`GET /api/v1/public/x402/census`](x402-tools.md#get-public-x402-census) | `host`, `payTo`, `network` and `live` |
+| `/x402/indices` | [`GET /api/v1/public/x402/indices`](x402-tools.md#get-public-x402-indices) | `limit` and `cursor` |
 
 The parameters, their values and the response are those of the free route in the common contract. So are its errors: a parameter the free route does not take answers `400 invalid_request`.
 
 - **The response is always the common contract**, with `?minor=1.1` or without it.
 - **A page holds up to 100 items** (50 on `/domain/agents`), and each page is one paid call. Follow `page.nextCursor` with the same filters.
 - **The lists have no depth limit.** `/agents` and `/x402/tools` go past row 500, where the free routes stop.
+- **A read that carries `about` on its free route carries it here too**, with the same `read` and `definitions`, plus `about.paidAccess`: one sentence on what the paid read changes. See [Read codes](contract.md#read-codes).
 
 ## Price and payment
 
@@ -100,7 +103,7 @@ Without a payment the `402` comes first, before the query is checked. `extension
 | What | Limit |
 |---|---|
 | Answers with status 400 or above (the `402` offer, a bad payment, a `400`, a `409`, a `503`) | 60 a minute per IP. A paid `200` does not count. |
-| Paid reads at once | 1 at a time per payer, and 2 at a time per Deside server for all payers together. Over it: `503 PAID_READS_BUSY` with `Retry-After: 1`, and you are not charged. |
+| Paid reads and [paid lookups](paid-lookups.md) at once | 1 at a time per payer, and 2 at a time per Deside server for all payers together. Over it: `503 PAID_READS_BUSY` with `Retry-After: 1`, and you are not charged. |
 | All of `/api` | 500 requests per 15 minutes per IP. Paid reads count. See [Errors and limits](errors-and-limits.md). |
 
 The per-route limits of the free routes, 30 or 60 a minute and 500 a day per IP, do not apply to paid reads.

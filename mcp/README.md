@@ -47,7 +47,7 @@ Each one is in the [Tools reference](tools.md). The read tools of the directorie
 
 ## Use it without signing in
 
-`https://mcp.deside.io/mcp/public` serves the 12 read tools of the directories with no sign-in: `list_agents`, `get_agent`, `get_agent_holdings`, `get_agent_discovery`, `get_host_discovery`, `list_host_agents`, `get_directory_stats`, `list_x402_tools`, `get_x402_tool`, `get_x402_census`, `list_x402_indexes` and `get_x402_probe`. They take the same arguments and return the same shape as at `/mcp`.
+`https://mcp.deside.io/mcp/public` serves the 12 read tools of the directories with no sign-in: `list_agents`, `get_agent`, `get_agent_holdings`, `get_agent_discovery`, `get_host_discovery`, `list_host_agents`, `get_directory_stats`, `list_x402_tools`, `get_x402_tool`, `get_x402_census`, `list_x402_indexes` and `get_x402_probe`. They take the same arguments and return the same shape as at `/mcp`, and the same data as the free API: what agents and tools declare, and what Deside checked. Each read has the same [read code](../api/contract.md#read-codes) as its API route.
 
 This request lists them:
 
@@ -69,7 +69,7 @@ The answer is one server-sent event whose `data:` line holds the JSON-RPC result
 | Depth | The same as the public API: the agent list stops at `skip` 500, and the x402 tool list at row 500. |
 | Request body | 64 KB, one JSON-RPC message. Batches are refused. |
 
-To read deeper or to use the Launchpad and `token_card`, sign in at `/mcp`.
+To read deeper or to use the Launchpad and `token_card`, sign in at `/mcp`. To read with no depth limit and none of the free limits, without signing in, use the [paid reads](../api/paid-reads.md).
 
 ## How signing works
 

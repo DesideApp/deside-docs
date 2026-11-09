@@ -2,6 +2,16 @@
 
 This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
+## 2026-11-09
+
+- Each read has one code, the same on the free API, the MCP and the paid route. `GET /api/v2/public/agents`, `/stats`, `/{ref}` and `/{ref}/profile`, the MCP tools `list_agents`, `get_agent` and `get_directory_stats`, and their paid reads now carry `about`: `read`, the code (`agents.list`, `agents.stats`, `agent.summary`, `agent.profile`), and `definitions`, one sentence for each figure. A paid read adds `about.paidAccess`. See [Read codes](api/contract.md#read-codes).
+- `GET /api/v2/public/agents/stats` and `get_directory_stats` add `live`: the count of agents that answer from the nightly check, with `agents` and `distinctServers` per protocol and its `measuredAt`. It is `null` until that nightly count exists. The other counts do not change.
+- `GET /api/v2/public/agents`: without `duplicates`, every copy of an agent is listed, whatever the filters. Before, a filter hid copies. What to do: send `duplicates=hide` to keep one agent per group of copies. `list_agents` does the same.
+- `GET /api/v2/public/agents` and `list_agents` no longer return `facets`, and their rows no longer return `ownerProven` or `team`. `GET /api/v2/public/agents/{ref}` no longer returns `ownerProven`, `team` or `ownerScore`. `GET /api/v2/public/agents/{ref}/profile` and the paid read `/api/v2/paid/agent` no longer return `ownerProven`, `team`, `ownerScore`, `reputation`, `relations`, `claim` or the raw registry documents: the profile is what the agent declares and what Deside checked, the same as `get_agent`. What to do: read the owner proof from [`GET /api/v1/public/claim/{type}/{id}`](api/public-agents.md#get-public-claim-type-id), the `connected` count and filter, or the [paid lookups](api/paid-lookups.md), which carry relations.
+- Paid lookups documented, 0.01 USDC per call over x402 on Solana: `GET https://api.deside.io/api/v2/paid/x402/tool-check` (should I pay this x402 tool?) and `GET https://api.deside.io/api/v2/paid/wallet` (who is this wallet?). Only a `200` is charged. See [Paid Lookups](api/paid-lookups.md).
+- `POST /api/v1/ask`: a paid question is charged only when it is answered within 20 seconds of the payment. A later answer is delivered with no charge.
+- Docs: [Relations](api/relations.md) now describes the relations of the paid lookups. The step `matches` is shown as Matching, the word deside.io uses; these docs said Matched. Links to sections of the API pages are fixed.
+
 ## 2026-11-06
 
 - Paid reads added: the 12 public reads of agents, domains and x402 tools, sold per call over x402 at 0.005 USDC on Solana, under `https://api.deside.io/api/v2/paid`. They answer in the common contract, only a `200` is charged, and the lists have no depth limit. They are listed at `https://api.deside.io/.well-known/x402`. The free routes do not change. See [Paid Reads](api/paid-reads.md).
@@ -13,7 +23,7 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 - `GET https://api.deside.io/api/v2/public/domains/{host}/agents` and the MCP tool `list_host_agents` added: the agents that declare a host, as their website or as a service. See [Domains](api/domains.md).
 - `get_agent` no longer returns `ownerProven`, `team`, `ownerScore`, `reputation`, `relations` or `claim`, and the rows of `list_agents` no longer return `ownerProven` or `team`. The API routes keep them.
 - `list_agents` no longer takes `connected`; it takes `ownerWallet`, `agentWallet`, `coreAsset` and `collection`. A contract tool answers an argument it does not take with `invalid_request`, naming it.
-- Docs: [Public agents](api/public-agents.md#get-refdiscovery), [Domains](api/domains.md) and the [Tools reference](mcp/tools.md) now describe `GET /api/v2/public/agents/{ref}/discovery`, `GET /api/v2/public/domains/{host}/discovery`, `get_agent_discovery` and `get_host_discovery`: what the hosts of an agent serve to machines.
+- Docs: [Public agents](api/public-agents.md#get-ref-discovery), [Domains](api/domains.md) and the [Tools reference](mcp/tools.md) now describe `GET /api/v2/public/agents/{ref}/discovery`, `GET /api/v2/public/domains/{host}/discovery`, `get_agent_discovery` and `get_host_discovery`: what the hosts of an agent serve to machines.
 - `GET /api/v2/public/agents`: `ownerWallet` and `agentWallet` take a `0x` address. `collection` filters by the on-chain Metaplex Core collection, the `onSolana.collection` of the profile.
 
 ## 2026-11-04
@@ -30,7 +40,7 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 - `cb` and `minor` are accepted on every public route, including x402: they no longer answer `400 unknown filter`.
 - `GET /api/v1/public/x402/tools`: `hasMore` is `false` on the last page you can reach (row 500), so following `nextCursor` stops by itself.
 - `GET /api/v1/public/x402/probes`: `?agent=` takes an agent `slug` too.
-- `GET https://api.deside.io/api/v2/public/agents/{ref}/holdings` added, with no key: what the wallets of an agent hold and the evidence of its token. It answers only in the common contract. See [Public agents](api/public-agents.md#get-refholdings).
+- `GET https://api.deside.io/api/v2/public/agents/{ref}/holdings` added, with no key: what the wallets of an agent hold and the evidence of its token. It answers only in the common contract. See [Public agents](api/public-agents.md#get-ref-holdings).
 - `GET /api/v1/public/x402/tools/{slug}` adds `usage`: one row per bazaar that publishes how much the tool is used. The bazaar declares the numbers; Deside does not verify them. See [x402 Tools](api/x402-tools.md#usage).
 - `POST /api/v1/ask` adds `sources`: the public routes the answer comes from, each with `asOf` and `stale`. See [Ask](api/ask.md).
 - The MCP has 34 tools. Added, read only with `deside:read` and in the common contract: `list_agents`, `get_agent`, `get_agent_holdings`, `list_x402_tools`, `get_x402_tool`, `list_units` and `get_unit`. `search_agents`, `agent_trust_card`, `search_x402_tools` and `x402_tool_card` keep their shape. See [Tools reference](mcp/tools.md).
@@ -42,7 +52,7 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 
 ## 2026-11-01
 
-- `GET https://api.deside.io/api/v1/public/x402/probes` added, with no key: the whole last probe of an x402 tool (`tool` or `url`) or of the x402 URLs an agent declares (`agent`), with the HTTP status, the response, the offer, the price and wallet checks, the latency and the last 10 verdicts. Everything under `response.untrusted` is third-party text. See [x402 Tools](api/x402-tools.md#get-publicx402probes).
+- `GET https://api.deside.io/api/v1/public/x402/probes` added, with no key: the whole last probe of an x402 tool (`tool` or `url`) or of the x402 URLs an agent declares (`agent`), with the HTTP status, the response, the offer, the price and wallet checks, the latency and the last 10 verdicts. Everything under `response.untrusted` is third-party text. See [x402 Tools](api/x402-tools.md#get-public-x402-probes).
 - `GET /api/v1/public/x402/tools` adds `verdict` (`offer`, `no-offer`, `no-endpoint`, `no-response`, `blocked`, `unprobed`). It cannot be combined with `live`.
 - `GET /api/v1/public/x402/census` counts the tools never probed as `unprobed` in `byVerdict`, which now sums to `tools`.
 - An `x402` service in `GET /api/v2/public/agents/{ref}` and `/{ref}/profile` carries `probe`: `verdict`, `reason` and `probedAt`.

@@ -25,6 +25,7 @@
 - [Domains](api/domains.md)
 - [Ask](api/ask.md)
 - [Paid Reads](api/paid-reads.md)
+- [Paid Lookups](api/paid-lookups.md)
 - [Relations](api/relations.md)
 - [x402 Tools](api/x402-tools.md)
 - [Sources](api/sources.md)

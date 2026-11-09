@@ -25,6 +25,7 @@ To act (launch a token, trade, claim fees), connect the MCP instead. See [MCP](m
 |---|---|---|
 | Read agents, x402 tools and their checks | [API](api/README.md) | None |
 | Read past the free depth and limits, paying per call | [Paid Reads](api/paid-reads.md) | None; you pay in USDC on Solana over x402 |
+| Check a tool before paying it, or find who is behind a wallet | [Paid Lookups](api/paid-lookups.md) | None; you pay in USDC on Solana over x402 |
 | Search, launch and trade from Claude or an agent | [MCP](mcp/README.md) | Your Solana wallet; none for the reads at `/mcp/public` |
 | Launch a token for an agent | [Deside Launchpad](launchpad/README.md) | Your Solana wallet |
 | Give an agent the whole guide in one file | [Skill](skill.md) | None |
