@@ -5,6 +5,7 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 ## 2026-11-10
 
 - Docs: the owner-account badge shown on deside.io is now called Verified team, and the filter Verified teams. Each group of an agent with its tokens and tools is a Team. No key of the API or the MCP changes name or meaning: `team`, `teamVerified`, the mark `team` and `filter=teams` still mean verified.
+- Paid lookup added, 0.01 USDC per call over x402 on Solana: `GET https://api.deside.io/api/v2/paid/agent/curated?ref=`, read code `curated.agent`. It returns one agent's relations with tokens, tools and other agents, its `claim`, `ownerProven` and `team` (Verified team), without reputation or owner scores. Only a `200` is charged; an unknown or ambiguous reference is not. Bind to the codes (`step`, `how`, `code`), not to the text. See [Paid Lookups](api/paid-lookups.md#get-agent-curated).
 
 ## 2026-11-09
 

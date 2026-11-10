@@ -1,6 +1,6 @@
 # Relations
 
-A [relation](../start/relations.md) is a link Deside shows between two records, such as an agent and an x402 tool, with a step that says how far it is backed. Relations are Deside's own view, not something an agent declares. **The free API and the free MCP do not return relations.** Over the API you read them in the two [paid lookups](paid-lookups.md).
+A [relation](../start/relations.md) is a link Deside shows between two records, such as an agent and an x402 tool, with a step that says how far it is backed. Relations are Deside's own view, not something an agent declares. **The free API and the free MCP do not return relations.** Over the API you read them in the three [paid lookups](paid-lookups.md).
 
 ## Where relations appear
 
@@ -9,6 +9,7 @@ A [relation](../start/relations.md) is a link Deside shows between two records, 
 | [`GET /api/v2/paid/x402/tool-check`](paid-lookups.md#get-x402-tool-check) | `tool.declaredBy[]` | Listed agents that declare the tool. |
 | [`GET /api/v2/paid/x402/tool-check`](paid-lookups.md#get-x402-tool-check) | `wallets[].matchingAgents[]` | Listed agents that declare a wallet the tool is paid to. |
 | [`GET /api/v2/paid/wallet`](paid-lookups.md#get-wallet) | `relations.items[]` | The agents, tools and other records related through that wallet. |
+| [`GET /api/v2/paid/agent/curated`](paid-lookups.md#get-agent-curated) | `relations.items[]` | The tokens, tools and other agents related to one agent, with `vias[]` (`how`, `code`, `text`, `value`). |
 
 ## The shared keys
 
@@ -16,7 +17,7 @@ A [relation](../start/relations.md) is a link Deside shows between two records, 
 | --- | --- |
 | `step` | `declared`, `matches` or `proven`. |
 | `label` | The word to show for the step: `Declared`, `Matching` or `Verified owner`. Show it as it comes. |
-| `how` | What links the two sides: `same-wallet`, or for a tool, `declares-this-url` or `lists-it-in-its-x402-index`. |
+| `how` | What links the two sides: `same-wallet`, or for a tool, `declares-this-url` or `lists-it-in-its-x402-index`. In the curated agent profile, `vias[].how` is `same-wallet`, `same-domain`, `same-x`, `agent-lists-token` or `agent-lists-tool`. |
 | `checkedAt` | When Deside last saw the link, where the lookup gives it. |
 
 What each step means:

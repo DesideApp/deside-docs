@@ -125,6 +125,7 @@ These reads exist on every door. The code column shows the reads whose responses
 | `agent.profile` | `GET /api/v2/public/agents/{ref}/profile` | `get_agent` | `GET /api/v2/paid/agent?ref=` | 0.005 USDC |
 | `agents.stats` | `GET /api/v2/public/agents/stats` | `get_directory_stats` (at `data.agents`) | `GET /api/v2/paid/agents/stats` | 0.005 USDC |
 | `agent.summary` | `GET /api/v2/public/agents/{ref}` | None | None | Free only |
+| `curated.agent` | None | None | `GET /api/v2/paid/agent/curated?ref=` | 0.01 USDC |
 | None | `GET /api/v2/public/agents/{ref}/holdings` | `get_agent_holdings` | `GET /api/v2/paid/agent/holdings?ref=` | 0.005 USDC |
 | None | `GET /api/v2/public/agents/{ref}/discovery` | `get_agent_discovery` | `GET /api/v2/paid/agent/discovery?ref=` | 0.005 USDC |
 | None | `GET /api/v2/public/domains/{host}/discovery` | `get_host_discovery` | `GET /api/v2/paid/domain/discovery?host=` | 0.005 USDC |
@@ -135,7 +136,7 @@ These reads exist on every door. The code column shows the reads whose responses
 | None | `GET /api/v1/public/x402/census` | `get_x402_census` (also at `data.x402Tools` of `get_directory_stats`) | `GET /api/v2/paid/x402/census` | 0.005 USDC |
 | None | `GET /api/v1/public/x402/indices` | `list_x402_indexes` | `GET /api/v2/paid/x402/indices` | 0.005 USDC |
 
-Paid routes outside this table have no free route and no MCP tool: the two paid lookups (see directory-api.md), `GET /api/v2/paid/x402/tool-check` and `GET /api/v2/paid/wallet` at 0.01 USDC, and Ask (see ask.md), `POST /api/v1/ask` at 0.01 USDC.
+`curated.agent` is one of the three paid lookups (see directory-api.md), and only exists paid. The other paid routes outside this table have no free route, no MCP tool and no code: the lookups `GET /api/v2/paid/x402/tool-check` and `GET /api/v2/paid/wallet` at 0.01 USDC, and Ask (see ask.md), `POST /api/v1/ask` at 0.01 USDC.
 
 ## In the MCP
 

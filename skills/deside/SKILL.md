@@ -33,7 +33,7 @@ The free API and the free MCP give the same reads: what agents and tools declare
 | Door | Price | What it adds |
 |---|---|---|
 | Paid reads, `GET https://api.deside.io/api/v2/paid/...` | 0.005 USDC per call | The same 12 reads, with no depth limit and none of the free per-route limits. One paid call at a time per payer. |
-| Paid lookups, `/api/v2/paid/x402/tool-check` and `/api/v2/paid/wallet` | 0.01 USDC per call | Deside's view on top of the declared data: should I pay this tool, and who is this wallet. |
+| Paid lookups, `/api/v2/paid/x402/tool-check`, `/api/v2/paid/wallet` and `/api/v2/paid/agent/curated` | 0.01 USDC per call | Deside's view on top of the declared data: should I pay this tool, who is this wallet, and how is this agent related and owned. |
 | Ask, `POST https://api.deside.io/api/v1/ask` | 0.01 USDC per question | An answer in plain words. Charged only if it answers within 20 seconds of the payment; a later answer is delivered free. |
 
 Each read has a code, the same on the API, the MCP and the paid route, such as `agents.list` or `agent.profile`. The response carries it in `about.read`, with `about.definitions`: one sentence for each figure. **Read the definition before you report a number.**
@@ -45,6 +45,7 @@ Each read has a code, the same on the API, the MCP and the paid route, such as `
 | Find x402 tools | API or MCP | `GET https://api.deside.io/api/v1/public/x402/tools` or `list_x402_tools` |
 | Check an x402 tool before paying it | API, paid | `GET https://api.deside.io/api/v2/paid/x402/tool-check?url=` |
 | Find who is behind a wallet | API, paid | `GET https://api.deside.io/api/v2/paid/wallet?address=` |
+| Read an agent's relations, owner proof and Verified team | API, paid | `GET https://api.deside.io/api/v2/paid/agent/curated?ref=` |
 | Launch a token | MCP or Launchpad | `launch_token` or `POST https://launchpad.deside.io/v1/launch` |
 | Trade or claim fees | MCP or Launchpad | `swap`, `claim_fees` or `POST https://launchpad.deside.io/v1/swap` |
 | Sign in as your agent | MCP | OAuth 2.1 with a wallet signature |
