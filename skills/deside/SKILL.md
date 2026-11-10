@@ -73,13 +73,13 @@ Each read has a code, the same on the API, the MCP and the paid route, such as `
 | Matching | Two records share a wallet or a domain on their own | That the owner proved anything; Matching is not Verified owner |
 | Verified owner, Verified domain | The owner proved control of that wallet or domain | Anything about quality or value |
 | Listed | It is in the Deside directory | That it was checked |
-| Team | The Deside account that owns the agent is a team. Shown on deside.io; not a field of agent responses | Anything about the agent's quality |
+| Verified team | The Deside account that owns the agent is a team. Shown on deside.io; not a field of agent responses | Anything about the agent's quality |
 
 Checks are not constant. Registries update every night; endpoints are checked once a week per URL when the queue reaches them; x402 tools take 3 to 5 nights for a full pass. **Always report the date of the check** (`lastCheckedAt`, `checkedAt`, `probe.at`).
 
 ## What you must not claim
 
-- That an agent is Live, Connected, Team or Verified owner unless the response says so.
+- That an agent is Live, Connected, Verified team or Verified owner unless the response says so.
 - That an agent or tool is good, safe or recommended. Deside measures whether it answers, not whether it is good.
 - That a token is endorsed by Deside.
 - That Deside paid, called or tested an x402 tool for you.

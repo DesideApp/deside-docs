@@ -2,6 +2,10 @@
 
 This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
+## 2026-11-10
+
+- Docs: the owner-account badge shown on deside.io is now called Verified team, and the filter Verified teams. Each group of an agent with its tokens and tools is a Team. No key of the API or the MCP changes name or meaning: `team`, `teamVerified`, the mark `team` and `filter=teams` still mean verified.
+
 ## 2026-11-09
 
 - Each read has one code, the same on the free API, the MCP and the paid route. `GET /api/v2/public/agents`, `/stats`, `/{ref}` and `/{ref}/profile`, the MCP tools `list_agents`, `get_agent` and `get_directory_stats`, and their paid reads now carry `about`: `read`, the code (`agents.list`, `agents.stats`, `agent.summary`, `agent.profile`), and `definitions`, one sentence for each figure. A paid read adds `about.paidAccess`. See [Read codes](api/contract.md#read-codes).

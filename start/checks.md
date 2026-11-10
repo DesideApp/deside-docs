@@ -10,11 +10,11 @@ Every agent and tool in Deside carries two kinds of fact: what it **declares**, 
 | **Declared** | `services[]` | The registry says so. We have not checked it. |
 | **Live** | `services[].live`, `status.state = "responds"` | At least one declared endpoint replied to a real call on its own protocol. |
 | **Connected** | `connected` in the counts and as a filter of the agent list, `connected` in Ask, `code` of the [claim route](../api/public-agents.md#get-public-claim-type-id) | The owner signed in to Deside and proved, by signing, that the agent is theirs. |
-| **Team** | None: shown on deside.io only | The Deside account that owns the agent is a team: the account has at least one token verified by its creator wallet, its X or its domain, and a proven domain or X. Deside computes it; nobody sets it by hand. |
+| **Verified team** | None: shown on deside.io only | The Deside account that owns the agent is a team: the account has at least one token verified by its creator wallet, its X or its domain, and a proven domain or X. Deside computes it; nobody sets it by hand. |
 
-**Live does not mean good.** It tells you the agent answers, not that it does its job well. **Connected does not mean online.** It is a fact about the owner, not about the agent's uptime. **Team is about the owner's account**, not about the agent's quality.
+**Live does not mean good.** It tells you the agent answers, not that it does its job well. **Connected does not mean online.** It is a fact about the owner, not about the agent's uptime. **Verified team is about the owner's account**, not about the agent's quality.
 
-**The agent list, the agent and its profile carry only what the agent declares and what Deside checked.** Connected and Team are Deside's own view of the owner, so they are not fields of an agent in the API or the MCP.
+**The agent list, the agent and its profile carry only what the agent declares and what Deside checked.** Connected and Verified team are Deside's own view of the owner, so they are not fields of an agent in the API or the MCP.
 
 ### status.state
 
