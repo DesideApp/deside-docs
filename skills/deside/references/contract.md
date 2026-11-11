@@ -137,8 +137,10 @@ A list carries `about` at the root, next to `data`: `agents.list`, `domain.agent
 | `curated.tool-check` | None | None | `GET /api/v2/paid/x402/tool-check` | 0.01 USDC |
 | `curated.wallet` | None | None | `GET /api/v2/paid/wallet?address=` | 0.01 USDC |
 | `curated.agent` | None | None | `GET /api/v2/paid/agent/curated?ref=` | 0.01 USDC |
+| `curated.units` | None | None | `GET /api/v2/paid/units` | 0.01 USDC |
+| `curated.unit` | None | None | `GET /api/v2/paid/unit?id=` | 0.01 USDC |
 
-The three `curated.*` codes are the paid lookups (see directory-api.md): they only exist paid. Ask (see ask.md), `POST /api/v1/ask` at 0.01 USDC, has no code.
+The five `curated.*` codes are the paid lookups (see directory-api.md): they only exist paid. Ask (see ask.md), `POST /api/v1/ask` at 0.01 USDC, has no code.
 
 ## In the MCP
 

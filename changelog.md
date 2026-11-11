@@ -5,6 +5,7 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 ## 2026-11-11
 
 - Every read now carries `about`, with its read code and one definition for each figure or field. New codes: `agent.holdings`, `agent.discovery`, `domain.discovery`, `domain.agents`, `x402.tools`, `x402.tool`, `x402.probes`, `x402.census` and `x402.indexes` on the free API, the MCP and the paid reads, and `curated.tool-check` and `curated.wallet` on the paid lookups, whose `about.paidAccess` gives their price of 0.01 USDC. A list carries `about` beside `data`; an item carries it inside `data`. The x402 routes carry it only with `?minor=1.1`. `get_directory_stats` also carries the census `about` at `data.x402Tools.about`. Nothing else in the responses changes. See [Read codes](api/contract.md#read-codes).
+- Teams are sold over x402 at 0.01 USDC per call: `GET https://api.deside.io/api/v2/paid/units` (a page of Teams, with the filters `filter`, `q`, `chain`, `live`, `offset` and `limit`) and `GET https://api.deside.io/api/v2/paid/unit?id=` (one Team), read codes `curated.units` and `curated.unit`. Only a `200` is charged; an unknown id answers `404` and is not charged. `GET /api/v1/public/units` and `/api/v1/public/units/{id}` now serve deside.io only: elsewhere they answer `403 curated_paid_only`. What to do: call the paid routes with the same parameters. See [Paid Lookups](api/paid-lookups.md#teams).
 
 ## 2026-11-10
 

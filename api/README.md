@@ -19,7 +19,7 @@ The same reads reach you through several doors. The data and what it means are t
 | Free API, the routes below | What agents and tools declare, and what Deside checked: whether an endpoint answers, and whether a tool asks for payment | Free, no key | Per IP; lists stop at row 500. See [Errors and limits](errors-and-limits.md). |
 | Free MCP, `https://mcp.deside.io/mcp/public` | The same reads, as 12 MCP tools | Free, no sign-in | 60 requests a minute per IP, plus the API limits of your IP |
 | [Paid reads](paid-reads.md), `/api/v2/paid/...` | The same 12 reads, with no depth limit and none of the per-route limits of the free API | 0.005 USDC per call, over x402 | 1 paid read at a time per payer |
-| [Paid lookups](paid-lookups.md), `/api/v2/paid/x402/tool-check`, `/api/v2/paid/wallet` and `/api/v2/paid/agent/curated` | Deside's view on top of the declared data: whether to pay a tool, who is behind a wallet, and an agent's relations, owner proof and Verified team | 0.01 USDC per call, over x402 | As the paid reads |
+| [Paid lookups](paid-lookups.md), `/api/v2/paid/x402/tool-check`, `/api/v2/paid/wallet`, `/api/v2/paid/agent/curated`, `/api/v2/paid/units` and `/api/v2/paid/unit` | Deside's view on top of the declared data: whether to pay a tool, who is behind a wallet, an agent's relations, owner proof and Verified team, and the Teams | 0.01 USDC per call, over x402 | As the paid reads |
 | [Ask](ask.md), `POST /api/v1/ask` | An answer in plain words about the directory | 0.01 USDC per answered question, over x402, or free signed in with a wallet | See [Ask](ask.md#limits) |
 
 **Only a successful answer is charged.** A paid read or lookup is charged only when it answers `200`. Ask is charged only when it answers within 20 seconds of your payment; a later answer is delivered free.
@@ -67,6 +67,7 @@ Then follow [Quickstart](quickstart.md) to filter, page and read one agent.
 | `GET /api/v2/paid/x402/tool-check` | Should I pay this x402 tool? 0.01 USDC per call. See [Paid Lookups](paid-lookups.md). |
 | `GET /api/v2/paid/wallet` | Who is this wallet? 0.01 USDC per call. See [Paid Lookups](paid-lookups.md). |
 | `GET /api/v2/paid/agent/curated` | One agent's relations, owner proof and Verified team. 0.01 USDC per call. See [Paid Lookups](paid-lookups.md). |
+| `GET /api/v2/paid/units` and `GET /api/v2/paid/unit` | The Teams, a page or one. 0.01 USDC per call. See [Paid Lookups](paid-lookups.md#teams). |
 
 All paths start with `https://api.deside.io`.
 
