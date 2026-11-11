@@ -4,6 +4,8 @@ These routes read the x402 Tool Directory with no key. An **x402 tool** is an HT
 
 This page describes the shape each route answers by default. Every route here also answers in [the common contract](contract.md) when you send `?minor=1.1`.
 
+**With `?minor=1.1`, every route on this page carries `about`**: the code of the read and one sentence for each figure or field that needs one. A list carries it beside `data`, one item inside `data`. Without `minor`, the answer has no `about`. See [Read codes](contract.md#read-codes).
+
 ## GET /public/x402/tools
 
 Returns tools that a catalog or index still lists, with their last check.
@@ -113,6 +115,7 @@ Text filters accept up to 512 characters; `index` up to 2,048. **Any other param
 | `logo` | Our cached icon, two sizes. |
 | `tier` | Our last check, as a number from 1 to 5: 1 quoted a price, 2 answered without charging, 3 not checked yet, 4 and 5 failed. |
 | `completeness` | How complete the tool's record is, 0 to 5 points. Tools on test networks always score 0. |
+| `about` | With `?minor=1.1`, beside `data`: `read` is `x402.tools`. |
 
 ### probe
 
@@ -144,6 +147,7 @@ Returns one tool, including retired ones. Adds to the list fields:
 | `payToSources` | Which catalog gave each receiving wallet. |
 | `projectedAt` | When we last rebuilt this record. |
 | `usage[]` | How much the tool is used, as each bazaar publishes it. See below. |
+| `about` | With `?minor=1.1`, inside `data`: `read` is `x402.tool`. |
 
 `404 {"error":"not_found"}` when no tool has that slug.
 
@@ -199,6 +203,8 @@ Real on 2026-11-02, trimmed:
 }
 ```
 
+With `?minor=1.1`, `data.about` has `read` `x402.census` and one sentence per count.
+
 `byBazaar` sums more than `tools` because one tool can be in several catalogs. `byVerdict` sums to `tools`: a tool never probed counts as `unprobed`.
 
 ## GET /public/x402/indices
@@ -235,6 +241,7 @@ curl "https://api.deside.io/api/v1/public/x402/indices?limit=2"
 | `agents` | How many agents declare it. |
 | `content.state` | `live` (at least one tool answers) or `down`. |
 | `content.tools` | Tools it lists, then how many quote a price, respond with no price, are down, or are not checked yet. |
+| `about` | With `?minor=1.1`, beside `data`: `read` is `x402.indexes`. |
 
 ## GET /public/x402/probes
 
@@ -323,6 +330,7 @@ Real on 2026-11-02, trimmed:
 | `offer` | The payment request we read: `amount`, `asset`, `network`, `payTo`, `x402Version`. |
 | `priceCheck` | Whether the asked price and wallet match the catalog's: `sameAmount`, `sameWallet`, and the declared values. |
 | `agentWalletCheck` | On a probe made for an agent: `returnedWallet`, and `inProfile`, whether that wallet is in the agent's profile. |
+| `about` | With `?minor=1.1`, inside `data`: `read` is `x402.probes`. |
 
 ## Errors
 

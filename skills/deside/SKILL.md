@@ -36,7 +36,7 @@ The free API and the free MCP give the same reads: what agents and tools declare
 | Paid lookups, `/api/v2/paid/x402/tool-check`, `/api/v2/paid/wallet` and `/api/v2/paid/agent/curated` | 0.01 USDC per call | Deside's view on top of the declared data: should I pay this tool, who is this wallet, and how is this agent related and owned. |
 | Ask, `POST https://api.deside.io/api/v1/ask` | 0.01 USDC per question | An answer in plain words. Charged only if it answers within 20 seconds of the payment; a later answer is delivered free. |
 
-Each read has a code, the same on the API, the MCP and the paid route, such as `agents.list` or `agent.profile`. The response carries it in `about.read`, with `about.definitions`: one sentence for each figure. **Read the definition before you report a number.**
+Each read has a code, the same on the API, the MCP and the paid route, such as `agents.list` or `agent.profile`. Every response carries it in `about.read`, with `about.definitions`: one sentence for each figure. The x402 routes of the API carry it only with `?minor=1.1`. **Read the definition before you report a number.**
 
 | Goal | Surface | How |
 |---|---|---|

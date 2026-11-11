@@ -30,7 +30,7 @@ The parameters, their values and the response are those of the free route in the
 - **The response is always the common contract**, with `?minor=1.1` or without it.
 - **A page holds up to 100 items** (50 on `/domain/agents`), and each page is one paid call. Follow `page.nextCursor` with the same filters.
 - **The lists have no depth limit.** `/agents` and `/x402/tools` go past row 500, where the free routes stop.
-- **A read that carries `about` on its free route carries it here too**, with the same `read` and `definitions`, plus `about.paidAccess`: one sentence on what the paid read changes. See [Read codes](contract.md#read-codes).
+- **Every paid read carries `about`**, with the same `read` and `definitions` as its free route, plus `about.paidAccess`: one sentence on what the paid read changes. See [Read codes](contract.md#read-codes).
 
 ## Price and payment
 

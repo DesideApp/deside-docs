@@ -54,6 +54,7 @@ Answers whether an x402 tool is worth paying, with a date on every fact. With `u
 | `wallets[]` | Up to 4 wallets the tool is paid to: `address`, `family`, `networks`, `bazaars`, `toolsPaidHere` (`total`, `capped`, `countedAt`) and `matchingAgents[]`. |
 | `wallets[].matchingAgents[]` | Listed agents that declare the same wallet: `catalogId`, `slug`, `name`, `field`, `step` `matches`, `label` `Matching`, `how` `same-wallet` and `checkedAt`. |
 | `walletsTotal` | How many wallets the tool is paid to. |
+| `about` | `read` is `curated.tool-check`; `definitions` has one sentence per field; `paidAccess` says it is 0.01 USDC per call and has no free route. |
 
 When no agent is related, `declaredBy` and `matchingAgents` are empty. **An empty list means we found no agent, not that the tool is safe.** A count over 1,000 stops there with `capped: true`: read it as "at least".
 
@@ -74,6 +75,7 @@ Answers who stands behind a wallet in the directory.
 | `relations.items[]` | The relations that run through this wallet: `step`, `label` (`Matching` or `Verified owner`), `how` `same-wallet`, the two `objects` (each with its `kind`), `conflict` and `checkedAt`. |
 | `relations.truncated` | `true` when there were more relations than the 20 read. |
 | `sharedWallet` | Whether Deside treats the address as a shared platform wallet: `platform`, `usedToRelate`, `threshold` and `checkedAt`. `null` when it was never classified. |
+| `about` | `read` is `curated.wallet`; `definitions` has one sentence per field; `paidAccess` says it is 0.01 USDC per call and has no free route. |
 
 It does not list tokens launched by the wallet. See [How To Read A Relation](../start/relations.md) for what each step means.
 

@@ -107,36 +107,38 @@ Every object carries `id`: a tool its `slug`, an agent its `catalogId`. The `?ag
 
 **Each read has one code, and the code is the same on the free API, the MCP and the paid route.** The data and its meaning are the same through every door; only the access and the price change.
 
-A response that carries the code puts it in `about`, next to the data:
+Every response puts the code in `about`, next to the data:
 
 | Key | What it is |
 | --- | --- |
 | `about.read` | The code of the read, such as `agents.list`. |
 | `about.definitions` | One sentence for each figure or field that needs one, keyed by its path in the response (`data[]` is each item of a list). |
-| `about.paidAccess` | Only on a paid route: what the paid read changes against the free one. |
+| `about.paidAccess` | Only on a paid route: what the paid read changes against the free one, or, for a lookup, its price and that it has no free route. |
 
-A list carries `about` at the root, next to `data`. An item carries it inside `data`. In `get_directory_stats` it is at `data.agents.about`.
+A list carries `about` at the root, next to `data`: `agents.list`, `domain.agents`, `x402.tools` and `x402.indexes`. An item carries it inside `data`. In `get_directory_stats` it is at `data.agents.about` and `data.x402Tools.about`.
 
-These reads exist on every door. The code column shows the reads whose responses carry `about` today; the others answer without it.
+**The x402 routes carry `about` only in the common contract**, with `?minor=1.1`. The MCP tools and the paid routes always answer in the contract, so they always carry it.
 
 | Code | Free API | MCP tool | Paid route | Price |
 | --- | --- | --- | --- | --- |
 | `agents.list` | `GET /api/v2/public/agents` | `list_agents` | `GET /api/v2/paid/agents` | 0.005 USDC |
 | `agent.profile` | `GET /api/v2/public/agents/{ref}/profile` | `get_agent` | `GET /api/v2/paid/agent?ref=` | 0.005 USDC |
 | `agents.stats` | `GET /api/v2/public/agents/stats` | `get_directory_stats` (at `data.agents`) | `GET /api/v2/paid/agents/stats` | 0.005 USDC |
+| `agent.holdings` | `GET /api/v2/public/agents/{ref}/holdings` | `get_agent_holdings` | `GET /api/v2/paid/agent/holdings?ref=` | 0.005 USDC |
+| `agent.discovery` | `GET /api/v2/public/agents/{ref}/discovery` | `get_agent_discovery` | `GET /api/v2/paid/agent/discovery?ref=` | 0.005 USDC |
+| `domain.discovery` | `GET /api/v2/public/domains/{host}/discovery` | `get_host_discovery` | `GET /api/v2/paid/domain/discovery?host=` | 0.005 USDC |
+| `domain.agents` | `GET /api/v2/public/domains/{host}/agents` | `list_host_agents` | `GET /api/v2/paid/domain/agents?host=` | 0.005 USDC |
+| `x402.tools` | `GET /api/v1/public/x402/tools` | `list_x402_tools` | `GET /api/v2/paid/x402/tools` | 0.005 USDC |
+| `x402.tool` | `GET /api/v1/public/x402/tools/{slug}` | `get_x402_tool` | `GET /api/v2/paid/x402/tool?slug=` | 0.005 USDC |
+| `x402.probes` | `GET /api/v1/public/x402/probes` | `get_x402_probe` | `GET /api/v2/paid/x402/probes` | 0.005 USDC |
+| `x402.census` | `GET /api/v1/public/x402/census` | `get_x402_census` (also at `data.x402Tools` of `get_directory_stats`) | `GET /api/v2/paid/x402/census` | 0.005 USDC |
+| `x402.indexes` | `GET /api/v1/public/x402/indices` | `list_x402_indexes` | `GET /api/v2/paid/x402/indices` | 0.005 USDC |
 | `agent.summary` | `GET /api/v2/public/agents/{ref}` | None | None | Free only |
+| `curated.tool-check` | None | None | `GET /api/v2/paid/x402/tool-check` | 0.01 USDC |
+| `curated.wallet` | None | None | `GET /api/v2/paid/wallet?address=` | 0.01 USDC |
 | `curated.agent` | None | None | `GET /api/v2/paid/agent/curated?ref=` | 0.01 USDC |
-| None | `GET /api/v2/public/agents/{ref}/holdings` | `get_agent_holdings` | `GET /api/v2/paid/agent/holdings?ref=` | 0.005 USDC |
-| None | `GET /api/v2/public/agents/{ref}/discovery` | `get_agent_discovery` | `GET /api/v2/paid/agent/discovery?ref=` | 0.005 USDC |
-| None | `GET /api/v2/public/domains/{host}/discovery` | `get_host_discovery` | `GET /api/v2/paid/domain/discovery?host=` | 0.005 USDC |
-| None | `GET /api/v2/public/domains/{host}/agents` | `list_host_agents` | `GET /api/v2/paid/domain/agents?host=` | 0.005 USDC |
-| None | `GET /api/v1/public/x402/tools` | `list_x402_tools` | `GET /api/v2/paid/x402/tools` | 0.005 USDC |
-| None | `GET /api/v1/public/x402/tools/{slug}` | `get_x402_tool` | `GET /api/v2/paid/x402/tool?slug=` | 0.005 USDC |
-| None | `GET /api/v1/public/x402/probes` | `get_x402_probe` | `GET /api/v2/paid/x402/probes` | 0.005 USDC |
-| None | `GET /api/v1/public/x402/census` | `get_x402_census` (also at `data.x402Tools` of `get_directory_stats`) | `GET /api/v2/paid/x402/census` | 0.005 USDC |
-| None | `GET /api/v1/public/x402/indices` | `list_x402_indexes` | `GET /api/v2/paid/x402/indices` | 0.005 USDC |
 
-`curated.agent` is one of the three [paid lookups](paid-lookups.md), and only exists paid. The other paid routes outside this table have no free route, no MCP tool and no code: the lookups `GET /api/v2/paid/x402/tool-check` and `GET /api/v2/paid/wallet` at 0.01 USDC, and [Ask](ask.md), `POST /api/v1/ask` at 0.01 USDC.
+The three `curated.*` codes are the [paid lookups](paid-lookups.md): they only exist paid. [Ask](ask.md), `POST /api/v1/ask` at 0.01 USDC, has no code.
 
 ## In the MCP
 

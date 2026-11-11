@@ -2,6 +2,10 @@
 
 This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
+## 2026-11-11
+
+- Every read now carries `about`, with its read code and one definition for each figure or field. New codes: `agent.holdings`, `agent.discovery`, `domain.discovery`, `domain.agents`, `x402.tools`, `x402.tool`, `x402.probes`, `x402.census` and `x402.indexes` on the free API, the MCP and the paid reads, and `curated.tool-check` and `curated.wallet` on the paid lookups, whose `about.paidAccess` gives their price of 0.01 USDC. A list carries `about` beside `data`; an item carries it inside `data`. The x402 routes carry it only with `?minor=1.1`. `get_directory_stats` also carries the census `about` at `data.x402Tools.about`. Nothing else in the responses changes. See [Read codes](api/contract.md#read-codes).
+
 ## 2026-11-10
 
 - Docs: the owner-account badge shown on deside.io is now called Verified team, and the filter Verified teams. Each group of an agent with its tokens and tools is a Team. No key of the API or the MCP changes name or meaning: `team`, `teamVerified`, the mark `team` and `filter=teams` still mean verified.

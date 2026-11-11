@@ -116,7 +116,7 @@ Returns `{ data, page: { limit, nextCursor, hasMore }, asOf, subject: { host } }
 
 ### get_directory_stats
 
-The directory counts. No parameters. Returns `{ data: { agents, x402Tools }, asOf }`. `data.agents` is the `data` of [`GET /api/v2/public/agents/stats`](../api/public-agents.md#get-stats): the counts, the `live` block (agents that answer and `distinctServers`, by protocol, with its `measuredAt`; `null` until the nightly count exists) and `about`, with `read` `agents.stats` and one definition per figure. `data.x402Tools` is the `data` of `get_x402_census`, or `null` when only that count cannot be read. `asOf` is the older of the two.
+The directory counts. No parameters. Returns `{ data: { agents, x402Tools }, asOf }`. `data.agents` is the `data` of [`GET /api/v2/public/agents/stats`](../api/public-agents.md#get-stats): the counts, the `live` block (agents that answer and `distinctServers`, by protocol, with its `measuredAt`; `null` until the nightly count exists) and `about`, with `read` `agents.stats` and one definition per figure. `data.x402Tools` is the `data` of `get_x402_census`, with its own `about` (`read` `x402.census`), or `null` when only that count cannot be read. `asOf` is the older of the two.
 
 ## x402 tools
 

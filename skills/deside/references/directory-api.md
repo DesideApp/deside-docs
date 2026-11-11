@@ -170,9 +170,11 @@ Takes `limit` (agents per page, 1 to 50, default 20) and `cursor`. Always in the
 
 **Sharing a host does not mean the same owner.** A service host is often a shared platform.
 
-The discovery and domain routes share the limits of a single agent read. Any query parameter they do not take returns `400`.
+The holdings, discovery and domain routes carry `about`: `agent.holdings`, `agent.discovery` and `domain.discovery` inside `data`, `domain.agents` beside it. The discovery and domain routes share the limits of a single agent read. Any query parameter they do not take returns `400`.
 
 ## List x402 tools
+
+With `?minor=1.1`, every x402 route below carries `about`: `x402.tools`, `x402.tool`, `x402.probes`, `x402.census` and `x402.indexes`, with one definition per figure. Without `minor`, it does not.
 
 ```bash
 curl "https://api.deside.io/api/v1/public/x402/tools?live=1&limit=25"
@@ -269,8 +271,8 @@ Every read above, except the short form of one agent, is also sold per call over
 | What | Price | What changes |
 |---|---|---|
 | The 12 reads: `/agents`, `/agent`, `/agent/holdings`, `/agent/discovery`, `/domain/discovery`, `/domain/agents`, `/agents/stats`, `/x402/tools`, `/x402/tool`, `/x402/probes`, `/x402/census`, `/x402/indices` | 0.005 USDC per call | The same data and read code as the free route, with no depth limit and none of its per-route limits. What the free route takes in its path goes in the query (`?ref=`, `?host=`, `?slug=`). A page holds up to 100 items. |
-| `/x402/tool-check?url=` or `?payTo=` | 0.01 USDC per call | Should I pay this tool? Its listing, last probe, probed price against declared prices, the wallets it is paid to, and the agents that declare it (Declared) or share its wallet (Matching), each with its date. |
-| `/wallet?address=` | 0.01 USDC per call | Who is this wallet? The agents that declare it as owner or agent wallet, the x402 tools paid to it, and its relations (Matching, Verified owner). |
+| `/x402/tool-check?url=` or `?payTo=` | 0.01 USDC per call | Read code `curated.tool-check`. Should I pay this tool? Its listing, last probe, probed price against declared prices, the wallets it is paid to, and the agents that declare it (Declared) or share its wallet (Matching), each with its date. |
+| `/wallet?address=` | 0.01 USDC per call | Read code `curated.wallet`. Who is this wallet? The agents that declare it as owner or agent wallet, the x402 tools paid to it, and its relations (Matching, Verified owner). |
 | `/agent/curated?ref=` | 0.01 USDC per call | One agent's curated profile, read code `curated.agent`: `relations` (each item with `kind`, `id`, `step`, `label`, `vias[]` with `how`, `code`, `text`, `value`, and `card`, plus the Team of its owner), `claim` (`state`, `code`, `text`, `vias`), `ownerProven` (Connected or Not connected) and `team` (Verified team; `null` when unknown). No reputation or owner score. |
 
 Ask your user before you pay. The payment flow is the one in ask.md: call, get the `402` offer, sign, and send the same request with `PAYMENT-SIGNATURE`. One payment pays for one request. One paid call runs at a time per payer; over it you get `503 PAID_READS_BUSY` and are not charged. A lookup that finds nothing answers `404`, and a reference that matches several agents answers `409`: neither is charged. **Bind to the codes (`step`, `how`, `code`), not to the text:** the text is derived from the code and can change. `step` is `proven` (Verified owner), `matches` (Matching) or `declared` (Declared).
