@@ -2,6 +2,22 @@
 
 This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
+## 2026-11-22
+
+- Docs: `GET /api/v1/public/x402/tools` takes `sort` (`price` or `usage`) and `maxPrice` (an amount in USDC), and each tool carries `price` (one USDC price you can compare, from our check or the cheapest catalog price) and `calls30d` (calls in 30 days, as Coinbase CDP declares them). They are live since 2026-11-06 and were missing from these docs. See [x402 Tools](api/x402-tools.md#get-public-x402-tools).
+- Docs: how we call an x402 tool and when, in [probe](api/x402-tools.md#probe). Correction: `blocked` means we did not call the tool (a private address, a scheme or port we do not call, or more than 2 redirects). These docs said its host blocked us.
+
+## 2026-11-20
+
+- x402 tools: a tool whose site or gateway answers `502`, `503`, `504` or `530` is now `no-response` (down), not `no-offer`. It no longer counts for `live=1`. What to do: nothing, unless you read `no-offer` as "the site is up".
+- x402 tools: each tool record carries the check of the same night. It used to show the night before.
+
+## 2026-11-19
+
+- Ask reads the question in any language and answers in that language. A question that is not a search (a greeting, an opinion, advice, how Deside works) gets a fixed answer with `noSearch: true` and is not charged. Without a payment, the `402` still comes first. See [Ask](api/ask.md#fixed-answers).
+- Ask finds tokens by mint, `$TICKER` or name and says who is behind each one in `tokens[]`: the Deside account, its agents and its x402 tools. An agent is live only with a check from the last 7 days. A token Deside does not list gets a fixed answer, not charged. See [Tokens](api/ask.md#tokens).
+- Ask uses only x402 tools that asked for payment on a check from the last 14 days. A tool checked more than 7 days ago enters only if it asks for payment again when Deside calls it during the answer. See [Tools in the answer](api/ask.md#tools-in-the-answer).
+
 ## 2026-11-11
 
 - Every read now carries `about`, with its read code and one definition for each figure or field. New codes: `agent.holdings`, `agent.discovery`, `domain.discovery`, `domain.agents`, `x402.tools`, `x402.tool`, `x402.probes`, `x402.census` and `x402.indexes` on the free API, the MCP and the paid reads, and `curated.tool-check` and `curated.wallet` on the paid lookups, whose `about.paidAccess` gives their price of 0.01 USDC. A list carries `about` beside `data`; an item carries it inside `data`. The x402 routes carry it only with `?minor=1.1`. `get_directory_stats` also carries the census `about` at `data.x402Tools.about`. Nothing else in the responses changes. See [Read codes](api/contract.md#read-codes).

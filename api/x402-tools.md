@@ -26,8 +26,10 @@ curl "https://api.deside.io/api/v1/public/x402/tools?live=1&limit=1"
 | `indice` | string | | Same as `index`. Cannot be combined with it. |
 | `live` | string | | Only `1`: tools whose last check got an answer (`offer` or `no-offer`). Not with `verdict`. |
 | `verdict` | string | | `offer`, `no-offer`, `no-endpoint`, `no-response`, `blocked` or `unprobed` (never probed). Not with `live`. |
+| `sort` | string | | `price`: cheapest first, by `price`. `usage`: most used first, by `calls30d`. Only tools that have that number are returned. |
+| `maxPrice` | string | | An amount in USDC, such as `0.01`: tools whose `price` is at most that, cheapest first. Implies `sort=price`; not with `sort=usage`. |
 | `limit` | integer | 25 | 1 to 100. Outside that: `400`. |
-| `cursor` | string | | `pagination.nextCursor`. It only works with the same filters. |
+| `cursor` | string | | `pagination.nextCursor`. It only works with the same filters and the same `sort`. |
 
 Text filters accept up to 512 characters; `index` up to 2,048. **Any other parameter, except `minor` and `cb`, returns `400 unknown filter`.** Without `q`, a page cannot go past row 500: `hasMore` is `false` on the last page you can reach, and a cursor past it answers `400 cursor exceeds the public depth limit`.
 
@@ -110,6 +112,8 @@ Text filters accept up to 512 characters; `index` up to 2,048. **Any other param
 | `walletCount`, `firstWallet` | How many wallets it collects to, and the first one. |
 | `prices[]` | The price each catalog publishes: `bazaar`, `scheme`, `network`, `asset`, `amount` in the asset's smallest unit, `payTo`, `maxTimeoutSeconds`. |
 | `distinctAmounts` | How many different amounts the catalogs publish for it. |
+| `price` | One price in USDC you can compare across tools: `amount` (in USDC, such as `"0.01"`), `currency`, `source`, `network`, `asset` and `atomicAmount` (in the asset's smallest unit). `source` is `probe` when it is what the tool asked on a check from the last 7 days, and `declared` otherwise: then it is the cheapest `exact` price a catalog publishes. A zero amount is never a price. `null` when the tool has no USDC price. |
+| `calls30d` | Calls in the last 30 days, as the Coinbase CDP catalog declares them. Deside does not verify them. `null` when CDP publishes none. |
 | `probe` | Our last call. See below. |
 | `declaredByAgent` | `true` when an agent in the Agent Directory lists the tool as its own. |
 | `logo` | Our cached icon, two sizes. |
@@ -119,11 +123,16 @@ Text filters accept up to 512 characters; `index` up to 2,048. **Any other param
 
 ### probe
 
-**The check reads the payment request and does not pay.**
+**The check reads the payment request and does not pay.** It runs every night from 07:20 UTC, and its result reaches these routes the same morning, once the night's check ends. A tool whose verdict has not changed for 30 days is checked every 6 days instead.
+
+How we call a tool:
+
+- With its declared method. With none, we try `GET`; when `GET` answers `404` or `405` we try `POST` once, and when `GET` answers `200` with no price we also try `POST` once, with an empty JSON body. That second answer counts only when it asks for payment (`402`) or for input (`400` or `422`).
+- A URL with a placeholder in its path is called with the placeholder filled, from the example in the tool's input schema when there is one. A `404`, `405` or `410` on the filled URL does not say the tool is missing, so it does not change the tool's verdict.
 
 | Field | Description |
 |---|---|
-| `verdict` | `offer`: answered with a price. `no-offer`: answered, asked for no payment. `no-response`: did not answer. `blocked`: its host blocked our check. `no-endpoint`: the host answers, but this route does not exist. |
+| `verdict` | `offer`: answered with a price. `no-offer`: answered without asking for payment, or with a payment request we cannot read. `no-endpoint`: the host answers, but this route does not exist (`404`, `405` or `410`). `no-response`: down: no answer (timeout, connection or DNS failure), or the site or its gateway answered `502`, `503`, `504` or `530`. `blocked`: we did not call it, because it points to a private address or uses a scheme or port we do not call, or redirects more than twice. |
 | `at` | When we checked. |
 | `httpStatus` | The status the tool answered with. |
 | `quote` | The price the tool asked: `amount`, `asset`, `network`, and on the single tool `payTo`. |
