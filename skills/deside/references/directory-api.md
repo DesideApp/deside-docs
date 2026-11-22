@@ -184,7 +184,7 @@ curl "https://api.deside.io/api/v1/public/x402/tools?live=1&limit=25"
 
 | Name | Default | Description |
 |---|---|---|
-| `live` | | Only `1`: tools whose last check got an answer (`offer` or `no-offer`). Not with `verdict`. |
+| `live` | | Only `1`: Live tools, those whose last check quoted a readable x402 price (`offer`) and is at most 7 days old. `verdict=offer` instead takes that verdict from a check of any date. Not with `verdict`. |
 | `verdict` | | `offer`, `no-offer`, `no-endpoint`, `no-response`, `blocked` or `unprobed` (never probed). Not with `live`. |
 | `limit` | 25 | 1 to 100. Outside that: `400`. |
 | `q` | | Text search, up to 512 characters. Returns one page; cannot be combined with `cursor`. |

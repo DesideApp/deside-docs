@@ -133,7 +133,7 @@ Finds x402 tools: paid HTTP endpoints listed in the x402 bazaars or in an agent'
 | `network` | string | No | Payment network in CAIP-2, such as `eip155:8453`. |
 | `index` | string | No | URL of an x402 index, up to 2,048 characters. Not together with `agent`. |
 | `agent` | string | No | An agent `id` from `list_agents`: the tools it lists. Not together with `index`. |
-| `live` | boolean | No | `true`: only tools that answered the last probe. Not together with `verdict`. |
+| `live` | boolean | No | `true`: only Live tools, those that quoted a readable x402 price in a check of the last 7 days. Not together with `verdict`. |
 | `verdict` | string | No | `offer`, `no-offer`, `no-endpoint`, `no-response`, `blocked` or `unprobed` (never probed). Not together with `live`. |
 | `limit` | integer | No | 1 to 100. Default 25. |
 | `cursor` | string | No | `page.nextCursor` of the previous page, with the same filters. |
@@ -148,7 +148,7 @@ One x402 tool. `id`: a slug from `list_x402_tools`. Returns `{ data, asOf }`, th
 
 ### get_x402_census
 
-The x402 Tool Directory counts, as the headers of deside.io/x402 show them. All parameters optional: `host` (exact), `payTo` (receiving wallet), `network` (CAIP-2) and `live` (`true`: only tools that answered the last probe). Returns `{ data, asOf }`, as `GET https://api.deside.io/api/v1/public/x402/census?minor=1.1` serves it. `data` has `tools`, `hosts`, `wallets`, `bazaars`, `byBazaar`, `byNetwork`, `byVerdict` and `projectedAt`. `byVerdict` sums to `tools`: a tool never probed counts as `unprobed`.
+The x402 Tool Directory counts, as the headers of deside.io/x402 show them. All parameters optional: `host` (exact), `payTo` (receiving wallet), `network` (CAIP-2) and `live` (`true`: only Live tools, those that quoted a readable x402 price in a check of the last 7 days). Returns `{ data, asOf }`, as `GET https://api.deside.io/api/v1/public/x402/census?minor=1.1` serves it. `data` has `tools`, `hosts`, `wallets`, `bazaars`, `byBazaar`, `byNetwork`, `byVerdict` and `projectedAt`. `byVerdict` sums to `tools`: a tool never probed counts as `unprobed`.
 
 ### list_x402_indexes
 

@@ -24,7 +24,7 @@ curl "https://api.deside.io/api/v1/public/x402/tools?live=1&limit=1"
 | `agent` | string | | An agent's `id`: its tools. The response adds an `agent` key. A slug finds no agent. |
 | `index` | string | | An index URL, up to 2,048 characters: the tools it lists. Cannot be combined with `agent`. |
 | `indice` | string | | Same as `index`. Cannot be combined with it. |
-| `live` | string | | Only `1`: tools whose last check got an answer (`offer` or `no-offer`). Not with `verdict`. |
+| `live` | string | | Only `1`: Live tools, those whose last check quoted a readable x402 price (`offer`) and is at most 7 days old. `verdict=offer` instead takes that verdict from a check of any date. Not with `verdict`. |
 | `verdict` | string | | `offer`, `no-offer`, `no-endpoint`, `no-response`, `blocked` or `unprobed` (never probed). Not with `live`. |
 | `sort` | string | | `price`: cheapest first, by `price`. `usage`: most used first, by `calls30d`. Only tools that have that number are returned. |
 | `maxPrice` | string | | An amount in USDC, such as `0.01`: tools whose `price` is at most that, cheapest first. Implies `sort=price`; not with `sort=usage`. |
@@ -188,7 +188,7 @@ Returns the directory counts, without retired tools. This reads the counts:
 curl "https://api.deside.io/api/v1/public/x402/census"
 ```
 
-Accepts `host`, `payTo`, `network` and `live=1`.
+Accepts `host`, `payTo`, `network` and `live=1`, which counts only Live tools, as on the list.
 
 Real on 2026-11-02, trimmed:
 
