@@ -5,8 +5,10 @@ This page records changes to the contracts of the API, the MCP and the Launchpad
 ## 2026-11-22
 
 - `live=1` on `GET /api/v1/public/x402/tools` and `/census`, on the paid reads, and `live: true` on the MCP tools `list_x402_tools` and `get_x402_census` now return only Live tools: their last check quoted a readable x402 price and is at most 7 days old. Tools that answer without a price (`no-offer`) and tools last checked more than 7 days ago no longer count. `verdict=offer` still takes the last verdict whatever its date. What to do: for tools that answer without a price, send `verdict=no-offer`. See [x402 Tools](api/x402-tools.md#get-public-x402-tools).
+- x402 indexes: `content.state` of a group is `live` only when at least one of its tools is Live, with the same rule. It used to be `live` when any tool answered. See [x402 Tools](api/x402-tools.md#get-public-x402-indices).
 - Docs: `GET /api/v1/public/x402/tools` takes `sort` (`price` or `usage`) and `maxPrice` (an amount in USDC), and each tool carries `price` (one USDC price you can compare, from our check or the cheapest catalog price) and `calls30d` (calls in 30 days, as Coinbase CDP declares them). They are live since 2026-11-06 and were missing from these docs. See [x402 Tools](api/x402-tools.md#get-public-x402-tools).
 - Docs: how we call an x402 tool and when, in [probe](api/x402-tools.md#probe). Correction: `blocked` means we did not call the tool (a private address, a scheme or port we do not call, or more than 2 redirects). These docs said its host blocked us.
+- Docs, correction: x402 tools are checked every night, each when it is due; one whose result has not changed in 30 days is due every 6 days. These docs said a full pass took 3 to 5 nights and that stable tools were checked once a week. See [Sources](api/sources.md).
 
 ## 2026-11-20
 

@@ -35,7 +35,7 @@ Plus the x402 indexes that agents publish themselves. When a catalog stops listi
 | Checking agent endpoints | Every night, in a queue: each URL aims to be checked once a week. |
 | Real A2A call | Once a week. |
 | Reading the x402 catalogs and indexes | Every night. |
-| Checking x402 tools | Every night, in a queue: a full pass takes 3 to 5 nights. A tool whose result has not changed in 30 days is checked once a week. |
+| Checking x402 tools | Every night, every tool due that night. A tool whose result has not changed in 30 days is due every 6 days; if its night is missed, it is checked the next night. |
 
 Every result carries the date of its check: `checkedAt`, `probedAt`, `probe.at`, `measuredAt`.
 

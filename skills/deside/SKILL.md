@@ -77,7 +77,7 @@ Each read has a code, the same on the API, the MCP and the paid route, such as `
 | Listed | It is in the Deside directory | That it was checked |
 | Verified team | The Deside account that owns the agent is a team. Shown on deside.io; not a field of agent responses | Anything about the agent's quality |
 
-Checks are not constant. Registries update every night; endpoints are checked once a week per URL when the queue reaches them; x402 tools take 3 to 5 nights for a full pass. **Always report the date of the check** (`lastCheckedAt`, `checkedAt`, `probe.at`).
+Checks are not constant. Registries update every night; endpoints are checked once a week per URL when the queue reaches them; x402 tools are checked every night, except one whose result has not changed in 30 days, checked every 6 days. **Always report the date of the check** (`lastCheckedAt`, `checkedAt`, `probe.at`).
 
 ## What you must not claim
 

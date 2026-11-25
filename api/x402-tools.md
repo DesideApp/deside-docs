@@ -248,7 +248,7 @@ curl "https://api.deside.io/api/v1/public/x402/indices?limit=2"
 |---|---|
 | `id`, `host`, `indexes[]` | The index. |
 | `agents` | How many agents declare it. |
-| `content.state` | `live` (at least one tool answers) or `down`. |
+| `content.state` | `live` (at least one of its tools is Live: it quoted a readable x402 price in a check of the last 7 days), `down` (none is Live) or `no-tools`. |
 | `content.tools` | Tools it lists, then how many quote a price, respond with no price, are down, or are not checked yet. |
 | `about` | With `?minor=1.1`, beside `data`: `read` is `x402.indexes`. |
 
