@@ -11,7 +11,7 @@ This page describes the shape each route answers by default. Every route here al
 Returns tools that a catalog or index still lists, with their last check.
 
 ```bash
-curl "https://api.deside.io/api/v1/public/x402/tools?live=1&limit=1"
+curl "https://api.deside.io/api/v1/public/x402/tools?live=1&sort=usage&limit=1"
 ```
 
 | Name | Type | Default | Description |
@@ -33,25 +33,28 @@ curl "https://api.deside.io/api/v1/public/x402/tools?live=1&limit=1"
 
 Text filters accept up to 512 characters; `index` up to 2,048. **Any other parameter, except `minor` and `cb`, returns `400 unknown filter`.** Without `q`, a page cannot go past row 500: `hasMore` is `false` on the last page you can reach, and a cursor past it answers `400 cursor exceeds the public depth limit`.
 
+Real on 2026-11-27, for `?live=1&sort=usage&limit=1`:
+
 ```json
 {
   "items": [
     {
-      "slug": "abi-cyberwarex-abi",
-      "title": "Contract ABI",
-      "titleSource": "name",
-      "host": "abi.cyberwarex.com",
-      "path": "/abi",
+      "slug": "console-ax1-q-verdict-resource",
+      "title": "q-verdict / resource",
+      "titleSource": "path",
+      "host": "console.ax1.vc",
+      "path": "/api/dashboard/q-verdict/resource",
       "scheme": "https",
       "bazaars": [
-        "cdp"
+        "cdp",
+        "thirdweb"
       ],
-      "bazaarCount": 1,
+      "bazaarCount": 2,
       "hasInputSchema": true,
       "hasOutputSchema": true,
       "walletCount": 1,
       "firstWallet": {
-        "address": "0x058D0Cc5CC97e61e8A9f38D6d6365bce525921B2",
+        "address": "0x7284D41b5b852F2bd4c99bDf95043D84452d299C",
         "family": "evm"
       },
       "prices": [
@@ -60,18 +63,27 @@ Text filters accept up to 512 characters; `index` up to 2,048. **Any other param
           "scheme": "exact",
           "network": "eip155:8453",
           "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-          "amount": "3000",
-          "payTo": "0x058D0Cc5CC97e61e8A9f38D6d6365bce525921B2",
+          "amount": "20000",
+          "payTo": "0x7284D41b5b852F2bd4c99bDf95043D84452d299C",
+          "maxTimeoutSeconds": 300
+        },
+        {
+          "bazaar": "thirdweb",
+          "scheme": "exact",
+          "network": "eip155:8453",
+          "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "amount": "20000",
+          "payTo": "0x7284D41b5b852F2bd4c99bDf95043D84452d299C",
           "maxTimeoutSeconds": 300
         }
       ],
       "distinctAmounts": 1,
       "probe": {
         "verdict": "offer",
-        "at": "2026-10-01T07:20:00.467Z",
+        "at": "2026-11-27T07:20:00.226Z",
         "httpStatus": 402,
         "quote": {
-          "amount": "3000",
+          "amount": "20000",
           "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
           "network": "eip155:8453"
         },
@@ -81,21 +93,28 @@ Text filters accept up to 512 characters; `index` up to 2,048. **Any other param
         }
       },
       "declaredByAgent": false,
-      "description": "Fetch a verified contract's ABI and metadata by address, keylessly, from Sourcify. Returns the ABI plus a summarized list of function and event signatures, the…",
+      "description": "Any agent can buy a Token Verdict over x402: AI grade, roast and live onchain metrics for any Base, Solana or Robinhood token. $0.02 in USDC, no account.\n\nChec…",
       "type": "http",
-      "logo": {
-        "card": "https://pub-9ddd9cb4402f4d04acd1f55113bf4cea.r2.dev/x402-tool-icon/4531c746a008717a9d74e787bc2db1c0-card.webp",
-        "profile": "https://pub-9ddd9cb4402f4d04acd1f55113bf4cea.r2.dev/x402-tool-icon/4531c746a008717a9d74e787bc2db1c0-profile.webp"
-      },
+      "logo": null,
       "tier": 1,
-      "completeness": 5
+      "live": true,
+      "completeness": 3,
+      "price": {
+        "amount": "0.02",
+        "currency": "USDC",
+        "source": "probe",
+        "network": "eip155:8453",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "atomicAmount": "20000"
+      },
+      "calls30d": 1833375
     }
   ],
   "pagination": {
-    "nextCursor": "eyJvIjoxLCJmIjoiYWZlZTcxYjZiYmI4NDc4YyJ9",
+    "nextCursor": "eyJrIjoieDQwMi10b29scyIsIm8iOjEsImYiOiI4NTQ1ZDJjNTcwZmMzNjM3In0.A9wiJp3kYulJ22fjg6vQIw",
     "hasMore": true,
     "limit": 1,
-    "total": 25794
+    "total": 48980
   }
 }
 ```
@@ -116,8 +135,9 @@ Text filters accept up to 512 characters; `index` up to 2,048. **Any other param
 | `calls30d` | Calls in the last 30 days, as the Coinbase CDP catalog declares them. Deside does not verify them. `null` when CDP publishes none. |
 | `probe` | Our last call. See below. |
 | `declaredByAgent` | `true` when an agent in the Agent Directory lists the tool as its own. |
-| `logo` | Our cached icon, two sizes. |
-| `tier` | Our last check, as a number from 1 to 5: 1 quoted a price, 2 answered without charging, 3 not checked yet, 4 and 5 failed. |
+| `logo` | Our cached icon, two sizes, or `null`. |
+| `tier` | Our last check, as a number from 1 to 5: 1 quoted a price, 2 answered without charging, 3 not checked yet, 4 and 5 failed. It sets the order of the list and does not look at the date of the check. |
+| `live` | `true` when the tool is Live: its last check quoted a readable x402 price (`probe.verdict` is `offer`) and is at most 7 days old (`probe.at`). A tool can have `tier` 1 and `live: false` when that check is older. |
 | `completeness` | How complete the tool's record is, 0 to 5 points. Tools on test networks always score 0. |
 | `about` | With `?minor=1.1`, beside `data`: `read` is `x402.tools`. |
 
@@ -129,6 +149,7 @@ How we call a tool:
 
 - With its declared method. With none, we try `GET`; when `GET` answers `404` or `405` we try `POST` once, and when `GET` answers `200` with no price we also try `POST` once, with an empty JSON body. That second answer counts only when it asks for payment (`402`) or for input (`400` or `422`).
 - A URL with a placeholder in its path is called with the placeholder filled, from the example in the tool's input schema when there is one. A `404`, `405` or `410` on the filled URL does not say the tool is missing, so it does not change the tool's verdict.
+- A tool that answers `400` or `422` without a price is called once more with an example input built from its input schema: in the query for `GET`, in a JSON body for `POST`. The example uses only values the tool declares or harmless fillers such as `BTC`, `https://example.com`, `1` or `true`. A tool with an email, wallet, address or phone field that has no example of its own is not called again. That second answer counts only when it asks for payment (`402`).
 
 | Field | Description |
 |---|---|

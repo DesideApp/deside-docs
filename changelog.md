@@ -2,7 +2,13 @@
 
 This page records changes to the contracts of the API, the MCP and the Launchpad, newest first, and corrections to these docs. A change that breaks a client says what to do.
 
+## 2026-11-26
+
+- x402 tools: each tool on `GET /api/v1/public/x402/tools`, `GET /api/v1/public/x402/tools/{slug}`, `list_x402_tools` and `get_x402_tool` carries `live`: `true` when its last check quoted a readable x402 price and is at most 7 days old. `tier` still sets the order and does not look at the date. What to do: to know whether a tool is Live, read `live`, not `tier`. See [x402 Tools](api/x402-tools.md#get-public-x402-tools).
+
 ## 2026-11-22
+
+- x402 tools: a tool that answers `400` or `422` without a price is checked once more with an example input from its input schema. The second answer counts only when it asks for payment. See [probe](api/x402-tools.md#probe).
 
 - `live=1` on `GET /api/v1/public/x402/tools` and `/census`, on the paid reads, and `live: true` on the MCP tools `list_x402_tools` and `get_x402_census` now return only Live tools: their last check quoted a readable x402 price and is at most 7 days old. Tools that answer without a price (`no-offer`) and tools last checked more than 7 days ago no longer count. `verdict=offer` still takes the last verdict whatever its date. What to do: for tools that answer without a price, send `verdict=no-offer`. See [x402 Tools](api/x402-tools.md#get-public-x402-tools).
 - x402 indexes: `content.state` of a group is `live` only when at least one of its tools is Live, with the same rule. It used to be `live` when any tool answered. See [x402 Tools](api/x402-tools.md#get-public-x402-indices).

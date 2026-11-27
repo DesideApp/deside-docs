@@ -140,7 +140,7 @@ Finds x402 tools: paid HTTP endpoints listed in the x402 bazaars or in an agent'
 | `limit` | integer | No | 1 to 100. Default 25. |
 | `cursor` | string | No | `page.nextCursor` of the previous page, with the same filters. |
 
-Returns `{ data, page, asOf }`, plus `subject` when you filter by `agent`, as `GET /api/v1/public/x402/tools?minor=1.1` serves it. Each tool has `id` (its slug) and a `probe` with `checkedAt` and `stale` (`true` after 7 days). An `agent` or `index` that does not exist returns `not_found`. Signed in, the cursor reaches the last tool; without sign-in it stops at row 500, as the public API does.
+Returns `{ data, page, asOf }`, plus `subject` when you filter by `agent`, as `GET /api/v1/public/x402/tools?minor=1.1` serves it. Each tool has `id` (its slug), `live` (`true` when it quoted a readable x402 price in a check of the last 7 days) and a `probe` with `checkedAt` and `stale` (`true` after 7 days). An `agent` or `index` that does not exist returns `not_found`. Signed in, the cursor reaches the last tool; without sign-in it stops at row 500, as the public API does.
 
 ### get_x402_tool
 

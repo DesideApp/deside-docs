@@ -233,7 +233,8 @@ Any other parameter, except `minor` and `cb`, returns `400 unknown filter`. With
 | `bazaars` | Marketplaces that list it. |
 | `prices` | What catalogs publish, each with `bazaar`, `scheme`, `network`, `asset`, `amount`, `payTo`, `maxTimeoutSeconds`. `amount` is in the asset's base units: 3000 of USDC with 6 decimals is 0.003 USDC. |
 | `probe` | Deside's last check. `verdict`: `offer` (answered with a price), `no-offer` (no payment), `no-response`, `blocked`, `no-endpoint`. `comparison`: whether the price and wallet match the catalog. `probe: null` means never checked. |
-| `tier` | Our last check as a number: 1 quoted a price, 2 answered without charging, 3 not checked yet, 4 and 5 failed. |
+| `tier` | Our last check as a number: 1 quoted a price, 2 answered without charging, 3 not checked yet, 4 and 5 failed. It sets the order and does not look at the date. |
+| `live` | `true` when the tool quoted a readable x402 price (`probe.verdict` `offer`) in a check of the last 7 days. |
 
 **Deside does not call the tool for you and does not pay it.** To use a tool, call its `host` and `path` yourself with an x402 client, and check the price it asks before you pay.
 
